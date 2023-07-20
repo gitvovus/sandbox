@@ -1,0 +1,138 @@
+@use '@/style/theme' as *;
+@use '@/style/vars' as *;
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  font-weight: normal;
+  margin: 0;
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+  background-color: var(--scroll-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--scroll-thumb);
+}
+
+:focus {
+  outline: none;
+}
+
+::-moz-focus-inner {
+  border: none;
+}
+
+body {
+  font-family: Verdana, sans-serif;
+  font-size: 15px;
+  color: var(--tx);
+  background-image: url(@/assets/bg.png);
+}
+
+p {
+  margin: 1em 0;
+}
+
+.app,
+.view,
+.overlay {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.app {
+  background: var(--bg-over);
+  box-shadow: 0 0 25vw rgba(black, 1) inset;
+}
+
+.app, .view {
+  overflow: hidden;
+}
+
+.overlay {
+  overflow: visible;
+}
+
+.view {
+  margin: 7vh 7vw 9vh 7vw;
+  padding: 0.5em;
+  background-color: var(--view-bg);
+  border: 1px solid var(--view-border);
+  border-radius: 0.5em;
+  box-shadow: $view-shadow;
+}
+
+.round {
+  border-radius: 50vh;
+}
+
+.h-separator {
+  width: calc(100% - 0.5em);
+  height: 2px;
+  border-top: 1px solid var(--bg-dk);
+  border-bottom: 1px solid var(--bg-lt);
+  margin: 0.5em 0.25em;
+}
+
+.v-separator {
+  width: 2px;
+  height: calc(100% - 0.5em);
+  margin: 0.25em 0.5em;
+  border-left: 1px solid var(--bg-dk);
+  border-right: 1px solid var(--bg-lt);
+}
+
+// dialog
+.w-panel {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+  background-color: var(--bg);
+  opacity: 0.9;
+}
+
+.w-header,
+.w-footer {
+  display: flex;
+  margin: $w-margin;
+  align-items: center;
+  justify-content: center;
+}
+
+.w-header {
+  border-bottom: $w-splitter;
+  padding: calc($w-margin / 2) $w-margin $w-margin;
+}
+
+.w-footer {
+  border-top: $w-splitter;
+  padding: $w-margin $w-margin calc($w-margin / 2);
+}
+
+.w-content {
+  position: relative;
+  flex: 1 1 auto;
+  overflow: auto;
+  pointer-events: auto;
+  padding: 0 $w-margin;
+}
+
+.top-left {
+  position: absolute;
+  left: 0;
+  top: 0;
+}
