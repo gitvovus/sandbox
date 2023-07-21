@@ -21,7 +21,7 @@ import {
   type Rotor,
   type RotorType,
   failureType,
-} from '@/modules/gear-box/graph';
+} from '@/modules/gear-box/solver';
 
 function use(item: Item, attributes?: Attributes) {
   return new Item('use', { href: `#${item.attributes.id}`, ...attributes });
