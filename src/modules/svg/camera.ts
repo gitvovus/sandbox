@@ -30,7 +30,7 @@ export class Camera {
     return this.#position.value;
   }
 
-  set position(value: std.Vector2) {
+  set position(value) {
     this.#position.value = value.clone();
   }
 
@@ -46,7 +46,7 @@ export class Camera {
     return this.#scale.value;
   }
 
-  set scale(value: std.Vector2) {
+  set scale(value) {
     this.#scale.value = value.clone();
   }
 

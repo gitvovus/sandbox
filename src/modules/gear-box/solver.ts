@@ -1,16 +1,16 @@
-import { Vector2, distance, mod, squareDistance } from '@/lib/std';
-import { teethPerUnitRadius } from '@/modules/gear-box/shapes';
+import { Vector2, distance, mod } from '@/lib/std';
+import { teethPerUnitRadius, type ShapeType } from '@/modules/gear-box/shapes';
 
 const eps = 1e-3;
 
 export type RotorType = 'source' | 'mediator' | 'destination';
 
-export type GearType = 'gear' | 'stub';
-
 export interface Actor {
   readonly radii: [number, number];
-  readonly types: [GearType, GearType];
+  readonly types: [ShapeType, ShapeType];
+  position: Vector2;
   rotation: number;
+  rotor?: Rotor;
 }
 
 export interface Rotor {
@@ -25,31 +25,13 @@ function dist(a: Rotor, b: Rotor) {
   return distance(a.position, b.position);
 }
 
-export enum FailureType {
-  BAD_DATA,
-  NO_SOURCE,
-  NO_DESTINATION,
-  COLLISION,
-  BLOCK,
-  NOT_FINISHED,
-}
-
-export function failureType(type: FailureType) {
-  switch (type) {
-    case FailureType.BAD_DATA:
-      return 'BAD_DATA';
-    case FailureType.NO_SOURCE:
-      return 'NO_SOURSE';
-    case FailureType.NO_DESTINATION:
-      return 'NO_DESTINATION';
-    case FailureType.COLLISION:
-      return 'COLLISION';
-    case FailureType.BLOCK:
-      return 'BLOCK';
-    case FailureType.NOT_FINISHED:
-      return 'NOT_FINISHED';
-  }
-}
+export type FailureType =
+  | 'bad data'
+  | 'no source'
+  | 'no destination'
+  | 'collision'
+  | 'block'
+  | 'not finished';
 
 type Failure = {
   type: FailureType;
@@ -70,7 +52,7 @@ export class Solver {
   }
 
   findRotorAt(position: Vector2) {
-    return this.rotors.find((rotor) => squareDistance(rotor.position, position) < eps);
+    return this.rotors.find((rotor) => distance(rotor.position, position) < eps);
   }
 
   setActor(rotor: Rotor, actor: Actor) {
@@ -79,13 +61,13 @@ export class Solver {
 
   solve(fail: (f: Failure) => void) {
     if (this.rotors.length < 2) {
-      fail({ type: FailureType.BAD_DATA });
+      fail({ type: 'bad data' });
       return;
     }
 
     const source = this.rotors.find((rotor) => rotor.type === 'source');
     if (!source) {
-      fail({ type: FailureType.NO_SOURCE });
+      fail({ type: 'no source' });
       return;
     }
 
@@ -105,38 +87,27 @@ export class Solver {
 
       current.forEach((a) => {
         const ar = a.actor ? [...a.actor.radii] : [1, 1];
-        const at: [GearType, GearType] = a.actor ? [...a.actor.types] : ['stub', 'stub'];
+        const at: [ShapeType, ShapeType] = a.actor ? [...a.actor.types] : ['stub', 'stub'];
         const aData = data.get(a)!;
 
-        for (let i = 0; i < this.rotors.length; ++i) { // TODO: forEach
-          const b = this.rotors[i];
-          if (a === b) {
-            continue;
-          }
-
-          if (aData.source === b) {
-            continue;
-          }
-
-          if (data.has(b) && data.get(b)!.source === a) {
-            continue;
-          }
+        this.rotors.forEach(b => {
+          if (a === b || aData.source === b || data.get(b)?.source === a) return;
 
           const br = b.actor ? [...b.actor.radii] : [1, 1];
-          const bt: [GearType, GearType] = b.actor ? [...b.actor.types] : ['stub', 'stub'];
+          const bt: [ShapeType, ShapeType] = b.actor ? [...b.actor.types] : ['stub', 'stub'];
 
           const abDistance = dist(a, b);
           const gearDistances = [ar[0] + br[0], ar[1] + br[1]];
 
           // collision
           if (gearDistances[0] > abDistance + eps || gearDistances[1] > abDistance + eps) {
-            fail({ type: FailureType.COLLISION, rotors: [a, b] });
-            continue;
+            fail({ type: 'collision', rotors: [a, b] });
+            return;
           }
 
           // no contact
           if (abDistance > gearDistances[0] + eps && abDistance > gearDistances[1] + eps) {
-            continue;
+            return;
           }
 
           // speeds at contact points
@@ -154,8 +125,8 @@ export class Solver {
           // block: two contact points, different gear ratios: unable to sync rotation
           const abs = speeds.map(Math.abs);
           if (abs[0] > 0 && abs[1] > 0 && Math.abs(abs[0] - abs[1]) > eps) {
-            fail({ type: FailureType.BLOCK, rotors: [a, b] });
-            continue;
+            fail({ type: 'block', rotors: [a, b] });
+            return;
           }
 
           const speed = abs[0] > abs[1] ? speeds[0] : speeds[1];
@@ -164,8 +135,8 @@ export class Solver {
           if (data.has(b)) {
             const bData = data.get(b)!;
             if (Math.abs(bData.speed - speed) > eps) {
-              fail({ type: FailureType.BLOCK, rotors: [a, b] });
-              continue;
+              fail({ type: 'block', rotors: [a, b] });
+              return;
             }
           } else {
             // sync rotation
@@ -188,18 +159,18 @@ export class Solver {
             data.set(b, { speed, rotation, source: a });
             next.add(b);
           }
-        }
+        });
       });
     }
 
     const destinations = this.rotors.filter((rotor) => rotor.type === 'destination');
     destinations.forEach((rotor) => {
       if (!data.has(rotor)) {
-        fail({ type: FailureType.NOT_FINISHED });
+        fail({ type: 'not finished' });
       } else {
         const rotorData = data.get(rotor)!;
         if (rotorData.speed === 0) {
-          fail({ type: FailureType.NOT_FINISHED }); // TODO: this should not happen (remove?)
+          fail({ type: 'not finished' }); // TODO: this should not happen (remove?)
         }
       }
     });
@@ -207,6 +178,10 @@ export class Solver {
     data.forEach((rotorData, rotor) => {
       rotor.speed = rotorData.speed;
       rotor.rotation = rotorData.rotation;
+    });
+
+    this.rotors.forEach(rotor => {
+      if (!data.has(rotor)) rotor.speed = 0;
     });
   }
 }

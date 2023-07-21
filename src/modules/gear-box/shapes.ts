@@ -1,6 +1,8 @@
 export const teethPerUnitRadius = 8;
 
-export type GearOptions = {
+export type ShapeType = 'gear' | 'stub';
+
+export type ShapeOptions = {
   radius: number;
   innerRadius?: number;
   offset?: number;
@@ -12,9 +14,9 @@ export type GearOptions = {
   margin?: number;
 };
 
-export type GearData = Required<GearOptions>;
+export type ShapeData = Required<ShapeOptions>;
 
-const gearDefault: GearData = {
+const defaultShape: ShapeData = {
   radius: 1,
   innerRadius: 1,
   offset: 0,
@@ -26,8 +28,8 @@ const gearDefault: GearData = {
   margin: 0.1,
 };
 
-export function gearData(options: GearOptions) {
-  return Object.assign({ ...gearDefault }, options);
+export function gearData(options: ShapeOptions) {
+  return Object.assign({ ...defaultShape }, options);
 }
 
 // helpers to format text inside path data
@@ -35,7 +37,7 @@ const f = (n: number) => n.toFixed(3);
 const x = (r: number, a: number) => f(r * Math.cos(a));
 const y = (r: number, a: number) => f(r * Math.sin(a));
 
-function cuts(data: GearData) {
+function cuts(data: ShapeData) {
   const ir = data.innerRadius;
   const tc = data.thickness;
   const st = data.spokeThickness;
@@ -68,13 +70,13 @@ function cuts(data: GearData) {
   return path.join('');
 }
 
-export function shaftBaseShape(radius: number = 1) {
+export function shaftBase(radius: number = 1) {
   const r = f(radius);
   return `M${r} 0A${r} ${r} 0 0 1 -${r} 0A${r} ${r} 0 0 1 ${r} 0`;
 }
 
-export function shaftShape(radius?: number) {
-  radius = radius || gearDefault.shaftRadius;
+export function shaft(radius?: number) {
+  radius = radius || defaultShape.shaftRadius;
   const n = 6;
   const d = (2 * Math.PI) / n;
   const path = [`M${f(radius)} 0`];
@@ -86,7 +88,7 @@ export function shaftShape(radius?: number) {
   return path.join('');
 }
 
-export function stubShape(gearOptions: GearOptions) {
+export function stub(gearOptions: ShapeOptions) {
   const data = gearData(gearOptions);
 
   const r0 = data.radius - 0.5 * data.toothHeight;
@@ -97,12 +99,12 @@ export function stubShape(gearOptions: GearOptions) {
   if (r0 > sr + 0.1) {
     path.push(cuts(data));
   }
-  path.push(shaftShape(sr + data.margin));
+  path.push(shaft(sr + data.margin));
 
   return path.join('');
 }
 
-export function gearShape(gearOptions: GearOptions) {
+export function gear(gearOptions: ShapeOptions) {
   const data = gearData(gearOptions);
   const h = data.toothHeight;
   const n = teethPerUnitRadius * data.radius;
@@ -131,7 +133,7 @@ export function gearShape(gearOptions: GearOptions) {
   path.push('z');
 
   path.push(cuts(data));
-  path.push(shaftShape(sr + data.margin));
+  path.push(shaft(sr + data.margin));
 
   return path.join('');
 }

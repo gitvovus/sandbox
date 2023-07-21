@@ -4,6 +4,7 @@ import * as std from '@/lib/std';
 export type Attributes = {
   id?: string;
   href?: string;
+  class?: string;
   [key: string]: string | number | undefined;
 };
 

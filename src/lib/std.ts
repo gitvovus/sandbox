@@ -76,6 +76,14 @@ export function distance(a: Vector2, b: Vector2) {
   return Math.sqrt(squareDistance(a, b));
 }
 
+export function squareLength(v: Vector2) {
+  return v.x * v.x + v.y * v.y;
+}
+
+export function length(v: Vector2) {
+  return Math.sqrt(squareLength(v));
+}
+
 export class Matrix2x3 {
   static translation(x: number, y: number) {
     return new Matrix2x3(1, 0, 0, 1, x, y);
