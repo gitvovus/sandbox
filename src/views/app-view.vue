@@ -30,16 +30,16 @@ defineProps<{ model: AppModel }>();
         <ui-button
           no-focus
           tabindex="-1"
-          class="round iconic"
+          class="button round iconic"
           v-model="model.toolBarAlignment"
           :toggle="[ToolBarAlignment.LEFT, ToolBarAlignment.CENTER]"
         >
           <div class="icon icon-lt"></div>
         </ui-button>
-        <ui-button class="round pretty" toggle v-model="model.showDialog">Dialog</ui-button>
+        <ui-button class="button round pretty" toggle v-model="model.showDialog">D</ui-button>
         <span class="v-separator" />
         <ui-button
-          class="round pretty"
+          class="button round pretty"
           v-for="(dummy, i) in model.pages"
           :key="i"
           v-model="model.pageIndex"
@@ -51,7 +51,7 @@ defineProps<{ model: AppModel }>();
         <ui-button
           no-focus
           tabindex="-1"
-          class="round iconic"
+          class="button round iconic"
           v-model="model.toolBarAlignment"
           :toggle="[ToolBarAlignment.RIGHT, ToolBarAlignment.CENTER]"
         >
@@ -110,7 +110,11 @@ defineProps<{ model: AppModel }>();
   }
 }
 
-button.iconic {
+.button.round {
+  border-radius: 50vh;
+}
+
+.button.iconic {
   width: 24px;
   height: 24px;
   margin: 2px;

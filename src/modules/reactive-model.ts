@@ -35,8 +35,19 @@ export class ReactiveModel extends ViewModel {
   readonly words = shallowReactive<string[]>([]);
   #gen = 10;
 
+  readonly radioItems = [...Array(4)].map((item, i) => ({ name: `item #${i}` }));
+  readonly #radioIndex = ref(0);
+
   constructor() {
     super('reactive-view');
+  }
+
+  get radioIndex() {
+    return this.#radioIndex.value;
+  }
+
+  set radioIndex(value) {
+    this.#radioIndex.value = value;
   }
 
   addItem() {

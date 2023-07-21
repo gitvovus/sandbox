@@ -26,6 +26,7 @@ export class Controller extends std.Disposable {
   #defaultCamera: Camera;
 
   #gesture = Gesture.NONE;
+  #disabled = false;
   #pickedOffset = { x: 0, y: 0 };
   #pickedPoint = new std.Vector2(0, 0);
   #pickedPosition = new std.Vector2(0, 0);
@@ -94,6 +95,14 @@ export class Controller extends std.Disposable {
     this.dispose();
   }
 
+  disable() {
+    this.#disabled = true;
+  }
+
+  enable() {
+    this.#disabled = false;
+  }
+
   reset() {
     this.#camera.position = this.#defaultCamera.position;
     this.#camera.rotation = this.#defaultCamera.rotation;
@@ -141,6 +150,7 @@ export class Controller extends std.Disposable {
   };
 
   readonly #pick = (e: PointerEvent) => {
+    if (this.#disabled) return;
     switch (e.button) {
       case 0:
         this.#gesture = Gesture.DRAG;
@@ -160,6 +170,7 @@ export class Controller extends std.Disposable {
   };
 
   readonly #drag = (e: PointerEvent) => {
+    if (this.#disabled) return;
     if (this.#gesture === Gesture.NONE) {
       return;
     }
@@ -178,11 +189,13 @@ export class Controller extends std.Disposable {
   };
 
   readonly #drop = (e: PointerEvent) => {
+    if (this.#disabled) return;
     (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
     this.#gesture = Gesture.NONE;
   };
 
   readonly #wheel = (e: WheelEvent) => {
+    if (this.#disabled) return;
     e.preventDefault();
 
     const k = e.deltaY < 0 ? 7 / 8 : 8 / 7;

@@ -6,6 +6,7 @@ import { GearBoxModel } from '@/modules/gear-box-model';
 import { ViewModel } from '@/modules/view-model';
 import { LogoModel } from '@/modules/logo-model';
 import { LayeredModel } from '@/modules/layered-model';
+import { SvgModel } from '@/modules/svg-model';
 
 export enum ToolBarAlignment {
   LEFT,
@@ -17,7 +18,8 @@ export class AppModel extends ViewModel {
   readonly pages: ViewModel[] = [
     new LogoModel(),
     new GearBoxModel(),
-    new LayeredModel(),
+    // new LayeredModel(),
+    new SvgModel(),
     new ControlsModel(),
     new ReactiveModel(),
   ];

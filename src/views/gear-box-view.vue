@@ -18,9 +18,9 @@ onBeforeUnmount(() => {
   <div class="view" ref="root">
     <ui-svg-element class="overlay" :model="model.root" />
     <div class="top-left">
-      <ui-button @click.stop="model.check()">check</ui-button>
-      <ui-button @click.stop="model.startRotation()">animate</ui-button>
-      <ui-button @click.stop="model.stopRotation()">stop</ui-button>
+      <ui-button class="button" @click.stop="model.check()">check</ui-button>
+      <ui-button class="button" @click.stop="model.startRotation()">animate</ui-button>
+      <ui-button class="button" @click.stop="model.stopRotation()">stop</ui-button>
     </div>
     <slot />
   </div>
@@ -38,6 +38,7 @@ onBeforeUnmount(() => {
 }
 
 $shadow: drop-shadow(0 0 0.04px rgba(black, 0.5));
+$selected-filter: drop-shadow(0 0 0.1px rgba(black, 1));
 
 .shaft-base {
   fill: #304050;
@@ -51,6 +52,10 @@ $shadow: drop-shadow(0 0 0.04px rgba(black, 0.5));
 .gear,
 .stub {
   filter: $shadow;
+  &.selected {
+    opacity: 0.5;
+    filter: $selected-filter;
+  }
 }
 
 .fill-0 {

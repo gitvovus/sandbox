@@ -1,7 +1,7 @@
 import { type IViewModel } from '@/modules/view-model';
 import { Item, type Attributes } from '@/lib/svg';
 import { Camera } from '@/modules/svg/camera';
-import { Controller } from '@/modules/svg/controller';
+import { Controller, Gesture } from '@/modules/svg/controller';
 import { Transformable } from '@/modules/svg/transformable';
 import {
   gearData,
@@ -12,14 +12,14 @@ import {
   shaftBaseShape,
 } from '@/modules/gear-box/shapes';
 import { Scene } from '@/modules/gear-box/scene';
-import { elementOffset, onAnimationFrame } from '@/lib/utils';
-import { Disposable, Vector2, mod, clamp } from '@/lib/std';
+import { elementOffset, onAnimationFrame, onElementEvent } from '@/lib/utils';
+import { Disposable, Vector2, mod, clamp, distance } from '@/lib/std';
 import {
-  GearType,
-  Graph,
-  type IActor,
-  type IVertex,
-  VertexType,
+  type GearType,
+  Solver,
+  type Actor,
+  type Rotor,
+  type RotorType,
   failureType,
 } from '@/modules/gear-box/graph';
 
@@ -35,15 +35,15 @@ function time() {
   return Date.now() * 0.001;
 }
 
-class Shaft implements IVertex {
+class Shaft implements Rotor {
   readonly #scene: Scene;
   readonly #base: Transformable;
   readonly #shaft: Transformable;
 
   // IVertex
-  #type = VertexType.NORMAL;
+  #type: RotorType = 'mediator';
   #speed = 0;
-  #actor?: IActor;
+  #actor?: Actor;
 
   constructor(scene: Scene, baseShape: Item, shaftShape: Item, index: number) {
     this.#scene = scene;
@@ -107,21 +107,17 @@ class Shaft implements IVertex {
   }
 }
 
-function gearType(type: GearType) {
-  return type === GearType.GEAR ? 'gear' : 'stub';
-}
-
 class GearShape {
   readonly shape: Item;
   readonly radius: number;
   readonly type: GearType;
 
-  constructor(gearOptions: GearOptions, type: GearType = GearType.GEAR) {
+  constructor(gearOptions: GearOptions, type: GearType = 'gear') {
     const data = gearData(gearOptions);
-    const id = `shape:${gearType(type)}-${data.radius}`;
+    const id = `shape:${type}-${data.radius}`;
     this.shape = new Item('path', {
       id,
-      d: type === GearType.GEAR ? gearShape(data) : stubShape(data),
+      d: type === 'gear' ? gearShape(data) : stubShape(data),
       'fill-rule': 'evenodd',
     });
     this.radius = data.radius;
@@ -133,15 +129,16 @@ class GearShape {
   }
 }
 
-class GearBlock implements IActor {
+class GearBlock implements Actor {
   readonly #scene: Scene;
   #shapes: GearShape[];
-  #gears: Transformable[];
+  #refs: Transformable[];
+  #visuals: Item[] = [];
   #fills: string[];
 
   // IActor
-  #r: [number, number];
-  #t: [GearType, GearType] = [GearType.STUB, GearType.STUB];
+  #radii: [number, number];
+  #types: [GearType, GearType];
 
   constructor(
     scene: Scene,
@@ -154,69 +151,87 @@ class GearBlock implements IActor {
     this.#scene = scene;
     this.#shapes = [lower, upper];
     this.#fills = [lowerFill, upperFill];
-    this.#gears = [
-      useT(lower.shape, { id: `ref:${gearType(lower.type)}:${index}:0` }),
-      useT(upper.shape, { id: `ref:${gearType(upper.type)}:${index}:1` }),
+    this.#refs = [
+      useT(lower.shape, { id: `ref:${lower.type}:${index}:0` }),
+      useT(upper.shape, { id: `ref:${upper.type}:${index}:1` }),
     ];
+    for (let i = 0; i < 2; ++i) {
+      this.#visuals.push(
+        use(this.#refs[i], { class: `${this.#shapes[i].type} ${this.#fills[i]}` })
+      );
+    }
 
-    this.#r = [lower.radius, upper.radius];
-    this.#t = [lower.type, upper.type];
+    this.#radii = [lower.radius, upper.radius];
+    this.#types = [lower.type, upper.type];
   }
 
   get position() {
-    return this.#gears[0].position;
+    return this.#refs[0].position;
   }
 
   set position(value) {
-    this.#gears.forEach(gear => gear.position = value);
+    this.#refs.forEach((gear) => (gear.position = value));
   }
 
   get rotation() {
-    return this.#gears[0].rotation;
+    return this.#refs[0].rotation;
   }
 
   set rotation(value) {
-    this.#gears.forEach(gear => gear.rotation = value);
+    this.#refs.forEach((gear) => (gear.rotation = value));
+  }
+
+  select() {
+    this.#visuals.forEach(ref => {
+      if (!(ref.attributes.class as string).includes('selected')) {
+        ref.attributes.class += ' selected';
+      }
+    });
+  }
+
+  unselect() {
+    this.#visuals.forEach(ref => {
+      if ((ref.attributes.class as string).includes('selected')) {
+        ref.attributes.class = (ref.attributes.class as string).split(' ').filter(c => c !== 'selected').join(' ');
+      }
+    });
   }
 
   addToScene() {
-    this.#scene.addDefs(...this.#gears);
+    this.#scene.addDefs(...this.#refs);
     this.#addLayers();
   }
 
   removeFromScene() {
-    this.#gears.forEach((gear) => {
+    this.#refs.forEach((gear) => {
       this.#scene.remove(`#${gear.attributes.id}`);
       this.#scene.removeDef(gear.attributes.id!);
     });
   }
 
   flip() {
-    this.#gears.forEach((gear) => this.#scene.remove(`#${gear.attributes.id}`));
+    this.#refs.forEach((gear) => this.#scene.remove(`#${gear.attributes.id}`));
     this.#shapes = [this.#shapes[1], this.#shapes[0]];
-    this.#gears = [this.#gears[1], this.#gears[0]];
+    this.#refs = [this.#refs[1], this.#refs[0]];
     this.#fills = [this.#fills[1], this.#fills[0]];
     this.#addLayers();
 
-    this.#r = [this.#r[1], this.#r[0]];
-    this.#t = [this.#t[1], this.#t[0]];
+    this.#radii = [this.#radii[1], this.#radii[0]];
+    this.#types = [this.#types[1], this.#types[0]];
   }
 
   #addLayers() {
     for (let i = 0; i < 2; ++i) {
-      this.#scene.addToLayer(
-        use(this.#gears[i], { class: `${gearType(this.#shapes[i].type)} ${this.#fills[i]}` }),
-        i + 1
-      );
+      this.#scene.addToLayer(this.#visuals[i], i + 1);
     }
   }
 
-  get r() {
-    return this.#r;
+  get radii() {
+    return this.#radii;
   }
 
-  get t() {
-    return this.#t;
+  get types() {
+    return this.#types;
   }
 }
 
@@ -225,7 +240,7 @@ class Animation {
   #stopAnimation = this.#doNothing;
 
   #emptyCallback = (dt: number) => {};
-  #frameCallback = this.#emptyCallback; 
+  #frameCallback = this.#emptyCallback;
 
   #start = 0;
 
@@ -240,7 +255,7 @@ class Animation {
     this.#stopAnimation = onAnimationFrame(this.#frame);
   }
 
-  stop () {
+  stop() {
     this.#stopAnimation();
     this.#stopAnimation = this.#doNothing;
     this.#frameCallback = this.#emptyCallback;
@@ -251,7 +266,7 @@ class Animation {
     const dt = now - this.#start;
     this.#start = now;
     this.#frameCallback(dt);
-  }
+  };
 }
 
 export class GearBoxModel extends Disposable implements IViewModel {
@@ -276,7 +291,7 @@ export class GearBoxModel extends Disposable implements IViewModel {
   readonly #stubShapes = new Map<number, GearShape>();
   readonly #gearShapes = new Map<number, GearShape>();
 
-  readonly #graph = new Graph();
+  readonly #graph = new Solver();
 
   #speed = 0;
   #maxSpeed = 0.5;
@@ -289,7 +304,15 @@ export class GearBoxModel extends Disposable implements IViewModel {
   #swayAcceleration = 0;
   #swayAnimation = new Animation();
 
-  #pickableGears: Transformable[] = [];
+  #gesture = Gesture.NONE;
+  #pickableGears: GearBlock[] = [];
+  #pickedGear!: GearBlock;
+  #pickedOffset!: { x: number; y: number; };
+  #pickedPoint!: Vector2;
+  #pickedPosition!: Vector2;
+  #pickedRotation!: number;
+
+  #selected?: GearBlock;
 
   constructor() {
     super();
@@ -299,13 +322,10 @@ export class GearBoxModel extends Disposable implements IViewModel {
     this.#createStatic();
     this.#createSample();
 
-    this.addDisposers(
-      () => {
-        this.#pickableGears.forEach((item) => item.dispose());
-        this.#rotationAnimation.stop();
-        this.#swayAnimation.stop();
-      },
-    );
+    this.addDisposers(() => {
+      this.#rotationAnimation.stop();
+      this.#swayAnimation.stop();
+    });
   }
 
   get root() {
@@ -348,24 +368,24 @@ export class GearBoxModel extends Disposable implements IViewModel {
     if (now > 0.45) {
       this.#swayAcceleration = -this.#maxAcceleration;
     }
-    if (now > 0.70) {
+    if (now > 0.7) {
       this.#swayAnimation.stop();
       if (!this.#rotationAnimation.isActive()) {
         this.#speed = 0;
       }
     }
-  }
+  };
 
   #rotate(k: number) {
-    this.#shafts.forEach(shaft => {
+    this.#shafts.forEach((shaft) => {
       const angle = k * shaft.speed;
       shaft.rotation += angle;
     });
   }
 
   check() {
-    this.#graph.vertices.length = 0;
-    this.#shafts.forEach((shaft) => this.#graph.addVertex(shaft));
+    this.#graph.rotors.length = 0;
+    this.#shafts.forEach((shaft) => this.#graph.addRotor(shaft));
 
     let ok = true;
     this.#graph.solve((failure) => {
@@ -378,14 +398,18 @@ export class GearBoxModel extends Disposable implements IViewModel {
 
   mount(element: HTMLElement) {
     this.#element = element;
+    this.addDisposers(
+      () => { this.#element = undefined; },
+      onElementEvent(element, 'pointerdown', this.#pick),
+      onElementEvent(element, 'pointermove', this.#drag),
+      onElementEvent(element, 'pointerup', this.#drop),
+      () => { this.#controller.dispose(); },
+    );
     this.#controller.mount(element);
   }
 
   unmount() {
-    this.#element = undefined;
-    this.#controller.unmount();
-
-    delete (window as any).graph;
+    this.dispose();
   }
 
   #createStatic() {
@@ -418,7 +442,7 @@ export class GearBoxModel extends Disposable implements IViewModel {
             spokeThickness: 0.2 + 0.01 * i,
             spokes: 6,
           },
-          GearType.STUB
+          'stub'
         )
       );
     });
@@ -439,26 +463,26 @@ export class GearBoxModel extends Disposable implements IViewModel {
     const s = (i: number) => this.#stubShapes.get(i)!;
     const g = (i: number) => this.#gearShapes.get(i)!;
 
-    [
-      { type: VertexType.SOURCE, x: -2, y: 4 },
-      { type: VertexType.NORMAL, x: -2, y: -4 },
-      { type: VertexType.DESTINATION, x: 5, y: -4 },
-      { type: VertexType.DESTINATION, x: 5, y: 4 },
-    ].forEach(({ type, x, y }, i) => {
+    (<[RotorType, number, number][]>[
+      [ 'source', -2, 4 ],
+      [ 'mediator', -2, -4 ],
+      [ 'destination', 5, -4 ],
+      [ 'destination', 5, 4 ]
+    ]).forEach(([ type, x, y ], i) => {
       this.#addShaft(i, x, y);
       this.#shafts[i].type = type;
-      this.#graph.addVertex(this.#shafts[i]);
+      this.#graph.addRotor(this.#shafts[i]);
     });
 
     this.#shafts[0].speed = 1;
 
-    [
-      { b: [g(5), s(3)], f: ['fill-5', 'fill-3'] },
-      { b: [g(3), g(5)], f: ['fill-2', 'fill-4'] },
-      { b: [g(3), g(2)], f: ['fill-1', 'fill-3'] },
-      { b: [g(2), g(4)], f: ['fill-4', 'fill-1'] },
-    ].forEach(({ b, f }, i) => {
-      this.#addGearBlock(i, b[0], b[1], f[0], f[1]);
+    (<[[GearShape, GearShape], [string, string]][]>[
+      [ [g(5), s(3)], ['fill-5', 'fill-3'] ],
+      [ [g(3), g(5)], ['fill-2', 'fill-4'] ],
+      [ [g(3), g(2)], ['fill-1', 'fill-3'] ],
+      [ [g(2), g(4)], ['fill-4', 'fill-1'] ],
+    ]).forEach(([ gb, fill ], i) => {
+      this.#addGearBlock(i, gb[0], gb[1], fill[0], fill[1]);
     });
 
     for (let i = 0; i < this.#shafts.length; ++i) {
@@ -481,10 +505,134 @@ export class GearBoxModel extends Disposable implements IViewModel {
     lower: GearShape,
     upper: GearShape,
     lowerClass: string,
-    upperClass: string,
+    upperClass: string
   ) {
     const gear = new GearBlock(this.#scene, lower, upper, lowerClass, upperClass, index);
     this.#gears.push(gear);
     gear.addToScene();
   }
+
+  #select(gear: GearBlock) {
+    if (this.#selected === gear) {
+      return;
+    }
+    this.#unselect();
+    this.#selected = gear;
+    this.#selected.select();
+  }
+
+  #unselect() {
+    if (this.#selected === undefined) {
+      return;
+    }
+    this.#selected.unselect();
+    this.#selected = undefined;
+  }
+
+  readonly #pick = (e: PointerEvent) => {
+    if (e.ctrlKey) {
+      return;
+    }
+    switch (e.button) {
+      case 0:
+        this.#gesture = Gesture.DRAG;
+        break;
+      case 2:
+        this.#gesture = Gesture.ROTATE;
+        break;
+      default:
+        return;
+    }
+
+    const offset = elementOffset(this.#element!, e);
+    const point = this.#camera.transform.transform(this.#controller.toCamera(e));
+    const g: { gear: GearBlock, p: number }[] = [];
+    this.#gears.forEach(gear => {
+      const p = gear.position;
+      const d = distance(p, point);
+      if (d < gear.radii[0] || d < gear.radii[1]) {
+        g.push({gear, p: Math.max(gear.radii[0] - d, gear.radii[1] - d)});
+      }
+    });
+
+    if (g.length === 0) {
+      return;
+    }
+
+    let index =  0;
+    let max = 0;
+    for (let i = 1; i < g.length; ++i) {
+      if (g[i].p > max) {
+        index = i;
+        max = g[i].p;
+      } 
+    }
+
+    e.stopPropagation();
+    this.#controller.disable();
+    (e.target as HTMLElement).setPointerCapture(e.pointerId);
+
+    this.#pickedOffset = offset;
+    this.#pickedPoint = point;
+    this.#pickedGear = g[index].gear;
+    this.#pickedPosition = this.#pickedGear.position;
+    this.#pickedRotation = this.#pickedGear.rotation;
+
+    this.#select(this.#pickedGear);
+  };
+
+  readonly #drag = (e: PointerEvent) => {
+    if (this.#gesture === Gesture.NONE) {
+      const offset = elementOffset(this.#element!, e);
+      const point = this.#camera.transform.transform(this.#controller.toCamera(e));
+      const g: { gear: GearBlock, p: number }[] = [];
+      this.#gears.forEach(gear => {
+        const d = distance(gear.position, point);
+        if (d < gear.radii[0] || d < gear.radii[1]) {
+          g.push({gear, p: Math.max(gear.radii[0] - d, gear.radii[1] - d)});
+        }
+      });
+  
+      if (g.length > 0) {
+        let index = 0;
+        let max = g[0].p;
+        for (let i = 1; i < g.length; ++i) {
+          if (g[i].p > max) {
+            index = i;
+            max = g[i].p;
+          } 
+        }
+        this.#select(g[index].gear);
+      } else {
+        this.#unselect();
+      }
+
+      return;
+    }
+
+    e.stopPropagation();
+    // if (!this.#pickedGear.element!.hasPointerCapture(e.pointerId)) {
+    //   this.#pickedGear.element!.setPointerCapture(e.pointerId);
+    // }
+
+    if (this.#gesture === Gesture.DRAG) {
+      const point = this.#camera.transform.transform(this.#controller.toCamera(e));
+      const delta = new Vector2(point.x - this.#pickedPoint.x, point.y - this.#pickedPoint.y);
+      this.#pickedGear.position = new Vector2(
+        this.#pickedPosition.x + delta.x,
+        this.#pickedPosition.y + delta.y
+      );
+    } else {
+      const offset = elementOffset(this.#element!, e);
+      const delta = (2 * Math.PI * (offset.x - this.#pickedOffset.x)) / this.#element!.clientWidth;
+      this.#pickedGear.rotation = mod(this.#pickedRotation + delta, 2 * Math.PI);
+    }
+  };
+
+  readonly #drop = (e: PointerEvent) => {
+    (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
+    this.#gesture = Gesture.NONE;
+    this.#unselect();
+    this.#controller.enable();
+  };
 }

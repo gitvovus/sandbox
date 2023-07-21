@@ -15,12 +15,12 @@ const root = ref<HTMLElement | null>(null);
 
 const checked = computed(() => {
   if (prop.toggle === undefined) {
-    return false;
+    return undefined;
   } else {
     if (prop.toggle === '') {
-      return prop.modelValue === true;
+      return prop.modelValue ? 'checked' : undefined;
     } else {
-      return prop.modelValue === prop.toggle[0];
+      return prop.modelValue === prop.toggle[0] ? 'checked' : undefined;
     }
   }
 });
@@ -64,9 +64,6 @@ function focus(e: FocusEvent) {
     opacity: 0.5;
     pointer-events: none;
   }
-  &.outline {
-    border-color: rgba($tint, 0.125);
-  }
   &:focus {
     border-color: rgba($tint, 0.25);
   }
@@ -74,7 +71,7 @@ function focus(e: FocusEvent) {
     background-color: rgba($tint, 0.125);
   }
   &:hover:not([checked]) {
-    background-color: rgba($tint, 0.0625);
+    background-color: rgba($tint, 0.125);
   }
   &:hover[checked] {
     background-color: rgba($tint, 0.375);
@@ -123,8 +120,8 @@ function focus(e: FocusEvent) {
   }
 }
 
-button {
-  background: none;
+.button {
+  background: rgba(white, 0.0625);
   border: 1px solid transparent;
   border-radius: 0.25em;
   color: inherit;

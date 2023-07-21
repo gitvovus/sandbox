@@ -5,54 +5,65 @@ defineProps<{ model: ReactiveModel }>();
 </script>
 
 <template>
-  <div class="view">
-    <div class="table">
-      <div class="column">
-        <div>
-          <ui-button @click="model.addItem()">+</ui-button>
-        </div>
-        <div class="h-separator"></div>
-        <div class="row" v-for="item in model.items" :key="item.key">
+  <div class="view p-1">
+    <div class="grid-1">
+      <div class="cell-header">
+        <ui-button class="button" @click="model.addItem()">+</ui-button>
+      </div>
+      <div class="cell-header">
+        <ui-button class="button" @click="model.addWord()">+</ui-button>
+      </div>
+      <div class="cell-content">
+        <div class="flex a-c" v-for="item in model.items" :key="item.key">
+          <div>
+            <ui-button class="button" @click="model.deleteItem(item)">x</ui-button>
+            <ui-button class="button" @click="model.replaceItem(item)">/</ui-button>
+          </div>
           <div>title: {{ item.title }}, count: {{ item.count }}</div>
-          <div>
-            <ui-button @click="model.deleteItem(item)">x</ui-button>
-            <ui-button @click="model.replaceItem(item)">/</ui-button>
-          </div>
         </div>
       </div>
-      <div class="column">
-        <div>
-          <ui-button @click="model.addWord()">+</ui-button>
-        </div>
-        <div class="h-separator"></div>
-        <div class="row" v-for="item in model.words" :key="item">
+      <div class="cell-content">
+        <div class="flex a-c" v-for="item in model.words" :key="item">
           <div>
-            {{ item }}
+            <ui-button class="button" @click="model.deleteWord(item)">x</ui-button>
+            <ui-button class="button" @click="model.replaceWord(item)">/</ui-button>
           </div>
-          <div>
-            <ui-button @click="model.deleteWord(item)">x</ui-button>
-            <ui-button @click="model.replaceWord(item)">/</ui-button>
-          </div>
+          <div>{{ item }}</div>
         </div>
       </div>
+    </div>
+    <div class="h-separator"></div>
+    <div>
+      <div>Radio (index): {{ model.radioIndex }}</div>
+      <ui-button
+        v-for="(item, i) in model.radioItems"
+        class="button round"
+        :toggle="[i]"
+        v-model="model.radioIndex"
+      >
+        {{ item.name }}
+      </ui-button>
     </div>
   </div>
 </template>
 
 <style lang="scss">
-.table {
-  display: flex;
-  flex-direction: row;
-  margin-top: 1em;
+.grid-1 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto 1fr;
+  height: 60%;
 }
-.column {
-  display: flex;
-  flex-grow: 1;
-  flex-direction: column;
+
+.cell-header {
+  background-color: var(--bg);
 }
-.row {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
+
+.cell-content {
+  overflow: auto;
+}
+
+.row-content {
+  margin: 0;
 }
 </style>
