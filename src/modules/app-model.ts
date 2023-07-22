@@ -26,7 +26,7 @@ export class AppModel extends ViewModel {
 
   #toolBarAlignment = ref(ToolBarAlignment.CENTER);
   #showDialog = ref(false);
-  #pageIndex = ref(1);
+  #pageIndex = ref(2);
 
   constructor() {
     super('app-view');

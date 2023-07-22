@@ -2,7 +2,6 @@ import { ref, watchEffect } from 'vue';
 
 import * as std from '@/lib/std';
 import * as svg from '@/lib/svg';
-import * as utils from '@/lib/utils';
 
 import { Camera } from '@/modules/svg/camera';
 
@@ -75,12 +74,12 @@ export class Controller extends std.Disposable {
   mount(element: HTMLElement) {
     this.#element = element;
     this.addDisposers(
-      utils.onElementEvent(element, 'dblclick', () => this.reset()),
-      utils.onElementEvent(element, 'pointerdown', this.#pick),
-      utils.onElementEvent(element, 'pointermove', this.#drag),
-      utils.onElementEvent(element, 'pointerup', this.#drop),
-      utils.onElementEvent(element, 'wheel', this.#wheel, { passive: false }),
-      utils.onAnimationFrame(this.#updateViewBox),
+      std.onElementEvent(element, 'dblclick', () => this.reset()),
+      std.onElementEvent(element, 'pointerdown', this.#pick),
+      std.onElementEvent(element, 'pointermove', this.#drag),
+      std.onElementEvent(element, 'pointerup', this.#drop),
+      std.onElementEvent(element, 'wheel', this.#wheel, { passive: false }),
+      std.onAnimationFrame(this.#updateViewBox),
       watchEffect(() => {
         this.#scene.attributes.transform = svg.toTransform(this.#camera.inverseTransform);
       }),
@@ -106,7 +105,7 @@ export class Controller extends std.Disposable {
   }
 
   toCamera(e: MouseEvent) {
-    const { x, y } = utils.elementOffset(this.#element!, e);
+    const { x, y } = std.elementOffset(this.#element!, e);
     return new std.Vector2(
       this.#viewBox.left + (this.#viewBox.width * x) / this.width,
       this.#viewBox.top + (this.#viewBox.height * y) / this.height,
@@ -152,7 +151,7 @@ export class Controller extends std.Disposable {
         return;
     }
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-    this.#pickedOffset = utils.elementOffset(this.#element!, e);
+    this.#pickedOffset = std.elementOffset(this.#element!, e);
     this.#pickedPosition = this.#camera.position;
     this.#pickedRotation = this.#camera.rotation;
     this.#pickedTransform = this.#camera.transform;
@@ -168,7 +167,7 @@ export class Controller extends std.Disposable {
       const delta = new std.Vector2(point.x - this.#pickedPoint.x, point.y - this.#pickedPoint.y);
       this.#camera.position = new std.Vector2(this.#pickedPosition.x - delta.x, this.#pickedPosition.y - delta.y);
     } else {
-      const offset = utils.elementOffset(this.#element!, e);
+      const offset = std.elementOffset(this.#element!, e);
       const delta = (2 * Math.PI * (offset.x - this.#pickedOffset.x)) / this.#element!.clientWidth;
       this.#camera.rotation = std.mod(this.#pickedRotation - delta, 2 * Math.PI);
     }
