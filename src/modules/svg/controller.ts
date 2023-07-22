@@ -1,6 +1,6 @@
 import { ref, watchEffect } from 'vue';
 
-import * as re from '@/lib/reactive'; 
+import * as re from '@/lib/reactive';
 import * as std from '@/lib/std';
 import * as svg from '@/lib/svg';
 

@@ -1,5 +1,5 @@
 import { type IViewModel } from '@/modules/view-model';
-import { type Attributes, ReactiveNode} from '@/lib/reactive';
+import { type Attributes, ReactiveNode } from '@/lib/reactive';
 import { Vector2, distance } from '@/lib/svg';
 import { Camera } from '@/modules/svg/camera';
 import { Controller, Gesture } from '@/modules/svg/controller';

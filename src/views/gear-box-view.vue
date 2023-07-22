@@ -16,7 +16,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="view" ref="root">
-    <ui-svg-element class="overlay" :model="model.root" />
+    <ui-generic class="overlay" :model="model.root" />
     <div class="anchor top left flex">
       <ui-button class="button" @click.stop="model.check()">check</ui-button>
       <ui-button class="button" @click.stop="model.startRotation()">animate</ui-button>

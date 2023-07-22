@@ -128,4 +128,3 @@ export class Disposable implements IDisposable {
     this.#disposers.push(...disposers);
   }
 }
-

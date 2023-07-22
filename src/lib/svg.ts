@@ -3,7 +3,6 @@ import * as std from '@/lib/std';
 
 export type ViewBox = { left: number; top: number; width: number; height: number };
 
-
 export type Vector2Elements = [number, number];
 export type Matrix2x3Elements = [number, number, number, number, number, number];
 
