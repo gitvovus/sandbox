@@ -1,31 +1,12 @@
-import { ref } from 'vue';
-
 import { type IViewModel } from '@/modules/view-model';
 import { Item, type Attributes } from '@/lib/svg';
 import { Camera } from '@/modules/svg/camera';
 import { Controller, Gesture } from '@/modules/svg/controller';
 import { Transformable } from '@/modules/svg/transformable';
-import {
-  gearData,
-  gear,
-  shaftBase,
-  shaft,
-  stub,
-  type ShapeOptions,
-  type ShapeType,
-} from '@/modules/gear-box/shapes';
+import { gearData, gear, shaftBase, shaft, stub, type ShapeOptions, type ShapeType } from '@/modules/gear-box/shapes';
 import { Scene } from '@/modules/gear-box/scene';
-import { elementOffset, onAnimationFrame, onElementEvent } from '@/lib/utils';
-import {
-  Disposable,
-  Vector2,
-  mod,
-  clamp,
-  distance,
-  squareLength,
-  squareDistance,
-  time,
-} from '@/lib/std';
+import { onAnimationFrame, onElementEvent } from '@/lib/utils';
+import { Disposable, Mouse, Vector2, clamp, distance, time } from '@/lib/std';
 import { Solver, type Actor, type Rotor, type RotorType } from '@/modules/gear-box/solver';
 import { v0, v2 } from '@/lib/helpers';
 import { InfoModel } from '@/modules/info-model';
@@ -38,8 +19,8 @@ function useT(item: Item, attributes?: Attributes) {
   return new Transformable('use', { href: `#${item.attributes.id}`, ...attributes });
 }
 
-function changeClasses(classes: string, { add = [], remove = [] }: { add?: string[], remove?: string[] }) {
-  const updated = classes.split(' ').filter(c => !add.includes(c) && !remove.includes(c));
+function changeClasses(classes: string, { add = [], remove = [] }: { add?: string[]; remove?: string[] }) {
+  const updated = classes.split(' ').filter((c) => !add.includes(c) && !remove.includes(c));
   updated.push(...add);
   return updated.join(' ');
 }
@@ -128,9 +109,9 @@ class Shaft implements Rotor {
     if ((this.#speed !== 0) !== (value !== 0)) {
       const a = this.#base.attributes;
       if (value !== 0) {
-        a.class = changeClasses(a.class!, { add: ['powered'], remove: ['unpowered']});
+        a.class = changeClasses(a.class!, { add: ['powered'], remove: ['unpowered'] });
       } else {
-        a.class = changeClasses(a.class!, { add: ['unpowered'], remove: ['powered']});
+        a.class = changeClasses(a.class!, { add: ['unpowered'], remove: ['powered'] });
       }
     }
     this.#speed = value;
@@ -166,21 +147,14 @@ class Shaft implements Rotor {
 class Gear implements Actor {
   readonly #scene: Scene;
   #refs: Transformable[];
-  #visuals: Item[] = [];
+  #visuals: Item[];
 
   // Actor
   #radii: [number, number];
   #types: [ShapeType, ShapeType];
   #rotor?: Rotor;
 
-  constructor(
-    scene: Scene,
-    lower: Shape,
-    upper: Shape,
-    lowerFill: string,
-    upperFill: string,
-    index: number
-  ) {
+  constructor(scene: Scene, lower: Shape, upper: Shape, lowerFill: string, upperFill: string, index: number) {
     this.#scene = scene;
 
     this.#refs = [
@@ -459,7 +433,7 @@ export class GearBoxModel extends Disposable implements IViewModel {
       onElementEvent(element, 'pointerup', this.#drop),
       () => {
         this.#controller.dispose();
-      }
+      },
     );
     this.#controller.mount(element);
   }
@@ -492,12 +466,12 @@ export class GearBoxModel extends Disposable implements IViewModel {
           thickness: 0.2 + 0.01 * i,
           spokeThickness: 0.2 + 0.01 * i,
           spokes: 6,
-        })
+        }),
       );
     });
 
     [
-      new Shape('gear', { radius: 2, innerRadius: 0.90, offset: 0, spokes: 4 }),
+      new Shape('gear', { radius: 2, innerRadius: 0.9, offset: 0, spokes: 4 }),
       new Shape('gear', { radius: 3, innerRadius: 0.84, offset: Math.PI / 6, spokes: 3 }),
       new Shape('gear', { radius: 4, innerRadius: 0.78, offset: Math.PI / 4, spokes: 4 }),
       new Shape('gear', { radius: 5, innerRadius: 0.72, offset: Math.PI / 10, spokes: 5 }),
@@ -622,7 +596,7 @@ export class GearBoxModel extends Disposable implements IViewModel {
   }
 
   readonly #pick = (e: PointerEvent) => {
-    if (e.button !== 0 && e.button !== 2) return;
+    if (e.button !== Mouse.LEFT && e.button !== Mouse.RIGHT) return;
 
     const gear = this.#findGear(e);
     if (!gear) return;
@@ -630,7 +604,7 @@ export class GearBoxModel extends Disposable implements IViewModel {
     e.stopPropagation();
     e.stopImmediatePropagation();
 
-    if (e.button === 2) {
+    if (e.button === Mouse.RIGHT) {
       gear.flip();
       if (gear.rotor) this.check();
       return;
@@ -660,10 +634,7 @@ export class GearBoxModel extends Disposable implements IViewModel {
     // drag
     const point = this.#camera.transform.transform(this.#controller.toCamera(e));
     const delta = new Vector2(point.x - this.#pickedPoint.x, point.y - this.#pickedPoint.y);
-    const position = new Vector2(
-      this.#pickedPosition.x + delta.x,
-      this.#pickedPosition.y + delta.y
-    );
+    const position = new Vector2(this.#pickedPosition.x + delta.x, this.#pickedPosition.y + delta.y);
     const shaft = this.#findShaft(position, 0.5);
 
     this.info.data.pos = v2(position);

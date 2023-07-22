@@ -2,14 +2,7 @@
 import { type ControlsModel } from '@/modules/controls-model';
 defineProps<{ model: ControlsModel }>();
 
-const colors = [
-  'c-001',
-  'c-010',
-  'c-011',
-  'c-100',
-  'c-101',
-  'c-110',
-]; 
+const colors = ['c-001', 'c-010', 'c-011', 'c-100', 'c-101', 'c-110'];
 </script>
 
 <template>
@@ -61,7 +54,6 @@ $s: 120px;
 .c-110 {
   background-color: #ffff00;
 }
-
 
 .cv-grid {
   display: grid;

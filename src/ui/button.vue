@@ -129,8 +129,7 @@ function focus(e: FocusEvent) {
   user-select: none;
   margin: 0.375em;
   padding: 0.5em 0.75em;
-  transition: background-color $transition, border-color $transition, box-shadow $transition,
-    text-shadow $transition;
+  transition: background-color $transition, border-color $transition, box-shadow $transition, text-shadow $transition;
 
   @include tint(white);
 

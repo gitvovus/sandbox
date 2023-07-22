@@ -106,10 +106,7 @@ export class Item {
   }
 
   findByClass(name: string): Item | undefined {
-    if (
-      this.attributes.class !== undefined &&
-      (this.attributes.class as string).split(' ').includes(name)
-    ) {
+    if (this.attributes.class !== undefined && (this.attributes.class as string).split(' ').includes(name)) {
       return this;
     }
     for (const item of this.items) {
@@ -124,7 +121,7 @@ export class Item {
   // TODO: add event listener options
   on<EventType extends keyof SVGElementEventMap>(
     event: EventType,
-    listener: (this: SVGElement, e: SVGElementEventMap[EventType]) => void
+    listener: (this: SVGElement, e: SVGElementEventMap[EventType]) => void,
   ) {
     if (!this.#events.has(event)) {
       this.#events.set(event, []);
@@ -141,12 +138,12 @@ export class Item {
 
   off<EventType extends keyof SVGElementEventMap>(
     event?: EventType,
-    listener?: (this: SVGElement, e: SVGElementEventMap[EventType]) => void
+    listener?: (this: SVGElement, e: SVGElementEventMap[EventType]) => void,
   ) {
     if (!event) {
       if (this.#element) {
         this.#events.forEach((listeners, event) =>
-          listeners.forEach((listener) => this.#element!.removeEventListener(event, listener))
+          listeners.forEach((listener) => this.#element!.removeEventListener(event, listener)),
         );
       }
       this.#events.clear();
@@ -177,9 +174,7 @@ export class Item {
     this.#element = el;
     if (this.#element) {
       this.#events.forEach((listeners, event) =>
-        listeners.forEach((listener) =>
-          this.#element!.addEventListener(event, listener, { passive: false })
-        )
+        listeners.forEach((listener) => this.#element!.addEventListener(event, listener, { passive: false })),
       );
     }
   }
@@ -187,7 +182,7 @@ export class Item {
   unmount() {
     if (this.#element) {
       this.#events.forEach((listeners, event) =>
-        listeners.forEach((listener) => this.#element!.removeEventListener(event, listener))
+        listeners.forEach((listener) => this.#element!.removeEventListener(event, listener)),
       );
       this.#element = undefined;
     }

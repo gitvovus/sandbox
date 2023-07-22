@@ -7,11 +7,7 @@ defineProps<{ model: AppModel }>();
 <template>
   <div class="app">
     <transition>
-      <component
-        v-if="model.activePage !== undefined"
-        :is="model.activePage.component"
-        :model="model.activePage"
-      />
+      <component v-if="model.activePage !== undefined" :is="model.activePage.component" :model="model.activePage" />
     </transition>
     <ui-dialog :class="['effect', { show: model.showDialog }]" :width="600" :height="720">
       <div class="w-panel">
@@ -23,9 +19,7 @@ defineProps<{ model: AppModel }>();
       </div>
     </ui-dialog>
     <div class="app-bar">
-      <div
-        :class="['spacer', { collapsed: model.toolBarAlignment === ToolBarAlignment.LEFT }]"
-      ></div>
+      <div :class="['spacer', { collapsed: model.toolBarAlignment === ToolBarAlignment.LEFT }]"></div>
       <div class="app-buttons">
         <ui-button
           no-focus
@@ -58,9 +52,7 @@ defineProps<{ model: AppModel }>();
           <div class="icon icon-gt"></div>
         </ui-button>
       </div>
-      <div
-        :class="['spacer', { collapsed: model.toolBarAlignment === ToolBarAlignment.RIGHT }]"
-      ></div>
+      <div :class="['spacer', { collapsed: model.toolBarAlignment === ToolBarAlignment.RIGHT }]"></div>
     </div>
   </div>
 </template>

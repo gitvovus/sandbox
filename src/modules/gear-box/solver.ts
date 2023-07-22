@@ -25,13 +25,7 @@ function dist(a: Rotor, b: Rotor) {
   return distance(a.position, b.position);
 }
 
-export type FailureType =
-  | 'bad data'
-  | 'no source'
-  | 'no destination'
-  | 'collision'
-  | 'block'
-  | 'not finished';
+export type FailureType = 'bad data' | 'no source' | 'no destination' | 'collision' | 'block' | 'not finished';
 
 type Failure = {
   type: FailureType;
@@ -75,9 +69,7 @@ export class Solver {
       return;
     }
 
-    const data = new Map<Rotor, SolverData>([
-      [source, { speed: source.speed, rotation: source.rotation, source }],
-    ]);
+    const data = new Map<Rotor, SolverData>([[source, { speed: source.speed, rotation: source.rotation, source }]]);
     let current: Set<Rotor>;
     let next = new Set<Rotor>([source]);
 
@@ -117,11 +109,7 @@ export class Solver {
           // speeds at contact points
           const speeds = [0, 0];
           gearDistances.forEach((distance, index) => {
-            if (
-              Math.abs(distance - abDistance) < eps &&
-              at[index] === 'gear' &&
-              bt[index] === 'gear'
-            ) {
+            if (Math.abs(distance - abDistance) < eps && at[index] === 'gear' && bt[index] === 'gear') {
               speeds[index] = (-aData.speed * ar[index]) / br[index];
             }
           });

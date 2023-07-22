@@ -135,17 +135,9 @@ export class Controller {
 
     this.#cc.element.addEventListener('dblclick', this.#dblClick);
 
-    [
-      this.#nw,
-      this.#nn,
-      this.#ne,
-      this.#ww,
-      this.#cc,
-      this.#ee,
-      this.#sw,
-      this.#ss,
-      this.#se,
-    ].forEach((item) => item.element.addEventListener('pointerdown', item.pick));
+    [this.#nw, this.#nn, this.#ne, this.#ww, this.#cc, this.#ee, this.#sw, this.#ss, this.#se].forEach((item) =>
+      item.element.addEventListener('pointerdown', item.pick),
+    );
 
     this.center();
   }
@@ -153,17 +145,9 @@ export class Controller {
   unmount() {
     this.#cc.element.removeEventListener('dblclick', this.#dblClick);
 
-    [
-      this.#nw,
-      this.#nn,
-      this.#ne,
-      this.#ww,
-      this.#cc,
-      this.#ee,
-      this.#sw,
-      this.#ss,
-      this.#se,
-    ].forEach((item) => item.element.removeEventListener('pointerdown', item.pick));
+    [this.#nw, this.#nn, this.#ne, this.#ww, this.#cc, this.#ee, this.#sw, this.#ss, this.#se].forEach((item) =>
+      item.element.removeEventListener('pointerdown', item.pick),
+    );
   }
 
   center() {

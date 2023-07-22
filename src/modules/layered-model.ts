@@ -73,8 +73,8 @@ export class LayeredModel extends ViewModel {
           stroke: '#00000040',
           'stroke-width': 1,
           'vector-effect': 'non-scaling-stroke',
-        })
-      )
+        }),
+      ),
     );
   }
 }

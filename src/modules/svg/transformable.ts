@@ -14,9 +14,7 @@ export class Transformable extends svg.Item implements std.IDisposable {
 
   constructor(tag: string, data?: svg.Attributes) {
     super(tag, data);
-    this.#disposer.addDisposers(
-      watchEffect(() => (this.attributes.transform = svg.toTransform(this.transform)))
-    );
+    this.#disposer.addDisposers(watchEffect(() => (this.attributes.transform = svg.toTransform(this.transform))));
   }
 
   dispose() {

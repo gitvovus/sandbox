@@ -39,6 +39,14 @@ export interface Point {
   y: number;
 }
 
+export enum Mouse {
+  LEFT = 0,
+  MIDDLE = 1,
+  RIGHT = 2,
+  BACK = 3,
+  FORWARD = 4,
+}
+
 export type Vector2Elements = [number, number];
 export type Matrix2x3Elements = [number, number, number, number, number, number];
 
@@ -112,7 +120,7 @@ export class Matrix2x3 {
       -m[2] * k,
       m[0] * k,
       (m[2] * m[5] - m[3] * m[4]) * k,
-      (m[1] * m[4] - m[0] * m[5]) * k
+      (m[1] * m[4] - m[0] * m[5]) * k,
     );
   }
 
@@ -135,7 +143,7 @@ export class Matrix2x3 {
       a[0] * b[2] + a[2] * b[3],
       a[1] * b[2] + a[3] * b[3],
       a[0] * b[4] + a[2] * b[5] + a[4],
-      a[1] * b[4] + a[3] * b[5] + a[5]
+      a[1] * b[4] + a[3] * b[5] + a[5],
     );
   }
 

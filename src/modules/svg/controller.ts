@@ -86,7 +86,7 @@ export class Controller extends std.Disposable {
       }),
       () => {
         this.#element = undefined;
-      }
+      },
     );
   }
 
@@ -109,7 +109,7 @@ export class Controller extends std.Disposable {
     const { x, y } = utils.elementOffset(this.#element!, e);
     return new std.Vector2(
       this.#viewBox.left + (this.#viewBox.width * x) / this.width,
-      this.#viewBox.top + (this.#viewBox.height * y) / this.height
+      this.#viewBox.top + (this.#viewBox.height * y) / this.height,
     );
   }
 
@@ -142,10 +142,10 @@ export class Controller extends std.Disposable {
 
   readonly #pick = (e: PointerEvent) => {
     switch (e.button) {
-      case 0:
+      case std.Mouse.LEFT:
         this.#gesture = Gesture.DRAG;
         break;
-      case 2:
+      case std.Mouse.RIGHT:
         this.#gesture = Gesture.ROTATE;
         break;
       default:
@@ -166,10 +166,7 @@ export class Controller extends std.Disposable {
     if (this.#gesture === Gesture.DRAG) {
       const point = this.#pickedTransform.transform(this.toCamera(e));
       const delta = new std.Vector2(point.x - this.#pickedPoint.x, point.y - this.#pickedPoint.y);
-      this.#camera.position = new std.Vector2(
-        this.#pickedPosition.x - delta.x,
-        this.#pickedPosition.y - delta.y
-      );
+      this.#camera.position = new std.Vector2(this.#pickedPosition.x - delta.x, this.#pickedPosition.y - delta.y);
     } else {
       const offset = utils.elementOffset(this.#element!, e);
       const delta = (2 * Math.PI * (offset.x - this.#pickedOffset.x)) / this.#element!.clientWidth;
@@ -186,8 +183,7 @@ export class Controller extends std.Disposable {
     e.preventDefault();
 
     const k = e.deltaY < 0 ? 7 / 8 : 8 / 7;
-    const zoom =
-      std.clamp(Math.abs(this.#camera.scale.x * k), 0.25, 4) / Math.abs(this.#camera.scale.x);
+    const zoom = std.clamp(Math.abs(this.#camera.scale.x * k), 0.25, 4) / Math.abs(this.#camera.scale.x);
     const newScale = new std.Vector2(this.#camera.scale.x * zoom, this.#camera.scale.y * zoom);
 
     const newCamera = new Camera({
@@ -202,7 +198,7 @@ export class Controller extends std.Disposable {
 
     this.#camera.position = new std.Vector2(
       this.#camera.position.x + oldPos.x - newPos.x,
-      this.#camera.position.y + oldPos.y - newPos.y
+      this.#camera.position.y + oldPos.y - newPos.y,
     );
     this.#camera.scale = newScale;
   };

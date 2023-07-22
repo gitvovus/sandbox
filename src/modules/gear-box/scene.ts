@@ -109,9 +109,7 @@ export class Scene {
     }
 
     for (let i = 0; i < index; ++i) {
-      this.#masks[i].items[0].add(
-        this.#sameRef(item, { x: this.#ox * (index - i), y: this.#oy * (index - i) })
-      );
+      this.#masks[i].items[0].add(this.#sameRef(item, { x: this.#ox * (index - i), y: this.#oy * (index - i) }));
     }
   }
 

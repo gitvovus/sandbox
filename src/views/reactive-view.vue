@@ -35,12 +35,7 @@ defineProps<{ model: ReactiveModel }>();
     <div class="h-separator"></div>
     <div>
       <div>Radio (index): {{ model.radioIndex }}</div>
-      <ui-button
-        v-for="(item, i) in model.radioItems"
-        class="button round"
-        :toggle="[i]"
-        v-model="model.radioIndex"
-      >
+      <ui-button v-for="(item, i) in model.radioItems" class="button round" :toggle="[i]" v-model="model.radioIndex">
         {{ item.name }}
       </ui-button>
     </div>

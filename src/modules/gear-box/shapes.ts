@@ -13,7 +13,7 @@ export type ShapeOptions = {
   spokes?: number;
   toothHeight?: number;
   shaftRadius?: number;
-  teethPerUnitRadius?: number,
+  teethPerUnitRadius?: number;
   margin?: number;
   shaftMargin?: number;
 };
@@ -64,7 +64,7 @@ function cuts(data: ShapeData) {
       `L${x3(r3, phi + d2)} ${y3(r3, phi + d2)}`,
       `A${f3(r3)} ${f3(r3)} 0 0 1 ${x3(r3, phi + d3)} ${y3(r3, phi + d3)}`,
       `L${x3(r0, phi + d1)} ${y3(r0, phi + d1)}`,
-      `A${f3(r0)} ${f3(r0)} 0 0 0 ${x3(r0, phi + d0)} ${y3(r0, phi + d0)}z`
+      `A${f3(r0)} ${f3(r0)} 0 0 0 ${x3(r0, phi + d0)} ${y3(r0, phi + d0)}z`,
     );
   }
 
@@ -138,7 +138,7 @@ export function gear(gearOptions: ShapeOptions) {
       `A${rh1} ${rh1} 0 0 0 ${x3(r1, phi + a0)} ${y3(r1, phi + a0)}`,
       `A${rh2} ${rh2} 0 0 1 ${x3(r2, phi + a1)} ${y3(r2, phi + a1)}`,
       `A${rh1} ${rh1} 0 0 1 ${x3(r2, phi + a2)} ${y3(r2, phi + a2)}`,
-      `A${rh2} ${rh2} 0 0 1 ${x3(r1, phi + a3)} ${y3(r1, phi + a3)}`
+      `A${rh2} ${rh2} 0 0 1 ${x3(r1, phi + a3)} ${y3(r1, phi + a3)}`,
     );
   }
   path.push('z');

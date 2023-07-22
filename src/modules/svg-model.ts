@@ -9,7 +9,7 @@ class PathBuilder {
   #f: (x: number) => string;
   #points = 0;
 
-  constructor(decimalPoint = 3){
+  constructor(decimalPoint = 3) {
     this.#f = (x: number) => x.toFixed(decimalPoint);
   }
 
@@ -41,8 +41,6 @@ function tri() {
   return path.M(2, 0, -1, 1, -1, -1).get();
 }
 
-
-
 export class SvgModel extends ViewModel {
   root = new Item('svg');
   content = new Item('g');
@@ -73,7 +71,5 @@ export class SvgModel extends ViewModel {
 
   test() {}
 
-  #frame(dt: number) {
-
-  }
+  #frame(dt: number) {}
 }

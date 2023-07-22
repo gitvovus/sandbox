@@ -63,23 +63,20 @@ export class ReactiveModel extends ViewModel {
   deleteItem(toDelete: ReactiveItem) {
     this.items.splice(
       this.items.findIndex((item) => item === toDelete),
-      1
+      1,
     );
   }
 
   deleteWord(toDelete: string) {
     this.words.splice(
       this.words.findIndex((item) => item === toDelete),
-      1
+      1,
     );
   }
 
   replaceItem(toReplace: ReactiveItem) {
     // this.items.splice(this.items.findIndex(item => item === toReplace), 1, new ReactiveItem(`item #${this.#gen}`, this.#gen));
-    this.items[this.items.findIndex((item) => item === toReplace)] = new ReactiveItem(
-      `item #${this.#gen}`,
-      this.#gen
-    );
+    this.items[this.items.findIndex((item) => item === toReplace)] = new ReactiveItem(`item #${this.#gen}`, this.#gen);
     ++this.#gen;
   }
 

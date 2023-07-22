@@ -9,7 +9,7 @@ export function onElementEvent<K extends keyof HTMLElementEventMap>(
   element: HTMLElement,
   type: K,
   handler: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any,
-  options?: boolean | AddEventListenerOptions
+  options?: boolean | AddEventListenerOptions,
 ) {
   element.addEventListener(type, handler, options);
   return () => element.removeEventListener(type, handler, options);
@@ -25,7 +25,7 @@ export function onElementEvent<K extends keyof HTMLElementEventMap>(
 export function onWindowEvent<K extends keyof WindowEventMap>(
   type: K,
   handler: (this: Window, ev: WindowEventMap[K]) => any,
-  options?: boolean | AddEventListenerOptions
+  options?: boolean | AddEventListenerOptions,
 ) {
   window.addEventListener(type, handler, options);
   return () => window.removeEventListener(type, handler, options);

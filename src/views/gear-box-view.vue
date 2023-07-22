@@ -61,7 +61,7 @@ $gear-selected: drop-shadow(0 0 0.1px rgba(black, 1));
 .shaft {
   filter: $shaft-shadow;
   &.source {
-  fill: #209010;
+    fill: #209010;
   }
   &.mediator {
     fill: #e0c000;
@@ -70,7 +70,6 @@ $gear-selected: drop-shadow(0 0 0.1px rgba(black, 1));
     fill: #ff3020;
   }
 }
-
 
 .gear,
 .stub {
