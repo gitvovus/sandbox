@@ -47,6 +47,10 @@ type SolverData = {
 export class Solver {
   readonly rotors: Rotor[] = [];
 
+  clear() {
+    this.rotors.length = 0;
+  }
+
   addRotor(rotor: Rotor) {
     this.rotors.push(rotor);
   }
@@ -90,7 +94,7 @@ export class Solver {
         const at: [ShapeType, ShapeType] = a.actor ? [...a.actor.types] : ['stub', 'stub'];
         const aData = data.get(a)!;
 
-        this.rotors.forEach(b => {
+        this.rotors.forEach((b) => {
           if (a === b || aData.source === b || data.get(b)?.source === a) return;
 
           const br = b.actor ? [...b.actor.radii] : [1, 1];
@@ -180,7 +184,7 @@ export class Solver {
       rotor.rotation = rotorData.rotation;
     });
 
-    this.rotors.forEach(rotor => {
+    this.rotors.forEach((rotor) => {
       if (!data.has(rotor)) rotor.speed = 0;
     });
   }

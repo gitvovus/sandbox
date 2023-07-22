@@ -16,13 +16,8 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="view" ref="root">
-    <div class="svg-view">
-      <svg viewBox="-10 -10 20 20">
-        <circle class="cir-ora" cx="0" cy="0" r="1" />
-      </svg>
-    </div>
-    <!-- <ui-svg-element class="overlay" :model="model.root" /> -->
-    <div class="top-left">
+    <ui-svg-element class="overlay" :model="model.root" />
+    <div class="anchor top left">
       <ui-button class="button" @click.stop="model.test()">Test</ui-button>
     </div>
   </div>
@@ -37,7 +32,7 @@ onBeforeUnmount(() => {
   align-items: center;
 }
 
-.cir-ora {
+.morph {
   fill: orange;
 }
 </style>

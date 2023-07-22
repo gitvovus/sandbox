@@ -1,3 +1,5 @@
+import { f3, x3, y3 } from '@/lib/helpers';
+
 export const teethPerUnitRadius = 8;
 
 export type ShapeType = 'gear' | 'stub';
@@ -11,7 +13,9 @@ export type ShapeOptions = {
   spokes?: number;
   toothHeight?: number;
   shaftRadius?: number;
+  teethPerUnitRadius?: number,
   margin?: number;
+  shaftMargin?: number;
 };
 
 export type ShapeData = Required<ShapeOptions>;
@@ -25,17 +29,14 @@ const defaultShape: ShapeData = {
   spokes: 3,
   toothHeight: 0.5,
   shaftRadius: 0.375,
+  teethPerUnitRadius,
   margin: 0.1,
+  shaftMargin: 0.06,
 };
 
 export function gearData(options: ShapeOptions) {
   return Object.assign({ ...defaultShape }, options);
 }
-
-// helpers to format text inside path data
-const f = (n: number) => n.toFixed(3);
-const x = (r: number, a: number) => f(r * Math.cos(a));
-const y = (r: number, a: number) => f(r * Math.sin(a));
 
 function cuts(data: ShapeData) {
   const ir = data.innerRadius;
@@ -59,30 +60,37 @@ function cuts(data: ShapeData) {
   for (let i = 0; i < s; ++i) {
     const phi = i * di + off;
     path.push(
-      `M${x(r0, phi + d0)} ${y(r0, phi + d0)}`,
-      `L${x(r3, phi + d2)} ${y(r3, phi + d2)}`,
-      `A${f(r3)} ${f(r3)} 0 0 1 ${x(r3, phi + d3)} ${y(r3, phi + d3)}`,
-      `L${x(r0, phi + d1)} ${y(r0, phi + d1)}`,
-      `A${f(r0)} ${f(r0)} 0 0 0 ${x(r0, phi + d0)} ${y(r0, phi + d0)}z`
+      `M${x3(r0, phi + d0)} ${y3(r0, phi + d0)}`,
+      `L${x3(r3, phi + d2)} ${y3(r3, phi + d2)}`,
+      `A${f3(r3)} ${f3(r3)} 0 0 1 ${x3(r3, phi + d3)} ${y3(r3, phi + d3)}`,
+      `L${x3(r0, phi + d1)} ${y3(r0, phi + d1)}`,
+      `A${f3(r0)} ${f3(r0)} 0 0 0 ${x3(r0, phi + d0)} ${y3(r0, phi + d0)}z`
     );
   }
 
   return path.join('');
 }
 
-export function shaftBase(radius: number = 1) {
-  const r = f(radius);
+export function shaftBase(radius?: number) {
+  const r = f3(radius || defaultShape.shaftRadius * 2);
   return `M${r} 0A${r} ${r} 0 0 1 -${r} 0A${r} ${r} 0 0 1 ${r} 0`;
 }
 
 export function shaft(radius?: number) {
   radius = radius || defaultShape.shaftRadius;
   const n = 6;
-  const d = (2 * Math.PI) / n;
-  const path = [`M${f(radius)} 0`];
-  for (let i = 1; i < n; ++i) {
-    const a = d * i;
-    path.push(` ${x(radius, a)} ${y(radius, a)}`);
+  const d = Math.PI / n;
+  const d0 = -d / 2;
+  const path = [`M${x3(radius, d0)} ${y3(radius, d0)}`];
+  const r0 = radius / 3;
+  const r1 = radius / 2;
+  for (let i = 0; i < n; ++i) {
+    const a0 = d0 + 2 * d * i + d;
+    const a1 = a0 + d;
+    path.push(
+      `A${f3(r0)} ${f3(r0)} 0 0 1 ${x3(radius, a0)} ${y3(radius, a0)}`,
+      `A${f3(r1)} ${f3(r1)} 0 0 0 ${x3(radius, a1)} ${y3(radius, a1)}`,
+    );
   }
   path.push('z');
   return path.join('');
@@ -93,13 +101,13 @@ export function stub(gearOptions: ShapeOptions) {
 
   const r0 = data.radius - 0.5 * data.toothHeight;
   const sr = data.shaftRadius;
-  const r = f(r0);
+  const r = f3(r0);
 
   const path = [`M${r} 0A${r} ${r} 0 0 1 -${r} 0A${r} ${r} 0 0 1 ${r} 0`];
   if (r0 > sr + 0.1) {
     path.push(cuts(data));
   }
-  path.push(shaft(sr + data.margin));
+  path.push(shaft(sr + data.shaftMargin));
 
   return path.join('');
 }
@@ -119,21 +127,24 @@ export function gear(gearOptions: ShapeOptions) {
   const r1 = data.radius - 0.5 * h;
   const r2 = r1 + (1 - data.margin) * h;
 
-  const path = [`M${x(r1, -a0)} ${y(r1, -a0)}`];
+  const rh1 = f3(h);
+  const rh2 = f3(2 * h);
+
+  const path = [`M${x3(r1, -a0)} ${y3(r1, -a0)}`];
 
   for (let i = 0; i < n; ++i) {
     const phi = i * da;
     path.push(
-      `A0.5 0.5 0 0 0 ${x(r1, phi + a0)} ${y(r1, phi + a0)}`,
-      `A1 1 0 0 1 ${x(r2, phi + a1)} ${y(r2, phi + a1)}`,
-      `A0.5 0.5 0 0 1 ${x(r2, phi + a2)} ${y(r2, phi + a2)}`,
-      `A1 1 0 0 1 ${x(r1, phi + a3)} ${y(r1, phi + a3)}`
+      `A${rh1} ${rh1} 0 0 0 ${x3(r1, phi + a0)} ${y3(r1, phi + a0)}`,
+      `A${rh2} ${rh2} 0 0 1 ${x3(r2, phi + a1)} ${y3(r2, phi + a1)}`,
+      `A${rh1} ${rh1} 0 0 1 ${x3(r2, phi + a2)} ${y3(r2, phi + a2)}`,
+      `A${rh2} ${rh2} 0 0 1 ${x3(r1, phi + a3)} ${y3(r1, phi + a3)}`
     );
   }
   path.push('z');
 
   path.push(cuts(data));
-  path.push(shaft(sr + data.margin));
+  path.push(shaft(sr + data.shaftMargin));
 
   return path.join('');
 }

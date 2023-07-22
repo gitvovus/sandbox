@@ -1,5 +1,3 @@
-const { x = 5, y } = { x: 2, y: 2 };
-
 // // GearBoxModel
 // {
 

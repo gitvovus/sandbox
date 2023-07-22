@@ -5,6 +5,10 @@ export function assert(assertion: any, message?: any) {
   }
 }
 
+export function time() {
+  return 0.001 * Date.now();
+}
+
 export function clamp(x: number, min: number, max: number) {
   return Math.min(Math.max(x, min), max);
 }

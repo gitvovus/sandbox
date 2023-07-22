@@ -17,63 +17,87 @@ onBeforeUnmount(() => {
 <template>
   <div class="view" ref="root">
     <ui-svg-element class="overlay" :model="model.root" />
-    <div class="top-left">
+    <div class="anchor top left flex">
       <ui-button class="button" @click.stop="model.check()">check</ui-button>
       <ui-button class="button" @click.stop="model.startRotation()">animate</ui-button>
       <ui-button class="button" @click.stop="model.stopRotation()">stop</ui-button>
     </div>
+    <!-- <info-view class="debug anchor bottom left" :model="model.info" /> -->
     <slot />
   </div>
 </template>
 
 <style lang="scss">
-.shaft {
-  filter: drop-shadow(0 0 0.1px rgba(black, 0.5));
-  &.powered {
-    filter: drop-shadow(0 0 0.3px #30c000);
-  }
-  &.unpowered {
-    filter: drop-shadow(0 0 0.3px #ff3000);
-  }
+.flex-col {
+  display: flex;
+  flex-direction: column;
 }
 
-$shadow: drop-shadow(0 0 0.04px rgba(black, 0.5));
-$selected-filter: drop-shadow(0 0 0.1px rgba(black, 1));
+.debug {
+  background: rgba(black, 0.1);
+  border-radius: 0.5em;
+  margin: 0.25em;
+  padding: 0.5em;
+}
+
+$shape-shadow: drop-shadow(0 0 0.04px rgba(black, 0.5));
+$shaft-shadow: drop-shadow(0 0 0.1px black);
+$gear-selected: drop-shadow(0 0 0.1px rgba(black, 1));
 
 .shaft-base {
-  fill: #304050;
-  filter: $shadow;
+  fill: #506070;
+  filter: $shape-shadow;
+  &.powered {
+    filter: drop-shadow(0 0 1px #40ff00) $shape-shadow;
+  }
+  &.unpowered {
+    filter: drop-shadow(0 0 1px rgba(white, 0.75)) $shape-shadow;
+  }
+  &.unpowered.destination {
+    filter: drop-shadow(0 0 1px #ff3000) $shape-shadow;
+  }
 }
 
-.no-mouse {
-  pointer-events: none;
+.shaft {
+  filter: $shaft-shadow;
+  &.source {
+  fill: #209010;
+  }
+  &.mediator {
+    fill: #e0c000;
+  }
+  &.destination {
+    fill: #ff3020;
+  }
 }
+
 
 .gear,
 .stub {
-  filter: $shadow;
+  filter: $shape-shadow;
   &.selected {
-    opacity: 0.5;
-    filter: $selected-filter;
+    opacity: 0.6;
+    filter: $gear-selected;
   }
+  transition: all 0.15s ease-in-out;
 }
 
 .fill-0 {
-  fill: #ff3020;
+  fill: #c0a010;
 }
 .fill-1 {
-  fill: #4070a0;
+  fill: #4080a0;
 }
 .fill-2 {
-  fill: #c01028;
+  fill: #c02030;
 }
 .fill-3 {
-  fill: #209000;
+  fill: #30a020;
 }
 .fill-4 {
-  fill: #0050e0;
+  fill: #0050f0;
 }
 .fill-5 {
-  fill: #c06000;
+  fill: #d06000;
 }
 </style>

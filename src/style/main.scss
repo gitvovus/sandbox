@@ -130,10 +130,24 @@ p {
   padding: 0 $w-margin;
 }
 
-.top-left {
+.anchor {
   position: absolute;
+}
+
+.left {
   left: 0;
+}
+
+.right {
+  right: 0;
+}
+
+.top {
   top: 0;
+}
+
+.bottom {
+  bottom: 0;
 }
 
 .flex {
@@ -162,4 +176,8 @@ p {
 
 .p-1 {
   padding: 1em;
+}
+
+.no-mouse {
+  pointer-events: none;
 }

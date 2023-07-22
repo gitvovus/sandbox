@@ -1,3 +1,5 @@
+import { ref } from 'vue';
+
 import { type IViewModel } from '@/modules/view-model';
 import { Item, type Attributes } from '@/lib/svg';
 import { Camera } from '@/modules/svg/camera';
@@ -14,8 +16,19 @@ import {
 } from '@/modules/gear-box/shapes';
 import { Scene } from '@/modules/gear-box/scene';
 import { elementOffset, onAnimationFrame, onElementEvent } from '@/lib/utils';
-import { Disposable, Vector2, mod, clamp, distance, squareLength, squareDistance } from '@/lib/std';
+import {
+  Disposable,
+  Vector2,
+  mod,
+  clamp,
+  distance,
+  squareLength,
+  squareDistance,
+  time,
+} from '@/lib/std';
 import { Solver, type Actor, type Rotor, type RotorType } from '@/modules/gear-box/solver';
+import { v0, v2 } from '@/lib/helpers';
+import { InfoModel } from '@/modules/info-model';
 
 function use(item: Item, attributes?: Attributes) {
   return new Item('use', { href: `#${item.attributes.id}`, ...attributes });
@@ -25,8 +38,34 @@ function useT(item: Item, attributes?: Attributes) {
   return new Transformable('use', { href: `#${item.attributes.id}`, ...attributes });
 }
 
-function time() {
-  return Date.now() * 0.001;
+function changeClasses(classes: string, { add = [], remove = [] }: { add?: string[], remove?: string[] }) {
+  const updated = classes.split(' ').filter(c => !add.includes(c) && !remove.includes(c));
+  updated.push(...add);
+  return updated.join(' ');
+}
+
+class Shape {
+  readonly type: ShapeType;
+  readonly radius: number;
+  readonly shape: Item;
+
+  constructor(type: ShapeType, options: ShapeOptions) {
+    const data = gearData(options);
+
+    this.type = type;
+    this.radius = data.radius;
+
+    const id = `shape:${type}-${data.radius}`;
+    this.shape = new Item('path', {
+      id,
+      d: type === 'gear' ? gear(data) : stub(data),
+      'fill-rule': 'evenodd',
+    });
+  }
+
+  get id() {
+    return this.shape.attributes.id!;
+  }
 }
 
 class Shaft implements Rotor {
@@ -42,8 +81,8 @@ class Shaft implements Rotor {
   constructor(type: RotorType, scene: Scene, baseShape: Item, shaftShape: Item, index: number) {
     this.#type = type;
     this.#scene = scene;
-    this.#base = useT(baseShape, { id: `ref:shaft-base:${index}` });
-    this.#shaft = useT(shaftShape, { id: `ref:shaft:${index}` });
+    this.#base = useT(baseShape, { id: `ref:shaft-base:${index}`, class: `shaft-base ${type}` });
+    this.#shaft = useT(shaftShape, { id: `ref:shaft:${index}`, class: `shaft ${type}` });
   }
 
   addToScene() {
@@ -86,6 +125,14 @@ class Shaft implements Rotor {
   }
 
   set speed(value) {
+    if ((this.#speed !== 0) !== (value !== 0)) {
+      const a = this.#base.attributes;
+      if (value !== 0) {
+        a.class = changeClasses(a.class!, { add: ['powered'], remove: ['unpowered']});
+      } else {
+        a.class = changeClasses(a.class!, { add: ['unpowered'], remove: ['powered']});
+      }
+    }
     this.#speed = value;
   }
 
@@ -93,31 +140,26 @@ class Shaft implements Rotor {
     return this.#actor;
   }
 
+  // shaft leads, gear follows
   set actor(value) {
+    const prev = this.#actor;
+    if (prev === value) {
+      if (prev) {
+        prev.position = this.position;
+      }
+      return;
+    }
+
     this.#actor = value;
-    this.#actor && (this.#actor.position = this.position);
-  }
-}
 
-class Shape {
-  readonly shape: Item;
-  readonly radius: number;
-  readonly type: ShapeType;
+    if (prev && prev.rotor === this) {
+      prev.rotor = undefined;
+    }
 
-  constructor(options: ShapeOptions, type: ShapeType = 'gear') {
-    const data = gearData(options);
-    const id = `shape:${type}-${data.radius}`;
-    this.shape = new Item('path', {
-      id,
-      d: type === 'gear' ? gear(data) : stub(data),
-      'fill-rule': 'evenodd',
-    });
-    this.radius = data.radius;
-    this.type = type;
-  }
-
-  get id() {
-    return this.shape.attributes.id!;
+    if (value && value.rotor !== this) {
+      value.rotor = this;
+      value.position = this.position;
+    }
   }
 }
 
@@ -125,12 +167,11 @@ class Gear implements Actor {
   readonly #scene: Scene;
   #refs: Transformable[];
   #visuals: Item[] = [];
-  #fills: string[];
 
   // Actor
   #radii: [number, number];
   #types: [ShapeType, ShapeType];
-  #rotor?: Rotor; 
+  #rotor?: Rotor;
 
   constructor(
     scene: Scene,
@@ -141,7 +182,6 @@ class Gear implements Actor {
     index: number
   ) {
     this.#scene = scene;
-    this.#fills = [lowerFill, upperFill];
 
     this.#refs = [
       useT(lower.shape, { id: `ref:${lower.type}:${index}:0` }),
@@ -149,8 +189,8 @@ class Gear implements Actor {
     ];
 
     this.#visuals = [
-      use(this.#refs[0], { class: `${lower.type} ${this.#fills[0]}` }),
-      use(this.#refs[1], { class: `${upper.type} ${this.#fills[1]}` }),
+      use(this.#refs[0], { class: `${lower.type} ${lowerFill}` }),
+      use(this.#refs[1], { class: `${upper.type} ${upperFill}` }),
     ];
 
     this.#radii = [lower.radius, upper.radius];
@@ -207,7 +247,6 @@ class Gear implements Actor {
   flip() {
     this.#refs.forEach((ref) => this.#scene.remove(`#${ref.attributes.id}`));
     this.#refs = [this.#refs[1], this.#refs[0]];
-    this.#fills = [this.#fills[1], this.#fills[0]];
     this.#radii = [this.#radii[1], this.#radii[0]];
     this.#types = [this.#types[1], this.#types[0]];
     this.#visuals = [this.#visuals[1], this.#visuals[0]];
@@ -233,13 +272,24 @@ class Gear implements Actor {
     return this.#rotor;
   }
 
+  // shaft leads, gear follows
   set rotor(value) {
-    if (this.#rotor && this.#rotor !== value && this.#rotor.actor === this) {
-      this.#rotor.actor = undefined;
+    const prev = this.#rotor;
+    if (prev === value) {
+      if (prev) {
+        this.position = prev.position;
+      }
+      return;
     }
+
     this.#rotor = value;
-    if (this.#rotor) {
-      this.#rotor.actor = this;
+
+    if (prev && prev.actor === this) {
+      prev.actor = undefined;
+    }
+
+    if (value && value.actor !== this) {
+      value.actor = this;
     }
   }
 }
@@ -289,21 +339,17 @@ export class GearBoxModel extends Disposable implements IViewModel {
   readonly #shafts: Shaft[] = [];
   readonly #gears: Gear[] = [];
 
-  readonly #shaftShape = new Item('path', { id: 'shaft', class: 'shaft fill-0', d: shaft() });
-  readonly #shaftBaseShape = new Item('path', {
-    id: 'shaft-base',
-    class: 'shaft-base',
-    d: shaftBase(),
-  });
+  readonly #shaftShape = new Item('path', { id: 'shaft', d: shaft() });
+  readonly #shaftBaseShape = new Item('path', { id: 'shaft-base', d: shaftBase() });
   readonly #stubShapes = new Map<number, Shape>();
   readonly #gearShapes = new Map<number, Shape>();
 
   readonly #solver = new Solver();
 
   #speed = 0;
-  #maxSpeed = 0.5;
+  #maxSpeed = 0.75;
   #acceleration = 0;
-  #maxAcceleration = 1;
+  #maxAcceleration = 2 * this.#maxSpeed;
 
   #rotationAnimation = new Animation();
 
@@ -316,9 +362,10 @@ export class GearBoxModel extends Disposable implements IViewModel {
   #pickedShaft?: Shaft;
   #pickedPoint!: Vector2;
   #pickedPosition!: Vector2;
-  #connectionTimer?: number = undefined;
 
   #selected?: Gear;
+
+  info = new InfoModel();
 
   constructor() {
     super();
@@ -332,6 +379,10 @@ export class GearBoxModel extends Disposable implements IViewModel {
       this.#rotationAnimation.stop();
       this.#swayAnimation.stop();
     });
+
+    this.info.data.ppt = '-';
+    this.info.data.pos = '-';
+    this.info.data.shf = '-';
   }
 
   get root() {
@@ -344,7 +395,7 @@ export class GearBoxModel extends Disposable implements IViewModel {
   }
 
   stopRotation() {
-    this.#acceleration = -this.#maxSpeed;
+    this.#acceleration = -this.#maxAcceleration;
   }
 
   #rotationFrame = (dt: number) => {
@@ -357,6 +408,13 @@ export class GearBoxModel extends Disposable implements IViewModel {
       }
     }
   };
+
+  #rotate(delta: number) {
+    this.#shafts.forEach((shaft) => {
+      const angle = delta * shaft.speed;
+      shaft.rotation += angle;
+    });
+  }
 
   sway() {
     this.#swayStart = time();
@@ -382,22 +440,14 @@ export class GearBoxModel extends Disposable implements IViewModel {
     }
   };
 
-  #rotate(k: number) {
-    this.#shafts.forEach((shaft) => {
-      const angle = k * shaft.speed;
-      shaft.rotation += angle;
-    });
-  }
-
   check() {
-    this.#solver.rotors.length = 0;
+    this.#solver.clear();
     this.#shafts.forEach((shaft) => this.#solver.addRotor(shaft));
 
     let ok = true;
     this.#solver.solve((failure) => {
       ok = false;
-      console.log('check failed:', failure.type);
-      // console.log(this.#solver);
+      // console.log('check failed:', failure.type);
     });
     this.sway();
   }
@@ -407,7 +457,9 @@ export class GearBoxModel extends Disposable implements IViewModel {
       onElementEvent(element, 'pointerdown', this.#pick),
       onElementEvent(element, 'pointermove', this.#drag),
       onElementEvent(element, 'pointerup', this.#drop),
-      () => { this.#controller.dispose() },
+      () => {
+        this.#controller.dispose();
+      }
     );
     this.#controller.mount(element);
   }
@@ -417,45 +469,38 @@ export class GearBoxModel extends Disposable implements IViewModel {
   }
 
   #createStatic() {
-    [-5, 0, 5].forEach((i) =>
-      this.#scene.background.add(
-        new Item('path', {
-          d: `M-10 ${i}h20`,
-          stroke: '#00000040',
-          'stroke-width': 1,
-          'vector-effect': 'non-scaling-stroke',
-        }),
-        new Item('path', {
-          d: `M${i} -10v20`,
-          stroke: '#00000040',
-          'stroke-width': 1,
-          'vector-effect': 'non-scaling-stroke',
-        })
-      )
-    );
+    const background = new Item('g', { stroke: '#00000040', 'stroke-width': 1 });
+    const g = 7;
+    const w = this.#scene.width - 2;
+    const x = -w / 2;
+    const n = Math.floor(w / g / 2);
+    for (let i = -n; i <= n; ++i) {
+      background.add(
+        new Item('path', { d: `M${x} ${i * g}h${w}`, 'vector-effect': 'non-scaling-stroke' }),
+        new Item('path', { d: `M${i * g} ${x}v${w}`, 'vector-effect': 'non-scaling-stroke' }),
+      );
+    }
+    this.#scene.background.add(background);
   }
 
   #createShapes() {
     [2, 3, 4, 5].forEach((i) => {
       this.#stubShapes.set(
         i,
-        new Shape(
-          {
-            radius: i,
-            thickness: 0.2 + 0.01 * i,
-            spokeThickness: 0.2 + 0.01 * i,
-            spokes: 6,
-          },
-          'stub'
-        )
+        new Shape('stub', {
+          radius: i,
+          thickness: 0.2 + 0.01 * i,
+          spokeThickness: 0.2 + 0.01 * i,
+          spokes: 6,
+        })
       );
     });
 
     [
-      new Shape({ radius: 2, innerRadius: 0.92, offset: 0, spokes: 4 }),
-      new Shape({ radius: 3, innerRadius: 0.84, offset: Math.PI / 6, spokes: 3 }),
-      new Shape({ radius: 4, innerRadius: 0.76, offset: Math.PI / 4, spokes: 4 }),
-      new Shape({ radius: 5, innerRadius: 0.68, offset: Math.PI / 10, spokes: 5 }),
+      new Shape('gear', { radius: 2, innerRadius: 0.90, offset: 0, spokes: 4 }),
+      new Shape('gear', { radius: 3, innerRadius: 0.84, offset: Math.PI / 6, spokes: 3 }),
+      new Shape('gear', { radius: 4, innerRadius: 0.78, offset: Math.PI / 4, spokes: 4 }),
+      new Shape('gear', { radius: 5, innerRadius: 0.72, offset: Math.PI / 10, spokes: 5 }),
     ].forEach((item) => this.#gearShapes.set(item.radius, item));
 
     this.#scene.addDefs(this.#shaftBaseShape, this.#shaftShape);
@@ -490,7 +535,7 @@ export class GearBoxModel extends Disposable implements IViewModel {
       ],
       [
         [g(3), g(2)],
-        ['fill-1', 'fill-3'],
+        ['fill-0', 'fill-3'],
       ],
       [
         [g(2), g(4)],
@@ -563,17 +608,17 @@ export class GearBoxModel extends Disposable implements IViewModel {
     return undefined;
   }
 
-  #findShaft(position: Vector2, distance: number) {
-    let shaft: Shaft | undefined = undefined;
-    let min = distance + 1;
-    for (let i = 0; i < this.#shafts.length; ++i) {
-      const d = squareDistance(this.#shafts[i].position, position);
+  #findShaft(position: Vector2, maxDistance: number) {
+    let found: Shaft | undefined;
+    let min = maxDistance;
+    this.#shafts.forEach((shaft) => {
+      const d = distance(shaft.position, position);
       if (d < min) {
-        shaft = this.#shafts[i];
+        found = shaft;
         min = d;
       }
-    }
-    return shaft;
+    });
+    return found;
   }
 
   readonly #pick = (e: PointerEvent) => {
@@ -600,10 +645,14 @@ export class GearBoxModel extends Disposable implements IViewModel {
     this.#pickedPoint = this.#camera.transform.transform(this.#controller.toCamera(e));
 
     this.#select(this.#pickedGear);
+
+    this.info.data.ppt = v0(this.#pickedPoint);
+    this.info.data.pos = v2(this.#pickedPosition);
+    this.info.data.shf = this.#pickedShaft ? v2(this.#pickedShaft.position) : '-';
   };
 
   readonly #drag = (e: PointerEvent) => {
-    if (this.#gesture === Gesture.NONE) {
+    if (this.#gesture !== Gesture.DRAG) {
       this.#select(this.#findGear(e));
       return;
     }
@@ -611,23 +660,32 @@ export class GearBoxModel extends Disposable implements IViewModel {
     // drag
     const point = this.#camera.transform.transform(this.#controller.toCamera(e));
     const delta = new Vector2(point.x - this.#pickedPoint.x, point.y - this.#pickedPoint.y);
-    const length = squareLength(delta);
-    const position = new Vector2(this.#pickedPosition.x + delta.x, this.#pickedPosition.y + delta.y);
-    const shaft = this.#findShaft(position, 0.25);
+    const position = new Vector2(
+      this.#pickedPosition.x + delta.x,
+      this.#pickedPosition.y + delta.y
+    );
+    const shaft = this.#findShaft(position, 0.5);
 
-    if (shaft !== this.#pickedShaft) {
-      this.#pickedShaft = shaft;
-      this.#pickedGear!.rotor = shaft;
-      this.check();
-    } else if (!this.#pickedGear.rotor) {
-      this.#pickedGear.position = position;
+    this.info.data.pos = v2(position);
+    this.info.data.shf = shaft ? v2(shaft.position) : '-';
+
+    if (shaft && shaft === this.#pickedGear.rotor) return;
+
+    if (shaft && !shaft.actor) {
+      // this.#currentShaft = shaft;
+      shaft.actor = this.#pickedGear;
+      return;
     }
+
+    this.#pickedGear.rotor = undefined;
+    this.#pickedGear.position = position;
   };
 
   readonly #drop = (e: PointerEvent) => {
-    (e.currentTarget as Element).releasePointerCapture(e.pointerId);
+    if (this.#gesture !== Gesture.DRAG) return;
+
     this.#gesture = Gesture.NONE;
-    this.#connectionTimer = undefined;
-    // this.#unselect();
+    (e.target as Element).releasePointerCapture(e.pointerId);
+    this.check();
   };
 }

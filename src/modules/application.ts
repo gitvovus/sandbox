@@ -7,6 +7,7 @@ import UiSvgElement from '@/ui/svg-element.vue';
 import AppView from '@/views/app-view.vue';
 import ControlsView from '@/views/controls-view.vue';
 import GearBoxView from '@/views/gear-box-view.vue';
+import InfoView from '@/views/info-view.vue';
 import LayeredView from '@/views/layered-view.vue';
 import LogoView from '@/views/logo-view.vue';
 import LoremView from '@/views/lorem-view.vue';
@@ -29,6 +30,7 @@ export class Application {
       // views
       .component('controls-view', ControlsView)
       .component('gear-box-view', GearBoxView)
+      .component('info-view', InfoView)
       .component('layered-view', LayeredView)
       .component('logo-view', LogoView)
       .component('lorem-view', LoremView)
