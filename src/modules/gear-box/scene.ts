@@ -1,7 +1,7 @@
-import { Item, type Attributes } from '@/lib/svg';
+import { ReactiveNode, type Attributes } from '@/lib/reactive';
 
 export class Scene {
-  readonly root = new Item('svg');
+  readonly root = new ReactiveNode('svg');
 
   readonly id: string;
 
@@ -10,16 +10,16 @@ export class Scene {
   readonly #ox: number;
   readonly #oy: number;
 
-  readonly #defs = new Item('defs');
-  readonly #shadow: Item;
-  readonly #content = new Item('g');
+  readonly #defs = new ReactiveNode('defs');
+  readonly #shadow: ReactiveNode;
+  readonly #content = new ReactiveNode('g');
 
-  readonly #filters: Item[] = [];
-  readonly #masks: Item[] = [];
+  readonly #filters: ReactiveNode[] = [];
+  readonly #masks: ReactiveNode[] = [];
 
-  readonly #background = new Item('g');
-  readonly #layers: Item[] = [];
-  readonly #overlay = new Item('g');
+  readonly #background = new ReactiveNode('g');
+  readonly #layers: ReactiveNode[] = [];
+  readonly #overlay = new ReactiveNode('g');
 
   readonly #shadowFill = '#00000030';
 
@@ -30,7 +30,7 @@ export class Scene {
     this.#ox = offset;
     this.#oy = -offset;
 
-    this.#shadow = new Item('rect', {
+    this.#shadow = new ReactiveNode('rect', {
       id: `${this.id}:shadow`,
       class: 'no-mouse',
       x: -width / 2,
@@ -44,23 +44,23 @@ export class Scene {
     this.#content.add(this.#background);
 
     for (let i = 0; i < layersCount; ++i) {
-      const filter = new Item('mask', { id: `${this.id}:filter:${i}` });
+      const filter = new ReactiveNode('mask', { id: `${this.id}:filter:${i}` });
       this.#filters.push(filter);
       if (i > 0) {
-        filter.add(new Item('g', { fill: 'white' }));
+        filter.add(new ReactiveNode('g', { fill: 'white' }));
       }
 
-      const mask = new Item('mask', { id: `${this.id}:mask:${i}` });
+      const mask = new ReactiveNode('mask', { id: `${this.id}:mask:${i}` });
       this.#masks.push(mask);
       if (i === 0) {
-        mask.add(new Item('g', { fill: 'white' }), new Item('g', { fill: 'black' }));
+        mask.add(new ReactiveNode('g', { fill: 'white' }), new ReactiveNode('g', { fill: 'black' }));
       } else {
-        mask.add(new Item('g', { fill: 'white', mask: `url(#${filter.attributes.id})` }));
+        mask.add(new ReactiveNode('g', { fill: 'white', mask: `url(#${filter.attributes.id})` }));
       }
 
       this.#defs.add(filter, mask);
 
-      const layer = new Item('g');
+      const layer = new ReactiveNode('g');
       this.#layers.push(layer);
       this.#content.add(layer);
 
@@ -90,18 +90,18 @@ export class Scene {
     return this.#background;
   }
 
-  addDefs(...defs: Item[]) {
+  addDefs(...defs: ReactiveNode[]) {
     this.#defs.add(...defs);
   }
 
-  addToGround(item: Item, acceptsShadows: boolean = true) {
+  addToGround(item: ReactiveNode, acceptsShadows: boolean = true) {
     this.#layers[0].add(item);
     if (!acceptsShadows) {
       this.#masks[0].items[1].add(this.#sameRef(item));
     }
   }
 
-  addToLayer(item: Item, index: number) {
+  addToLayer(item: ReactiveNode, index: number) {
     this.#layers[index].add(item);
 
     if (index > 0) {
@@ -135,11 +135,11 @@ export class Scene {
     items.forEach((item) => this.#defs.remove(item));
   }
 
-  #sameRef(item: Item, attributes?: Attributes) {
-    return new Item('use', { href: item.attributes.href, ...attributes });
+  #sameRef(item: ReactiveNode, attributes?: Attributes) {
+    return new ReactiveNode('use', { href: item.attributes.href, ...attributes });
   }
 
-  #use(item: Item, attributes?: Attributes) {
-    return new Item('use', { href: `#${item.attributes.id}`, ...attributes });
+  #use(item: ReactiveNode, attributes?: Attributes) {
+    return new ReactiveNode('use', { href: `#${item.attributes.id}`, ...attributes });
   }
 }

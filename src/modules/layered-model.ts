@@ -1,5 +1,5 @@
-import { Vector2 } from '@/lib/std';
-import { Item, type Attributes } from '@/lib/svg';
+import { Vector2 } from '@/lib/svg';
+import { ReactiveNode, type Attributes } from '@/lib/reactive';
 import { Camera } from '@/modules/svg/camera';
 import { Controller } from '@/modules/svg/controller';
 import { Scene } from '@/modules/gear-box/scene';
@@ -34,8 +34,8 @@ export class LayeredModel extends ViewModel {
   }
 
   #createScene() {
-    const rec = new Item('path', { id: 'rec', d: 'M -5,2 -5,-2 5,-2 5,2' });
-    const tri = new Item('path', { id: 'tri', d: 'M -3,2 0,-4 3,2' });
+    const rec = new ReactiveNode('path', { id: 'rec', d: 'M -5,2 -5,-2 5,-2 5,2' });
+    const tri = new ReactiveNode('path', { id: 'tri', d: 'M -3,2 0,-4 3,2' });
 
     const recRed = this.#use(rec, { id: 'rec-red', y: -2.5 });
     const recBlu = this.#use(rec, { id: 'rec-blu', y: 2.5 });
@@ -55,20 +55,20 @@ export class LayeredModel extends ViewModel {
     this.#createStatic();
   }
 
-  #use(item: Item, attributes?: Attributes) {
-    return new Item('use', { href: `#${item.attributes.id}`, ...attributes });
+  #use(item: ReactiveNode, attributes?: Attributes) {
+    return new ReactiveNode('use', { href: `#${item.attributes.id}`, ...attributes });
   }
 
   #createStatic() {
     [-5, 0, 5].forEach((i) =>
       this.#scene.background.add(
-        new Item('path', {
+        new ReactiveNode('path', {
           d: `M-10 ${i}h20`,
           stroke: '#00000040',
           'stroke-width': 1,
           'vector-effect': 'non-scaling-stroke',
         }),
-        new Item('path', {
+        new ReactiveNode('path', {
           d: `M${i} -10v20`,
           stroke: '#00000040',
           'stroke-width': 1,

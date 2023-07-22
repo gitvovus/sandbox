@@ -1,5 +1,5 @@
-import { Vector2 } from '@/lib/std';
-import { Item } from '@/lib/svg';
+import { ReactiveNode } from '@/lib/reactive';
+import { Vector2 } from '@/lib/svg';
 import { Camera } from '@/modules/svg/camera';
 import { Controller } from '@/modules/svg/controller';
 import { ViewModel } from '@/modules/view-model';
@@ -42,9 +42,9 @@ function tri() {
 }
 
 export class SvgModel extends ViewModel {
-  root = new Item('svg');
-  content = new Item('g');
-  shape = new Item('path', { class: 'morph', d: tri() });
+  root = new ReactiveNode('svg');
+  content = new ReactiveNode('g');
+  shape = new ReactiveNode('path', { class: 'morph', d: tri() });
 
   #camera = new Camera({ scale: new Vector2(1, -1) });
   #controller = new Controller(this.root, this.content, this.#camera);

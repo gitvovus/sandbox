@@ -1,4 +1,5 @@
-import { Vector2, distance, mod } from '@/lib/std';
+import * as std from '@/lib/std';
+import * as svg from '@/lib/svg';
 import { teethPerUnitRadius, type ShapeType } from '@/modules/gear-box/shapes';
 
 const eps = 1e-3;
@@ -8,21 +9,21 @@ export type RotorType = 'source' | 'mediator' | 'destination';
 export interface Actor {
   readonly radii: [number, number];
   readonly types: [ShapeType, ShapeType];
-  position: Vector2;
+  position: svg.Vector2;
   rotation: number;
   rotor?: Rotor;
 }
 
 export interface Rotor {
   readonly type: RotorType;
-  readonly position: Vector2;
+  readonly position: svg.Vector2;
   rotation: number;
   speed: number;
   actor?: Actor;
 }
 
 function dist(a: Rotor, b: Rotor) {
-  return distance(a.position, b.position);
+  return svg.distance(a.position, b.position);
 }
 
 export type FailureType = 'bad data' | 'no source' | 'no destination' | 'collision' | 'block' | 'not finished';
@@ -49,8 +50,8 @@ export class Solver {
     this.rotors.push(rotor);
   }
 
-  findRotorAt(position: Vector2) {
-    return this.rotors.find((rotor) => distance(rotor.position, position) < eps);
+  findRotorAt(position: svg.Vector2) {
+    return this.rotors.find((rotor) => svg.distance(rotor.position, position) < eps);
   }
 
   setActor(rotor: Rotor, actor: Actor) {
@@ -132,19 +133,19 @@ export class Solver {
             }
           } else {
             // sync rotation
-            const delta = new Vector2(b.position.x - a.position.x, b.position.y - a.position.y);
-            const angle = mod(Math.atan2(delta.y, delta.x), 2 * Math.PI);
+            const delta = new svg.Vector2(b.position.x - a.position.x, b.position.y - a.position.y);
+            const angle = std.mod(Math.atan2(delta.y, delta.x), 2 * Math.PI);
 
-            const aAngle = mod(angle - aData.rotation, 2 * Math.PI);
+            const aAngle = std.mod(angle - aData.rotation, 2 * Math.PI);
             const aStep = (2 * Math.PI) / teethPerUnitRadius / ar[contactIndex];
-            const aPhase = mod(aAngle, aStep) / aStep;
+            const aPhase = std.mod(aAngle, aStep) / aStep;
 
-            const bAngle = mod(angle + Math.PI - b.rotation, 2 * Math.PI);
+            const bAngle = std.mod(angle + Math.PI - b.rotation, 2 * Math.PI);
             const bStep = (2 * Math.PI) / teethPerUnitRadius / br[contactIndex];
-            const bPhase = mod(bAngle, bStep) / bStep;
+            const bPhase = std.mod(bAngle, bStep) / bStep;
 
-            const bRequiredPhase = mod(0.5 - aPhase, 1);
-            let diff = mod(bPhase - bRequiredPhase, 1);
+            const bRequiredPhase = std.mod(0.5 - aPhase, 1);
+            let diff = std.mod(bPhase - bRequiredPhase, 1);
             if (diff > 0.5) diff -= 1;
             const rotation = b.rotation + diff * bStep;
 

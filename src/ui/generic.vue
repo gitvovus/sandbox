@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref } from 'vue';
-import { type Item } from '@/lib/svg';
+import { type ReactiveNode } from '@/lib/reactive';
 
-const props = defineProps<{ model: Item }>();
+const props = defineProps<{ model: ReactiveNode }>();
 const root = ref();
 
 onMounted(() => {

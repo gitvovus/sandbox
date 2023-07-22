@@ -1,5 +1,6 @@
 import { ref, watchEffect } from 'vue';
 
+import * as re from '@/lib/reactive'; 
 import * as std from '@/lib/std';
 import * as svg from '@/lib/svg';
 
@@ -19,19 +20,19 @@ export class Controller extends std.Disposable {
   #viewBox: svg.ViewBox = { left: -1, top: -1, width: 2, height: 2 };
 
   #element?: HTMLElement;
-  #root: svg.Item;
-  #scene: svg.Item;
+  #root: re.ReactiveNode;
+  #scene: re.ReactiveNode;
   #camera: Camera;
   #defaultCamera: Camera;
 
   #gesture = Gesture.NONE;
   #pickedOffset = { x: 0, y: 0 };
-  #pickedPoint = new std.Vector2(0, 0);
-  #pickedPosition = new std.Vector2(0, 0);
+  #pickedPoint = new svg.Vector2(0, 0);
+  #pickedPosition = new svg.Vector2(0, 0);
   #pickedRotation = 0;
-  #pickedTransform = new std.Matrix2x3(1, 0, 0, 1, 0, 0);
+  #pickedTransform = new svg.Matrix2x3(1, 0, 0, 1, 0, 0);
 
-  constructor(root: svg.Item, scene: svg.Item, camera: Camera) {
+  constructor(root: re.ReactiveNode, scene: re.ReactiveNode, camera: Camera) {
     super();
     this.#root = root;
     this.#scene = scene;
@@ -106,7 +107,7 @@ export class Controller extends std.Disposable {
 
   toCamera(e: MouseEvent) {
     const { x, y } = std.elementOffset(this.#element!, e);
-    return new std.Vector2(
+    return new svg.Vector2(
       this.#viewBox.left + (this.#viewBox.width * x) / this.width,
       this.#viewBox.top + (this.#viewBox.height * y) / this.height,
     );
@@ -164,8 +165,8 @@ export class Controller extends std.Disposable {
     }
     if (this.#gesture === Gesture.DRAG) {
       const point = this.#pickedTransform.transform(this.toCamera(e));
-      const delta = new std.Vector2(point.x - this.#pickedPoint.x, point.y - this.#pickedPoint.y);
-      this.#camera.position = new std.Vector2(this.#pickedPosition.x - delta.x, this.#pickedPosition.y - delta.y);
+      const delta = new svg.Vector2(point.x - this.#pickedPoint.x, point.y - this.#pickedPoint.y);
+      this.#camera.position = new svg.Vector2(this.#pickedPosition.x - delta.x, this.#pickedPosition.y - delta.y);
     } else {
       const offset = std.elementOffset(this.#element!, e);
       const delta = (2 * Math.PI * (offset.x - this.#pickedOffset.x)) / this.#element!.clientWidth;
@@ -183,7 +184,7 @@ export class Controller extends std.Disposable {
 
     const k = e.deltaY < 0 ? 7 / 8 : 8 / 7;
     const zoom = std.clamp(Math.abs(this.#camera.scale.x * k), 0.25, 4) / Math.abs(this.#camera.scale.x);
-    const newScale = new std.Vector2(this.#camera.scale.x * zoom, this.#camera.scale.y * zoom);
+    const newScale = new svg.Vector2(this.#camera.scale.x * zoom, this.#camera.scale.y * zoom);
 
     const newCamera = new Camera({
       position: this.#camera.position,
@@ -195,7 +196,7 @@ export class Controller extends std.Disposable {
     const oldPos = this.#camera.transform.transform(cameraPos);
     const newPos = newCamera.transform.transform(cameraPos);
 
-    this.#camera.position = new std.Vector2(
+    this.#camera.position = new svg.Vector2(
       this.#camera.position.x + oldPos.x - newPos.x,
       this.#camera.position.y + oldPos.y - newPos.y,
     );

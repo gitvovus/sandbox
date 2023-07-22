@@ -1,20 +1,21 @@
 import { type IViewModel } from '@/modules/view-model';
-import { Item, type Attributes } from '@/lib/svg';
+import { type Attributes, ReactiveNode} from '@/lib/reactive';
+import { Vector2, distance } from '@/lib/svg';
 import { Camera } from '@/modules/svg/camera';
 import { Controller, Gesture } from '@/modules/svg/controller';
 import { Transformable } from '@/modules/svg/transformable';
 import { gearData, gear, shaftBase, shaft, stub, type ShapeOptions, type ShapeType } from '@/modules/gear-box/shapes';
 import { Scene } from '@/modules/gear-box/scene';
-import { Disposable, Mouse, Vector2, clamp, distance, onAnimationFrame, onElementEvent, time } from '@/lib/std';
+import { Disposable, Mouse, clamp, onAnimationFrame, onElementEvent, time } from '@/lib/std';
 import { Solver, type Actor, type Rotor, type RotorType } from '@/modules/gear-box/solver';
 import { v0, v2 } from '@/lib/helpers';
 import { InfoModel } from '@/modules/info-model';
 
-function use(item: Item, attributes?: Attributes) {
-  return new Item('use', { href: `#${item.attributes.id}`, ...attributes });
+function use(item: ReactiveNode, attributes?: Attributes) {
+  return new ReactiveNode('use', { href: `#${item.attributes.id}`, ...attributes });
 }
 
-function useT(item: Item, attributes?: Attributes) {
+function useT(item: ReactiveNode, attributes?: Attributes) {
   return new Transformable('use', { href: `#${item.attributes.id}`, ...attributes });
 }
 
@@ -27,7 +28,7 @@ function changeClasses(classes: string, { add = [], remove = [] }: { add?: strin
 class Shape {
   readonly type: ShapeType;
   readonly radius: number;
-  readonly shape: Item;
+  readonly shape: ReactiveNode;
 
   constructor(type: ShapeType, options: ShapeOptions) {
     const data = gearData(options);
@@ -36,7 +37,7 @@ class Shape {
     this.radius = data.radius;
 
     const id = `shape:${type}-${data.radius}`;
-    this.shape = new Item('path', {
+    this.shape = new ReactiveNode('path', {
       id,
       d: type === 'gear' ? gear(data) : stub(data),
       'fill-rule': 'evenodd',
@@ -58,7 +59,7 @@ class Shaft implements Rotor {
   #speed = 0;
   #actor?: Actor;
 
-  constructor(type: RotorType, scene: Scene, baseShape: Item, shaftShape: Item, index: number) {
+  constructor(type: RotorType, scene: Scene, baseShape: ReactiveNode, shaftShape: ReactiveNode, index: number) {
     this.#type = type;
     this.#scene = scene;
     this.#base = useT(baseShape, { id: `ref:shaft-base:${index}`, class: `shaft-base ${type}` });
@@ -146,7 +147,7 @@ class Shaft implements Rotor {
 class Gear implements Actor {
   readonly #scene: Scene;
   #refs: Transformable[];
-  #visuals: Item[];
+  #visuals: ReactiveNode[];
 
   // Actor
   #radii: [number, number];
@@ -312,8 +313,8 @@ export class GearBoxModel extends Disposable implements IViewModel {
   readonly #shafts: Shaft[] = [];
   readonly #gears: Gear[] = [];
 
-  readonly #shaftShape = new Item('path', { id: 'shaft', d: shaft() });
-  readonly #shaftBaseShape = new Item('path', { id: 'shaft-base', d: shaftBase() });
+  readonly #shaftShape = new ReactiveNode('path', { id: 'shaft', d: shaft() });
+  readonly #shaftBaseShape = new ReactiveNode('path', { id: 'shaft-base', d: shaftBase() });
   readonly #stubShapes = new Map<number, Shape>();
   readonly #gearShapes = new Map<number, Shape>();
 
@@ -442,15 +443,15 @@ export class GearBoxModel extends Disposable implements IViewModel {
   }
 
   #createStatic() {
-    const background = new Item('g', { stroke: '#00000040', 'stroke-width': 1 });
+    const background = new ReactiveNode('g', { stroke: '#00000040', 'stroke-width': 1 });
     const g = 7;
     const w = this.#scene.width - 2;
     const x = -w / 2;
     const n = Math.floor(w / g / 2);
     for (let i = -n; i <= n; ++i) {
       background.add(
-        new Item('path', { d: `M${x} ${i * g}h${w}`, 'vector-effect': 'non-scaling-stroke' }),
-        new Item('path', { d: `M${i * g} ${x}v${w}`, 'vector-effect': 'non-scaling-stroke' }),
+        new ReactiveNode('path', { d: `M${x} ${i * g}h${w}`, 'vector-effect': 'non-scaling-stroke' }),
+        new ReactiveNode('path', { d: `M${i * g} ${x}v${w}`, 'vector-effect': 'non-scaling-stroke' }),
       );
     }
     this.#scene.background.add(background);
