@@ -8,7 +8,7 @@ const rotation = svg.Matrix2x3.rotation;
 const scale = svg.Matrix2x3.scale;
 const translation = svg.Matrix2x3.translation;
 
-export class Transformable extends re.ReactiveNode implements std.IDisposable {
+export class Transformable extends re.Item implements std.IDisposable {
   readonly #disposer = new std.Disposable();
   readonly #position = ref(new svg.Vector2(0, 0));
   readonly #scale = ref(1);

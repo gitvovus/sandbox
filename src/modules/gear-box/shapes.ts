@@ -1,150 +1,276 @@
-import { f3, x3, y3 } from '@/lib/helpers';
-
-export const teethPerUnitRadius = 8;
+import * as svg from '@/lib/svg';
+import { type Attributes, Item } from '@/lib/reactive';
+import { type Scene } from '@/modules/gear-box/scene';
+import { draw, type DrawingOptions } from '@/modules/gear-box/drawings';
+import { Transformable } from '@/modules/svg/transformable';
 
 export type ShapeType = 'gear' | 'stub';
 
-export type ShapeOptions = {
-  radius: number;
-  innerRadius?: number;
-  offset?: number;
-  thickness?: number;
-  spokeThickness?: number;
-  spokes?: number;
-  toothHeight?: number;
-  shaftRadius?: number;
-  teethPerUnitRadius?: number;
-  margin?: number;
-  shaftMargin?: number;
-};
+export type RotorType = 'source' | 'mediator' | 'destination';
 
-export type ShapeData = Required<ShapeOptions>;
-
-const defaultShape: ShapeData = {
-  radius: 1,
-  innerRadius: 1,
-  offset: 0,
-  thickness: 0.25,
-  spokeThickness: 0.375,
-  spokes: 3,
-  toothHeight: 0.5,
-  shaftRadius: 0.375,
-  teethPerUnitRadius,
-  margin: 0.1,
-  shaftMargin: 0.06,
-};
-
-export function gearData(options: ShapeOptions) {
-  return Object.assign({ ...defaultShape }, options);
+export interface Actor {
+  readonly radii: [number, number];
+  readonly types: [ShapeType, ShapeType];
+  position: svg.Vector2;
+  rotation: number;
+  rotor?: Rotor;
 }
 
-function cuts(data: ShapeData) {
-  const ir = data.innerRadius;
-  const tc = data.thickness;
-  const st = data.spokeThickness;
-  const h = data.toothHeight;
-  const off = data.offset;
+export interface Rotor {
+  readonly type: RotorType;
+  readonly position: svg.Vector2;
+  rotation: number;
+  speed: number;
+  actor?: Actor;
+}
 
-  const r1 = data.radius - 0.5 * h;
-  const r0 = r1 - tc;
-  const r3 = ir;
-  const s = data.spokes;
-  const di = (2 * Math.PI) / s;
-  const d0 = (0.5 * st) / r0;
-  const d1 = di - d0;
-  const d2 = (0.5 * st) / r3;
-  const d3 = di - d2;
+function use(item: Item, attributes?: Attributes) {
+  return new Item('use', { href: `#${item.attributes.id}`, ...attributes });
+}
 
-  const path: string[] = [];
+function useT(item: Item, attributes?: Attributes) {
+  return new Transformable('use', { href: `#${item.attributes.id}`, ...attributes });
+}
 
-  for (let i = 0; i < s; ++i) {
-    const phi = i * di + off;
-    path.push(
-      `M${x3(r0, phi + d0)} ${y3(r0, phi + d0)}`,
-      `L${x3(r3, phi + d2)} ${y3(r3, phi + d2)}`,
-      `A${f3(r3)} ${f3(r3)} 0 0 1 ${x3(r3, phi + d3)} ${y3(r3, phi + d3)}`,
-      `L${x3(r0, phi + d1)} ${y3(r0, phi + d1)}`,
-      `A${f3(r0)} ${f3(r0)} 0 0 0 ${x3(r0, phi + d0)} ${y3(r0, phi + d0)}z`,
-    );
+function changeClasses(classes: string, { add = [], remove = [] }: { add?: string[]; remove?: string[] }) {
+  const updated = classes.split(' ').filter((c) => !add.includes(c) && !remove.includes(c));
+  updated.push(...add);
+  return updated.join(' ');
+}
+
+export class Shape {
+  readonly type: ShapeType;
+  readonly radius: number;
+  readonly shape: Item;
+
+  constructor(type: ShapeType, options: DrawingOptions) {
+    this.type = type;
+    this.radius = options.radius;
+
+    const id = `shape:${type}-${options.radius}`;
+    this.shape = new Item('path', { id, d: draw(type, options), 'fill-rule': 'evenodd' });
   }
 
-  return path.join('');
-}
-
-export function shaftBase(radius?: number) {
-  const r = f3(radius || defaultShape.shaftRadius * 2);
-  return `M${r} 0A${r} ${r} 0 0 1 -${r} 0A${r} ${r} 0 0 1 ${r} 0`;
-}
-
-export function shaft(radius?: number) {
-  radius = radius || defaultShape.shaftRadius;
-  const n = 6;
-  const d = Math.PI / n;
-  const d0 = -d / 2;
-  const path = [`M${x3(radius, d0)} ${y3(radius, d0)}`];
-  const r0 = radius / 3;
-  const r1 = radius / 2;
-  for (let i = 0; i < n; ++i) {
-    const a0 = d0 + 2 * d * i + d;
-    const a1 = a0 + d;
-    path.push(
-      `A${f3(r0)} ${f3(r0)} 0 0 1 ${x3(radius, a0)} ${y3(radius, a0)}`,
-      `A${f3(r1)} ${f3(r1)} 0 0 0 ${x3(radius, a1)} ${y3(radius, a1)}`,
-    );
+  get id() {
+    return this.shape.attributes.id!;
   }
-  path.push('z');
-  return path.join('');
 }
 
-export function stub(gearOptions: ShapeOptions) {
-  const data = gearData(gearOptions);
+export class Shaft implements Rotor {
+  readonly #scene: Scene;
+  readonly #base: Transformable;
+  readonly #shaft: Transformable;
 
-  const r0 = data.radius - 0.5 * data.toothHeight;
-  const sr = data.shaftRadius;
-  const r = f3(r0);
+  // Rotor
+  readonly #type: RotorType;
+  #speed = 0;
+  #actor?: Actor;
 
-  const path = [`M${r} 0A${r} ${r} 0 0 1 -${r} 0A${r} ${r} 0 0 1 ${r} 0`];
-  if (r0 > sr + 0.1) {
-    path.push(cuts(data));
+  constructor(type: RotorType, scene: Scene, base: Item, shaft: Item, index: number) {
+    this.#type = type;
+    this.#scene = scene;
+    this.#base = useT(base, { id: `ref:shaft-base:${index}`, class: `shaft-base ${type}` });
+    this.#shaft = useT(shaft, { id: `ref:shaft:${index}`, class: `shaft ${type}` });
   }
-  path.push(shaft(sr + data.shaftMargin));
 
-  return path.join('');
+  addToScene() {
+    this.#scene.addDefs(this.#base, this.#shaft);
+    this.#scene.addToGround(use(this.#base));
+    this.#scene.addToGround(use(this.#shaft), false);
+  }
+
+  removeFromScene() {
+    [this.#base, this.#shaft].forEach((item) => {
+      this.#scene.remove(item.attributes.href!);
+      this.#scene.removeDef(item.attributes.id!);
+    });
+  }
+
+  get position() {
+    return this.#shaft.position;
+  }
+
+  set position(value) {
+    this.#base.position = this.#shaft.position = value;
+  }
+
+  get rotation() {
+    return this.#shaft.rotation;
+  }
+
+  set rotation(value) {
+    this.#shaft.rotation = value;
+    this.#actor && (this.#actor.rotation = value);
+  }
+
+  // Rotor
+  get type() {
+    return this.#type;
+  }
+
+  get speed() {
+    return this.#speed;
+  }
+
+  set speed(value) {
+    if ((this.#speed !== 0) !== (value !== 0)) {
+      const a = this.#base.attributes;
+      if (value !== 0) {
+        a.class = changeClasses(a.class!, { add: ['powered'], remove: ['unpowered'] });
+      } else {
+        a.class = changeClasses(a.class!, { add: ['unpowered'], remove: ['powered'] });
+      }
+    }
+    this.#speed = value;
+  }
+
+  get actor() {
+    return this.#actor;
+  }
+
+  // shaft leads, gear follows
+  set actor(value) {
+    const prev = this.#actor;
+    if (prev === value) {
+      if (prev) {
+        prev.position = this.position;
+      }
+      return;
+    }
+
+    this.#actor = value;
+
+    if (prev && prev.rotor === this) {
+      prev.rotor = undefined;
+    }
+
+    if (value && value.rotor !== this) {
+      value.rotor = this;
+      value.position = this.position;
+    }
+  }
 }
 
-export function gear(gearOptions: ShapeOptions) {
-  const data = gearData(gearOptions);
-  const h = data.toothHeight;
-  const n = teethPerUnitRadius * data.radius;
-  const sr = data.shaftRadius;
+export class Gear implements Actor {
+  readonly #scene: Scene;
+  #refs: Transformable[];
+  #visuals: Item[];
 
-  const da = (2 * Math.PI) / n;
-  const a0 = da * 0.19;
-  const a1 = da * 0.37;
-  const a2 = da - a1;
-  const a3 = da - a0;
+  // Actor
+  #radii: [number, number];
+  #types: [ShapeType, ShapeType];
+  #rotor?: Rotor;
 
-  const r1 = data.radius - 0.5 * h;
-  const r2 = r1 + (1 - data.margin) * h;
+  constructor(scene: Scene, lower: Shape, upper: Shape, lowerFill: string, upperFill: string, index: number) {
+    this.#scene = scene;
 
-  const rh1 = f3(h);
-  const rh2 = f3(2 * h);
+    this.#refs = [
+      useT(lower.shape, { id: `ref:${lower.type}:${index}:0` }),
+      useT(upper.shape, { id: `ref:${upper.type}:${index}:1` }),
+    ];
 
-  const path = [`M${x3(r1, -a0)} ${y3(r1, -a0)}`];
+    this.#visuals = [
+      use(this.#refs[0], { class: `${lower.type} ${lowerFill}` }),
+      use(this.#refs[1], { class: `${upper.type} ${upperFill}` }),
+    ];
 
-  for (let i = 0; i < n; ++i) {
-    const phi = i * da;
-    path.push(
-      `A${rh1} ${rh1} 0 0 0 ${x3(r1, phi + a0)} ${y3(r1, phi + a0)}`,
-      `A${rh2} ${rh2} 0 0 1 ${x3(r2, phi + a1)} ${y3(r2, phi + a1)}`,
-      `A${rh1} ${rh1} 0 0 1 ${x3(r2, phi + a2)} ${y3(r2, phi + a2)}`,
-      `A${rh2} ${rh2} 0 0 1 ${x3(r1, phi + a3)} ${y3(r1, phi + a3)}`,
-    );
+    this.#radii = [lower.radius, upper.radius];
+    this.#types = [lower.type, upper.type];
   }
-  path.push('z');
 
-  path.push(cuts(data));
-  path.push(shaft(sr + data.shaftMargin));
+  get position() {
+    return this.#refs[0].position;
+  }
 
-  return path.join('');
+  set position(value) {
+    this.#refs.forEach((ref) => (ref.position = value));
+  }
+
+  get rotation() {
+    return this.#refs[0].rotation;
+  }
+
+  set rotation(value) {
+    this.#refs.forEach((ref) => (ref.rotation = value));
+  }
+
+  select() {
+    this.#visuals.forEach((visual) => {
+      if (!visual.attributes.class!.includes('selected')) {
+        visual.attributes.class += ' selected';
+      }
+    });
+  }
+
+  unselect() {
+    this.#visuals.forEach((visual) => {
+      if (visual.attributes.class!.includes('selected')) {
+        visual.attributes.class = visual.attributes
+          .class!.split(' ')
+          .filter((c) => c !== 'selected')
+          .join(' ');
+      }
+    });
+  }
+
+  addToScene() {
+    this.#scene.addDefs(...this.#refs);
+    this.#addLayers();
+  }
+
+  removeFromScene() {
+    this.#refs.forEach((ref) => {
+      this.#scene.remove(`#${ref.attributes.id}`);
+      this.#scene.removeDef(ref.attributes.id!);
+    });
+  }
+
+  flip() {
+    this.#refs.forEach((ref) => this.#scene.remove(`#${ref.attributes.id}`));
+    this.#refs = [this.#refs[1], this.#refs[0]];
+    this.#radii = [this.#radii[1], this.#radii[0]];
+    this.#types = [this.#types[1], this.#types[0]];
+    this.#visuals = [this.#visuals[1], this.#visuals[0]];
+
+    this.#addLayers();
+  }
+
+  #addLayers() {
+    for (let i = 0; i < 2; ++i) {
+      this.#scene.addToLayer(this.#visuals[i], i + 1);
+    }
+  }
+
+  get radii() {
+    return this.#radii;
+  }
+
+  get types() {
+    return this.#types;
+  }
+
+  get rotor() {
+    return this.#rotor;
+  }
+
+  // shaft leads, gear follows
+  set rotor(value) {
+    const prev = this.#rotor;
+    if (prev === value) {
+      if (prev) {
+        this.position = prev.position;
+      }
+      return;
+    }
+
+    this.#rotor = value;
+
+    if (prev && prev.actor === this) {
+      prev.actor = undefined;
+    }
+
+    if (value && value.actor !== this) {
+      value.actor = this;
+    }
+  }
 }

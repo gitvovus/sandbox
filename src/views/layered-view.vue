@@ -16,7 +16,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="view" ref="root">
-    <ui-generic class="overlay" :model="model.root" />
+    <ui-item class="overlay" :model="model.root" />
     <div class="top-left">
       <ui-button class="button" @click.stop="model.test()">Test</ui-button>
     </div>

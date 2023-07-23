@@ -2,7 +2,7 @@ import { createApp, type App } from 'vue';
 
 import UiButton from '@/ui/button.vue';
 import UiDialog from '@/ui/dialog.vue';
-import UiGeneric from '@/ui/generic.vue';
+import UiItem from '@/ui/item.vue';
 
 import AppView from '@/views/app-view.vue';
 import ControlsView from '@/views/controls-view.vue';
@@ -26,7 +26,7 @@ export class Application {
       // ui
       .component('ui-button', UiButton)
       .component('ui-dialog', UiDialog)
-      .component('ui-generic', UiGeneric)
+      .component('ui-item', UiItem)
       // views
       .component('controls-view', ControlsView)
       .component('gear-box-view', GearBoxView)

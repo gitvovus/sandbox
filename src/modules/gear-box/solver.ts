@@ -1,30 +1,9 @@
 import * as std from '@/lib/std';
 import * as svg from '@/lib/svg';
-import { teethPerUnitRadius, type ShapeType } from '@/modules/gear-box/shapes';
+import { teethPerUnitRadius } from '@/modules/gear-box/drawings';
+import { type Actor, type Rotor, type ShapeType } from '@/modules/gear-box/shapes';
 
 const eps = 1e-3;
-
-export type RotorType = 'source' | 'mediator' | 'destination';
-
-export interface Actor {
-  readonly radii: [number, number];
-  readonly types: [ShapeType, ShapeType];
-  position: svg.Vector2;
-  rotation: number;
-  rotor?: Rotor;
-}
-
-export interface Rotor {
-  readonly type: RotorType;
-  readonly position: svg.Vector2;
-  rotation: number;
-  speed: number;
-  actor?: Actor;
-}
-
-function dist(a: Rotor, b: Rotor) {
-  return svg.distance(a.position, b.position);
-}
 
 export type FailureType = 'bad data' | 'no source' | 'no destination' | 'collision' | 'block' | 'not finished';
 
@@ -50,10 +29,6 @@ export class Solver {
     this.rotors.push(rotor);
   }
 
-  findRotorAt(position: svg.Vector2) {
-    return this.rotors.find((rotor) => svg.distance(rotor.position, position) < eps);
-  }
-
   setActor(rotor: Rotor, actor: Actor) {
     rotor.actor = actor;
   }
@@ -74,10 +49,6 @@ export class Solver {
     let current: Set<Rotor>;
     let next = new Set<Rotor>([source]);
 
-    const f = (n: number) => n.toFixed(1);
-    const fa = (n: number) => `${f((n * 180) / Math.PI)} deg`;
-    const dbg = (v: Rotor) => `(${v.position.x}, ${v.position.y})`;
-
     while (next.size > 0) {
       current = next;
       next = new Set<Rotor>();
@@ -93,23 +64,23 @@ export class Solver {
           const br = b.actor ? [...b.actor.radii] : [1, 1];
           const bt: [ShapeType, ShapeType] = b.actor ? [...b.actor.types] : ['stub', 'stub'];
 
-          const abDistance = dist(a, b);
-          const gearDistances = [ar[0] + br[0], ar[1] + br[1]];
+          const abDistance = this.#distance(a, b);
+          const contactDistances = [ar[0] + br[0], ar[1] + br[1]];
 
           // collision
-          if (gearDistances[0] > abDistance + eps || gearDistances[1] > abDistance + eps) {
+          if (contactDistances[0] > abDistance + eps || contactDistances[1] > abDistance + eps) {
             fail({ type: 'collision', rotors: [a, b] });
             return;
           }
 
           // no contact
-          if (abDistance > gearDistances[0] + eps && abDistance > gearDistances[1] + eps) {
+          if (abDistance > contactDistances[0] + eps && abDistance > contactDistances[1] + eps) {
             return;
           }
 
           // speeds at contact points
           const speeds = [0, 0];
-          gearDistances.forEach((distance, index) => {
+          contactDistances.forEach((distance, index) => {
             if (Math.abs(distance - abDistance) < eps && at[index] === 'gear' && bt[index] === 'gear') {
               speeds[index] = (-aData.speed * ar[index]) / br[index];
             }
@@ -176,5 +147,9 @@ export class Solver {
     this.rotors.forEach((rotor) => {
       if (!data.has(rotor)) rotor.speed = 0;
     });
+  }
+
+  #distance(a: Rotor, b: Rotor) {
+    return svg.distance(a.position, b.position);
   }
 }

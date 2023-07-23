@@ -57,6 +57,7 @@ function focus(e: FocusEvent) {
 </template>
 
 <style lang="scss">
+@use 'src/style/theme' as *;
 @use 'src/style/vars' as *;
 
 @mixin tint($tint) {
@@ -135,7 +136,7 @@ function focus(e: FocusEvent) {
 
   &.pretty {
     @include pretty(
-      $primary: white,
+      $primary: map-get($dark, tx),
       $alpha-border-focus-checked: 0.25,
       $alpha-bg-hover-checked: 0.125,
       $alpha-border-hover-checked: 0.125,

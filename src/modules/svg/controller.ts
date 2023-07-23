@@ -12,7 +12,27 @@ export enum Gesture {
   ROTATE,
 }
 
+export type ControllerConfig = {
+  pan: boolean;
+  scale: boolean;
+  rotate: boolean;
+  minScale: number;
+  maxScale: number;
+};
+
+export type ControllerOptions = Partial<ControllerConfig>;
+
+const config: ControllerConfig = {
+  pan: true,
+  scale: true,
+  rotate: true,
+  minScale: 0.25,
+  maxScale: 4,
+};
+
 export class Controller extends std.Disposable {
+  #config: ControllerConfig;
+
   #width = ref(2);
   #height = ref(2);
   #referenceWidth = ref(2);
@@ -20,8 +40,8 @@ export class Controller extends std.Disposable {
   #viewBox: svg.ViewBox = { left: -1, top: -1, width: 2, height: 2 };
 
   #element?: HTMLElement;
-  #root: re.ReactiveNode;
-  #scene: re.ReactiveNode;
+  #root: re.Item;
+  #scene: re.Item;
   #camera: Camera;
   #defaultCamera: Camera;
 
@@ -32,8 +52,9 @@ export class Controller extends std.Disposable {
   #pickedRotation = 0;
   #pickedTransform = new svg.Matrix2x3(1, 0, 0, 1, 0, 0);
 
-  constructor(root: re.ReactiveNode, scene: re.ReactiveNode, camera: Camera) {
+  constructor(root: re.Item, scene: re.Item, camera: Camera, options?: ControllerOptions) {
     super();
+    this.#config = Object.assign({ ...config }, options);
     this.#root = root;
     this.#scene = scene;
     this.#camera = camera;
@@ -84,9 +105,7 @@ export class Controller extends std.Disposable {
       watchEffect(() => {
         this.#scene.attributes.transform = svg.toTransform(this.#camera.inverseTransform);
       }),
-      () => {
-        this.#element = undefined;
-      },
+      () => (this.#element = undefined),
     );
   }
 
@@ -143,9 +162,11 @@ export class Controller extends std.Disposable {
   readonly #pick = (e: PointerEvent) => {
     switch (e.button) {
       case std.Mouse.LEFT:
+        if (!this.#config.pan) return;
         this.#gesture = Gesture.DRAG;
         break;
       case std.Mouse.RIGHT:
+        if (!this.#config.rotate) return;
         this.#gesture = Gesture.ROTATE;
         break;
       default:
@@ -160,9 +181,7 @@ export class Controller extends std.Disposable {
   };
 
   readonly #drag = (e: PointerEvent) => {
-    if (this.#gesture === Gesture.NONE) {
-      return;
-    }
+    if (this.#gesture === Gesture.NONE) return;
     if (this.#gesture === Gesture.DRAG) {
       const point = this.#pickedTransform.transform(this.toCamera(e));
       const delta = new svg.Vector2(point.x - this.#pickedPoint.x, point.y - this.#pickedPoint.y);
@@ -175,15 +194,21 @@ export class Controller extends std.Disposable {
   };
 
   readonly #drop = (e: PointerEvent) => {
+    if (this.#gesture === Gesture.NONE) return;
     (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
     this.#gesture = Gesture.NONE;
   };
 
   readonly #wheel = (e: WheelEvent) => {
+    if (!this.#config.scale) return;
+
     e.preventDefault();
 
     const k = e.deltaY < 0 ? 7 / 8 : 8 / 7;
-    const zoom = std.clamp(Math.abs(this.#camera.scale.x * k), 0.25, 4) / Math.abs(this.#camera.scale.x);
+    const zoom =
+      std.clamp(Math.abs(this.#camera.scale.x * k), this.#config.minScale, this.#config.maxScale) /
+      Math.abs(this.#camera.scale.x);
+
     const newScale = new svg.Vector2(this.#camera.scale.x * zoom, this.#camera.scale.y * zoom);
 
     const newCamera = new Camera({

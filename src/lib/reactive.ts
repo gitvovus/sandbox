@@ -9,17 +9,17 @@ export type Attributes = {
   [key: string]: string | number | undefined;
 };
 
-export class ReactiveNode {
+export class Item {
   readonly key = Symbol();
   readonly tag: string;
   readonly attributes = shallowReactive<Attributes>({});
-  readonly items = shallowReactive<ReactiveNode[]>([]);
+  readonly items = shallowReactive<Item[]>([]);
 
   readonly #text = ref<string | undefined>();
-  readonly #events = new Map<keyof SVGElementEventMap, ((this: SVGElement, e: any) => void)[]>();
+  readonly #events = new Map<keyof HTMLElementEventMap, ((this: HTMLElement, e: any) => void)[]>();
 
-  #element?: SVGElement;
-  #parent?: ReactiveNode;
+  #element?: HTMLElement;
+  #parent?: Item;
 
   constructor(tag: string, data?: Attributes | string) {
     this.tag = tag;
@@ -63,20 +63,20 @@ export class ReactiveNode {
     this.items.length = 0;
   }
 
-  add(...items: ReactiveNode[]) {
+  add(...items: Item[]) {
     items.forEach((item) => {
       item.#parent = this;
       this.items.push(item);
     });
   }
 
-  remove(item: ReactiveNode) {
+  remove(item: Item) {
     const index = this.items.indexOf(item);
     this.items.splice(index, 1);
     item.#parent = undefined;
   }
 
-  move(item: ReactiveNode, toIndex: number) {
+  move(item: Item, toIndex: number) {
     const index = this.items.indexOf(item);
     if (index === -1) {
       return;
@@ -91,7 +91,7 @@ export class ReactiveNode {
     }
   }
 
-  find(id: string): ReactiveNode | undefined {
+  find(id: string): Item | undefined {
     if (this.attributes.id === id) {
       return this;
     }
@@ -104,7 +104,7 @@ export class ReactiveNode {
     return undefined;
   }
 
-  findByClass(name: string): ReactiveNode | undefined {
+  findByClass(name: string): Item | undefined {
     if (this.attributes.class !== undefined && (this.attributes.class as string).split(' ').includes(name)) {
       return this;
     }
@@ -118,9 +118,9 @@ export class ReactiveNode {
   }
 
   // TODO: add event listener options
-  on<EventType extends keyof SVGElementEventMap>(
+  on<EventType extends keyof HTMLElementEventMap>(
     event: EventType,
-    listener: (this: SVGElement, e: SVGElementEventMap[EventType]) => void,
+    listener: (this: HTMLElement, e: HTMLElementEventMap[EventType]) => void,
   ) {
     if (!this.#events.has(event)) {
       this.#events.set(event, []);
@@ -135,9 +135,9 @@ export class ReactiveNode {
     }
   }
 
-  off<EventType extends keyof SVGElementEventMap>(
+  off<EventType extends keyof HTMLElementEventMap>(
     event?: EventType,
-    listener?: (this: SVGElement, e: SVGElementEventMap[EventType]) => void,
+    listener?: (this: HTMLElement, e: HTMLElementEventMap[EventType]) => void,
   ) {
     if (!event) {
       if (this.#element) {
@@ -168,9 +168,9 @@ export class ReactiveNode {
     }
   }
 
-  mount(el: SVGElement) {
+  mount(element: HTMLElement) {
     this.unmount();
-    this.#element = el;
+    this.#element = element;
     if (this.#element) {
       this.#events.forEach((listeners, event) =>
         listeners.forEach((listener) => this.#element!.addEventListener(event, listener, { passive: false })),
@@ -191,13 +191,13 @@ export class ReactiveNode {
 export function fromElement(node: Node) {
   if (node.nodeType === node.TEXT_NODE) {
     const text = (node.nodeValue || '').trim();
-    return text.length > 0 ? new ReactiveNode(node.nodeName, text) : undefined;
+    return text.length > 0 ? new Item(node.nodeName, text) : undefined;
   } else if (node instanceof Element) {
     const attributes: Attributes = {};
     for (const attr of node.attributes) {
       attributes[attr.name] = attr.value;
     }
-    const item = new ReactiveNode(node.nodeName, attributes);
+    const item = new Item(node.nodeName, attributes);
     for (const child of node.childNodes) {
       const childItem = fromElement(child);
       if (childItem) {

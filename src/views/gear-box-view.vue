@@ -16,7 +16,7 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="view" ref="root">
-    <ui-generic class="overlay" :model="model.root" />
+    <ui-item class="overlay" :model="model.root" />
     <div class="anchor top left flex">
       <ui-button class="button" @click.stop="model.check()">check</ui-button>
       <ui-button class="button" @click.stop="model.startRotation()">animate</ui-button>
@@ -67,7 +67,7 @@ $gear-selected: drop-shadow(0 0 0.1px rgba(black, 1));
     fill: #e0c000;
   }
   &.destination {
-    fill: #ff3020;
+    fill: #f03020;
   }
 }
 
@@ -97,6 +97,6 @@ $gear-selected: drop-shadow(0 0 0.1px rgba(black, 1));
   fill: #0050f0;
 }
 .fill-5 {
-  fill: #d06000;
+  fill: #e06000;
 }
 </style>
