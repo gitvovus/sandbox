@@ -1,16 +1,16 @@
 import { ref } from 'vue';
-import * as svg from '@/lib/svg';
+import * as bi from '@/lib/bi';
 
-const rotation = svg.Matrix2x3.rotation;
-const scale = svg.Matrix2x3.scale;
-const translation = svg.Matrix2x3.translation;
+const rotation = bi.Matrix2x3.rotation;
+const scale = bi.Matrix2x3.scale;
+const translation = bi.Matrix2x3.translation;
 
 export class Camera {
-  readonly #position = ref(new svg.Vector2(0, 0));
+  readonly #position = ref(new bi.Vector2(0, 0));
   readonly #rotation = ref(0);
-  readonly #scale = ref(new svg.Vector2(1, 1));
+  readonly #scale = ref(new bi.Vector2(1, 1));
 
-  constructor(options: { position?: svg.Vector2; rotation?: number; scale?: svg.Vector2 } = {}) {
+  constructor(options: { position?: bi.Vector2; rotation?: number; scale?: bi.Vector2 } = {}) {
     if (options.position) {
       this.position = options.position;
     }

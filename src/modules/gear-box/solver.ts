@@ -1,5 +1,5 @@
 import * as std from '@/lib/std';
-import * as svg from '@/lib/svg';
+import * as bi from '@/lib/bi';
 import { teethPerUnitRadius } from '@/modules/gear-box/drawings';
 import { type Actor, type Rotor, type ShapeType } from '@/modules/gear-box/shapes';
 
@@ -104,7 +104,7 @@ export class Solver {
             }
           } else {
             // sync rotation
-            const delta = new svg.Vector2(b.position.x - a.position.x, b.position.y - a.position.y);
+            const delta = new bi.Vector2(b.position.x - a.position.x, b.position.y - a.position.y);
             const angle = std.mod(Math.atan2(delta.y, delta.x), 2 * Math.PI);
 
             const aAngle = std.mod(angle - aData.rotation, 2 * Math.PI);
@@ -150,6 +150,6 @@ export class Solver {
   }
 
   #distance(a: Rotor, b: Rotor) {
-    return svg.distance(a.position, b.position);
+    return bi.distance(a.position, b.position);
   }
 }

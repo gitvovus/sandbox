@@ -1,4 +1,4 @@
-import { Vector2 } from '@/lib/svg';
+import { Vector2 } from '@/lib/bi';
 import { Item, type Attributes } from '@/lib/reactive';
 import { Camera } from '@/modules/svg/camera';
 import { Controller } from '@/modules/svg/controller';

@@ -1,5 +1,5 @@
 import { Item } from '@/lib/reactive';
-import { Vector2, length, normalize } from '@/lib/svg';
+import { Vector2, length, normalize } from '@/lib/bi';
 import { grid } from '@/modules/gear-box/drawings';
 import { Camera } from '@/modules/svg/camera';
 import { Controller } from '@/modules/svg/controller';

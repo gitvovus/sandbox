@@ -1,5 +1,5 @@
 import { Item } from '@/lib/reactive';
-import { Vector2, distance, length, normalize } from '@/lib/svg';
+import { Vector2, distance, length, normalize } from '@/lib/bi';
 import { Disposable, Mouse, clamp, onElementEvent, time } from '@/lib/std';
 import { Animation } from '@/lib/animation';
 import { drawBase, drawShaft, grid } from '@/modules/gear-box/drawings';

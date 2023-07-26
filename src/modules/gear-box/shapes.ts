@@ -1,4 +1,4 @@
-import * as svg from '@/lib/svg';
+import * as bi from '@/lib/bi';
 import { type Attributes, Item } from '@/lib/reactive';
 import { type Scene } from '@/modules/gear-box/scene';
 import { draw, type DrawingOptions } from '@/modules/gear-box/drawings';
@@ -11,14 +11,14 @@ export type RotorType = 'source' | 'mediator' | 'destination';
 export interface Actor {
   readonly radii: [number, number];
   readonly types: [ShapeType, ShapeType];
-  position: svg.Vector2;
+  position: bi.Vector2;
   rotation: number;
   rotor?: Rotor;
 }
 
 export interface Rotor {
   readonly type: RotorType;
-  readonly position: svg.Vector2;
+  readonly position: bi.Vector2;
   rotation: number;
   speed: number;
   actor?: Actor;
