@@ -5,7 +5,7 @@ defineProps<{ model: ControlsModel }>();
 
 <template>
   <div class="view cv-grid">
-    <div class="flex-col j-c a-c">
+    <div class="flex col j-c a-c">
       <div class="wire">
         <ui-button class="cv-button">test</ui-button>
         <ui-button class="cv-button">test</ui-button>
@@ -28,7 +28,6 @@ defineProps<{ model: ControlsModel }>();
   height: 1px;
   justify-content: center;
   align-items: flex-end;
-  // align-items: center;
 }
 
 .cv-grid {

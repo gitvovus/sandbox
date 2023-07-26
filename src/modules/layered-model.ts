@@ -13,7 +13,7 @@ export class LayeredModel extends ViewModel {
   constructor() {
     super('layered-view');
     this.#createScene();
-    this.#controller.setReferenceSize(this.#scene.width, this.#scene.height);
+    this.#controller.resize(this.#scene.width, this.#scene.height);
   }
 
   mount(element: HTMLElement) {

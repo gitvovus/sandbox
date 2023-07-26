@@ -17,45 +17,36 @@ onBeforeUnmount(() => {
 <template>
   <div class="view" ref="root">
     <ui-item class="overlay" :model="model.root" />
-    <div class="anchor top left flex">
+    <div class="anchor top right flex">
       <ui-button class="button" @click.stop="model.check()">check</ui-button>
       <ui-button class="button" @click.stop="model.startRotation()">animate</ui-button>
       <ui-button class="button" @click.stop="model.stopRotation()">stop</ui-button>
     </div>
-    <!-- <info-view class="debug anchor bottom left" :model="model.info" /> -->
+    <!-- <info-view class="debug anchor bottom left m-05" :model="model.info" /> -->
     <slot />
   </div>
 </template>
 
 <style lang="scss">
-.flex-col {
-  display: flex;
-  flex-direction: column;
-}
-
-.debug {
-  background: rgba(black, 0.1);
-  border-radius: 0.5em;
-  margin: 0.25em;
-  padding: 0.5em;
-}
-
 $shape-shadow: drop-shadow(0 0 0.04px rgba(black, 0.5));
 $shaft-shadow: drop-shadow(0 0 0.1px black);
 $gear-selected: drop-shadow(0 0 0.1px rgba(black, 1));
 
+.shaft-back {
+  &.powered {
+    fill: url(#shaft-back-powered);
+  }
+  &.unpowered {
+    fill: url(#shaft-back-unpowered);
+  }
+  &.unpowered.destination {
+    fill: url(#shaft-back-unpowered-destination);
+  }
+}
+
 .shaft-base {
   fill: #506070;
   filter: $shape-shadow;
-  &.powered {
-    filter: drop-shadow(0 0 1px #40ff00) $shape-shadow;
-  }
-  &.unpowered {
-    filter: drop-shadow(0 0 1px rgba(white, 0.75)) $shape-shadow;
-  }
-  &.unpowered.destination {
-    filter: drop-shadow(0 0 1px #ff3000) $shape-shadow;
-  }
 }
 
 .shaft {
@@ -98,5 +89,8 @@ $gear-selected: drop-shadow(0 0 0.1px rgba(black, 1));
 }
 .fill-5 {
   fill: #e06000;
+}
+.fill-6 {
+  fill: #e080b0;
 }
 </style>

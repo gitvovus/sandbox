@@ -23,7 +23,7 @@ export class Scene {
 
   readonly #shadowFill = '#00000030';
 
-  constructor(id: string, width: number, height: number, layersCount: number, offset: number) {
+  constructor(id: string, width: number, height: number, layers: number, offset: number, shadows: boolean = true) {
     this.id = id;
     this.#width = width;
     this.#height = height;
@@ -39,11 +39,11 @@ export class Scene {
       height,
       fill: this.#shadowFill,
     });
-    this.#defs.add(this.#shadow);
+    if (shadows) this.#defs.add(this.#shadow);
 
     this.#content.add(this.#background);
 
-    for (let i = 0; i < layersCount; ++i) {
+    for (let i = 0; i < layers; ++i) {
       const filter = new Item('mask', { id: `${this.id}:filter:${i}` });
       this.#filters.push(filter);
       if (i > 0) {
@@ -58,20 +58,18 @@ export class Scene {
         mask.add(new Item('g', { fill: 'white', mask: `url(#${filter.attributes.id})` }));
       }
 
-      this.#defs.add(filter, mask);
+      if (shadows) this.#defs.add(filter, mask);
 
       const layer = new Item('g');
       this.#layers.push(layer);
       this.#content.add(layer);
 
-      if (i < layersCount - 1) {
+      if (shadows && i < layers - 1) {
         this.#content.add(this.#use(this.#shadow, { mask: `url(#${mask.attributes.id})` }));
       }
     }
 
-    this.#content.add(this.#overlay);
-
-    this.root.add(this.#defs, this.#content);
+    this.root.add(this.#defs, this.#content, this.#overlay);
   }
 
   get width() {
@@ -88,6 +86,10 @@ export class Scene {
 
   get background() {
     return this.#background;
+  }
+
+  get overlay() {
+    return this.#overlay;
   }
 
   addDefs(...defs: Item[]) {

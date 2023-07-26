@@ -1,6 +1,3 @@
-import { ref, shallowReactive } from 'vue';
-import * as std from '@/lib/std';
-
 export type ViewBox = { left: number; top: number; width: number; height: number };
 
 export type Vector2Elements = [number, number];
@@ -50,6 +47,11 @@ export function squareLength(v: Vector2) {
 
 export function length(v: Vector2) {
   return Math.sqrt(squareLength(v));
+}
+
+export function normalize(v: Vector2) {
+  const rl = 1 / length(v);
+  return new Vector2(v.x * rl, v.y * rl);
 }
 
 export class Matrix2x3 {

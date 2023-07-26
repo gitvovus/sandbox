@@ -1,10 +1,12 @@
-import { ref, watchEffect } from 'vue';
+import { shallowReactive, watchEffect } from 'vue';
 
 import * as re from '@/lib/reactive';
 import * as std from '@/lib/std';
 import * as svg from '@/lib/svg';
 
+import { Animation } from '@/lib/animation';
 import { Camera } from '@/modules/svg/camera';
+import { time } from '@/lib/std';
 
 export enum Gesture {
   NONE,
@@ -14,30 +16,31 @@ export enum Gesture {
 
 export type ControllerConfig = {
   pan: boolean;
-  scale: boolean;
+  zoom: boolean;
   rotate: boolean;
-  minScale: number;
-  maxScale: number;
+  minZoom: number;
+  maxZoom: number;
 };
 
 export type ControllerOptions = Partial<ControllerConfig>;
 
-const config: ControllerConfig = {
+const defaultConfig: ControllerConfig = {
   pan: true,
-  scale: true,
+  zoom: true,
   rotate: true,
-  minScale: 0.25,
-  maxScale: 4,
+  minZoom: 0.25,
+  maxZoom: 4,
 };
 
-export class Controller extends std.Disposable {
+export class Controller implements std.IDisposable {
   #config: ControllerConfig;
+  #disposer = new std.Disposable();
 
-  #width = ref(2);
-  #height = ref(2);
-  #referenceWidth = ref(2);
-  #referenceHeight = ref(2);
-  #viewBox: svg.ViewBox = { left: -1, top: -1, width: 2, height: 2 };
+  #cw = 0;
+  #ch = 0;
+  #vw = 2;
+  #vh = 2;
+  #viewBox = shallowReactive<svg.ViewBox>({ left: -1, top: -1, width: 2, height: 2 });
 
   #element?: HTMLElement;
   #root: re.Item;
@@ -52,60 +55,49 @@ export class Controller extends std.Disposable {
   #pickedRotation = 0;
   #pickedTransform = new svg.Matrix2x3(1, 0, 0, 1, 0, 0);
 
+  #zoomAnimation = new Animation();
+  #zoomStart = 0;
+  #zoomDuration = 0.25;
+  #zoomFrom = 0;
+  #zoomTo = 0;
+  #zoomPosition = new svg.Vector2(0, 0);
+
+  #resetAnimation = new Animation();
+  #resetStart = 0;
+  #resetDuration = 0.25;
+  #resetPosition = new svg.Vector2(0, 0);
+  #resetRotation = 0;
+  #resetZoom = 1;
+
   constructor(root: re.Item, scene: re.Item, camera: Camera, options?: ControllerOptions) {
-    super();
-    this.#config = Object.assign({ ...config }, options);
+    this.#config = Object.assign({ ...defaultConfig }, options);
     this.#root = root;
     this.#scene = scene;
     this.#camera = camera;
     this.#defaultCamera = camera.clone();
   }
 
-  get width() {
-    return this.#width.value;
+  get viewBox() {
+    return this.#viewBox;
   }
 
-  set width(value) {
-    this.#width.value = value;
-  }
-
-  get height() {
-    return this.#height.value;
-  }
-
-  set height(value) {
-    this.#height.value = value;
-  }
-
-  get referenceWidth() {
-    return this.#referenceWidth.value;
-  }
-
-  set referenceWidth(value) {
-    this.#referenceWidth.value = value;
-  }
-
-  get referenceHeight() {
-    return this.#referenceHeight.value;
-  }
-
-  set referenceHeight(value) {
-    this.#referenceHeight.value = value;
+  dispose(): void {
+    this.#disposer.dispose();
   }
 
   mount(element: HTMLElement) {
     this.#element = element;
-    this.addDisposers(
+    this.#disposer.addDisposers(
+      () => (this.#element = undefined),
+      () => this.#zoomAnimation.stop(),
+      () => this.#resetAnimation.stop(),
       std.onElementEvent(element, 'dblclick', () => this.reset()),
       std.onElementEvent(element, 'pointerdown', this.#pick),
       std.onElementEvent(element, 'pointermove', this.#drag),
       std.onElementEvent(element, 'pointerup', this.#drop),
       std.onElementEvent(element, 'wheel', this.#wheel, { passive: false }),
-      std.onAnimationFrame(this.#updateViewBox),
-      watchEffect(() => {
-        this.#scene.attributes.transform = svg.toTransform(this.#camera.inverseTransform);
-      }),
-      () => (this.#element = undefined),
+      std.onAnimationFrame(this.#update),
+      watchEffect(() => (this.#scene.attributes.transform = svg.toTransform(this.#camera.inverseTransform))),
     );
   }
 
@@ -114,49 +106,99 @@ export class Controller extends std.Disposable {
   }
 
   reset() {
-    this.#camera.position = this.#defaultCamera.position;
-    this.#camera.rotation = this.#defaultCamera.rotation;
-    this.#camera.scale = this.#defaultCamera.scale;
+    if (this.#resetAnimation.isActive()) return;
+    this.#resetStart = time();
+    this.#resetPosition = this.#camera.position;
+    this.#resetRotation = this.#camera.rotation;
+    if (this.#resetRotation > Math.PI) {
+      this.#resetRotation -= 2 * Math.PI;
+    }
+    this.#resetZoom = this.#camera.scale.x / this.#defaultCamera.scale.x;
+    this.#zoomAnimation.stop();
+    this.#resetAnimation.start(this.#resetFrame);
   }
 
-  setReferenceSize(width: number, height: number) {
-    this.referenceWidth = width;
-    this.referenceHeight = height;
+  resize(width: number, height: number) {
+    this.#vw = width;
+    this.#vh = height;
   }
 
   toCamera(e: MouseEvent) {
     const { x, y } = std.elementOffset(this.#element!, e);
     return new svg.Vector2(
-      this.#viewBox.left + (this.#viewBox.width * x) / this.width,
-      this.#viewBox.top + (this.#viewBox.height * y) / this.height,
+      this.#viewBox.left + (this.#viewBox.width * x) / this.#cw,
+      this.#viewBox.top + (this.#viewBox.height * y) / this.#ch,
     );
   }
 
-  readonly #updateViewBox = () => {
+  readonly #update = () => {
     const width = this.#element!.clientWidth;
     const height = this.#element!.clientHeight;
-    if (width === this.width && height === this.height) {
+    if (width === this.#cw && height === this.#ch) {
       return;
     }
 
-    this.width = width;
-    this.height = height;
+    this.#cw = width;
+    this.#ch = height;
     if (width === 0 || height === 0) {
       return;
     }
 
-    const widthScale = width / this.referenceWidth;
-    const heightScale = height / this.referenceHeight;
+    const widthScale = width / this.#vw;
+    const heightScale = height / this.#vh;
     let w, h;
     if (widthScale < heightScale) {
-      w = this.referenceWidth;
-      h = (this.referenceHeight * heightScale) / widthScale;
+      w = this.#vw;
+      h = (this.#vh * heightScale) / widthScale;
     } else {
-      w = (this.referenceWidth * widthScale) / heightScale;
-      h = this.referenceHeight;
+      w = (this.#vw * widthScale) / heightScale;
+      h = this.#vh;
     }
     this.#viewBox = { left: -w / 2, top: -h / 2, width: w, height: h };
     this.#root.attributes.viewBox = svg.toViewBox(this.#viewBox);
+  };
+
+  #resetFrame = (dt: number) => {
+    let k = (time() - this.#resetStart) / this.#resetDuration;
+    if (k >= 1) {
+      this.#resetAnimation.stop();
+      k = 1;
+    }
+    this.#camera.position = new svg.Vector2(std.mix(this.#resetPosition.x, 0, k), std.mix(this.#resetPosition.y, 0, k));
+    this.#camera.rotation = std.mix(this.#resetRotation, 0, k);
+    const zoom = std.mix(this.#resetZoom, 1, k);
+    const scale = this.#defaultCamera.scale;
+    this.#camera.scale = new svg.Vector2(scale.x * zoom, scale.y * zoom);
+  };
+
+  #setZoom(zoom: number) {
+    // this.#zoom = zoom;
+    const scale = this.#defaultCamera.scale;
+    const newScale = new svg.Vector2(scale.x * zoom, scale.y * zoom);
+    const newCamera = new Camera({
+      position: this.#camera.position,
+      rotation: this.#camera.rotation,
+      scale: newScale,
+    });
+
+    const oldPos = this.#camera.transform.transform(this.#zoomPosition);
+    const newPos = newCamera.transform.transform(this.#zoomPosition);
+
+    this.#camera.position = new svg.Vector2(
+      this.#camera.position.x + oldPos.x - newPos.x,
+      this.#camera.position.y + oldPos.y - newPos.y,
+    );
+    this.#camera.scale = newScale;
+  }
+
+  readonly #zoomFrame = (dt: number) => {
+    let k = (std.time() - this.#zoomStart) / this.#zoomDuration;
+    if (k >= 1) {
+      k = 1;
+      this.#zoomAnimation.stop();
+    }
+    const zoom = std.mix(this.#zoomFrom, this.#zoomTo, k);
+    this.#setZoom(zoom);
   };
 
   readonly #pick = (e: PointerEvent) => {
@@ -200,31 +242,18 @@ export class Controller extends std.Disposable {
   };
 
   readonly #wheel = (e: WheelEvent) => {
-    if (!this.#config.scale) return;
+    if (!this.#config.zoom) return;
 
     e.preventDefault();
 
-    const k = e.deltaY < 0 ? 7 / 8 : 8 / 7;
-    const zoom =
-      std.clamp(Math.abs(this.#camera.scale.x * k), this.#config.minScale, this.#config.maxScale) /
-      Math.abs(this.#camera.scale.x);
+    const k = e.deltaY < 0 ? 0.8 : 1.25;
 
-    const newScale = new svg.Vector2(this.#camera.scale.x * zoom, this.#camera.scale.y * zoom);
-
-    const newCamera = new Camera({
-      position: this.#camera.position,
-      rotation: this.#camera.rotation,
-      scale: newScale,
-    });
-
-    const cameraPos = this.toCamera(e);
-    const oldPos = this.#camera.transform.transform(cameraPos);
-    const newPos = newCamera.transform.transform(cameraPos);
-
-    this.#camera.position = new svg.Vector2(
-      this.#camera.position.x + oldPos.x - newPos.x,
-      this.#camera.position.y + oldPos.y - newPos.y,
-    );
-    this.#camera.scale = newScale;
+    this.#zoomFrom = this.#camera.scale.x / this.#defaultCamera.scale.x;
+    this.#zoomTo = std.clamp(k * this.#zoomFrom, this.#config.minZoom, this.#config.maxZoom);
+    this.#zoomStart = std.time();
+    this.#zoomPosition = this.toCamera(e);
+    this.#zoomAnimation.stop();
+    this.#resetAnimation.stop();
+    this.#zoomAnimation.start(this.#zoomFrame);
   };
 }

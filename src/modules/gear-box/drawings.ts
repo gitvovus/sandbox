@@ -75,7 +75,7 @@ function cuts(data: DrawingData) {
 
 export function drawBase(radius?: number) {
   const r = f3(radius || defaultData.baseRadius);
-  return `M${r} 0A${r} ${r} 0 0 1 -${r} 0A${r} ${r} 0 0 1 ${r} 0`;
+  return `M${r} 0A${r} ${r} 0 0 1 -${r} 0A${r} ${r} 0 0 1 ${r} 0z`;
 }
 
 export function drawShaft(radius?: number) {
@@ -160,16 +160,20 @@ export function draw(type: ShapeType, options: DrawingOptions) {
   }
 }
 
-export function grid(size: number, step: number, strokeWidth: number, stroke: string) {
+export function grid(width: number, height: number, step: number, strokeWidth: number, stroke: string) {
   const grid = new Item('g', { stroke, 'stroke-width': strokeWidth });
-  const x = -size / 2;
-  const s = -2 * x;
-  const n = Math.floor(size / step / 2);
-  for (let i = -n; i <= n; ++i) {
-    grid.add(
-      new Item('path', { d: `M${x} ${i * step}h${s}`, 'vector-effect': 'non-scaling-stroke' }),
-      new Item('path', { d: `M${i * step} ${x}v${s}`, 'vector-effect': 'non-scaling-stroke' }),
-    );
+  const x = -width / 2;
+  const y = -height / 2;
+  const nx = Math.floor(width / step / 2);
+  const ny = Math.floor(height / step / 2);
+
+  for (let i = -nx; i <= nx; ++i) {
+    grid.add(new Item('path', { d: `M${i * step} ${y}v${height}`, 'vector-effect': 'non-scaling-stroke' }));
   }
+
+  for (let i = -ny; i <= ny; ++i) {
+    grid.add(new Item('path', { d: `M${x} ${i * step}h${width}`, 'vector-effect': 'non-scaling-stroke' }));
+  }
+
   return grid;
 }

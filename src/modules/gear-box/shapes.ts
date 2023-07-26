@@ -58,6 +58,7 @@ export class Shape {
 
 export class Shaft implements Rotor {
   readonly #scene: Scene;
+  readonly #back: Transformable;
   readonly #base: Transformable;
   readonly #shaft: Transformable;
 
@@ -66,24 +67,12 @@ export class Shaft implements Rotor {
   #speed = 0;
   #actor?: Actor;
 
-  constructor(type: RotorType, scene: Scene, base: Item, shaft: Item, index: number) {
+  constructor(type: RotorType, scene: Scene, back: Item, base: Item, shaft: Item, index: number) {
     this.#type = type;
     this.#scene = scene;
-    this.#base = useT(base, { id: `ref:shaft-base:${index}`, class: `shaft-base ${type}` });
+    this.#back = useT(back, { id: `ref:shaft-back:${index}`, class: `shaft-back ${type}` });
+    this.#base = useT(base, { id: `ref:shaft-base:${index}`, class: `shaft-base` });
     this.#shaft = useT(shaft, { id: `ref:shaft:${index}`, class: `shaft ${type}` });
-  }
-
-  addToScene() {
-    this.#scene.addDefs(this.#base, this.#shaft);
-    this.#scene.addToGround(use(this.#base));
-    this.#scene.addToGround(use(this.#shaft), false);
-  }
-
-  removeFromScene() {
-    [this.#base, this.#shaft].forEach((item) => {
-      this.#scene.remove(item.attributes.href!);
-      this.#scene.removeDef(item.attributes.id!);
-    });
   }
 
   get position() {
@@ -91,7 +80,7 @@ export class Shaft implements Rotor {
   }
 
   set position(value) {
-    this.#base.position = this.#shaft.position = value;
+    this.#back.position = this.#base.position = this.#shaft.position = value;
   }
 
   get rotation() {
@@ -114,7 +103,7 @@ export class Shaft implements Rotor {
 
   set speed(value) {
     if ((this.#speed !== 0) !== (value !== 0)) {
-      const a = this.#base.attributes;
+      const a = this.#back.attributes;
       if (value !== 0) {
         a.class = changeClasses(a.class!, { add: ['powered'], remove: ['unpowered'] });
       } else {
@@ -149,6 +138,20 @@ export class Shaft implements Rotor {
       value.position = this.position;
     }
   }
+
+  addToScene() {
+    this.#scene.addDefs(this.#back, this.#base, this.#shaft);
+    this.#scene.addToGround(use(this.#back));
+    this.#scene.addToGround(use(this.#base));
+    this.#scene.addToGround(use(this.#shaft), false);
+  }
+
+  removeFromScene() {
+    [this.#back, this.#base, this.#shaft].forEach((item) => {
+      this.#scene.remove(item.attributes.href!);
+      this.#scene.removeDef(item.attributes.id!);
+    });
+  }
 }
 
 export class Gear implements Actor {
@@ -178,6 +181,14 @@ export class Gear implements Actor {
     this.#types = [lower.type, upper.type];
   }
 
+  get radii() {
+    return this.#radii;
+  }
+
+  get types() {
+    return this.#types;
+  }
+
   get position() {
     return this.#refs[0].position;
   }
@@ -192,6 +203,31 @@ export class Gear implements Actor {
 
   set rotation(value) {
     this.#refs.forEach((ref) => (ref.rotation = value));
+  }
+
+  get rotor() {
+    return this.#rotor;
+  }
+
+  // shaft leads, gear follows
+  set rotor(value) {
+    const prev = this.#rotor;
+    if (prev === value) {
+      if (prev) {
+        this.position = prev.position;
+      }
+      return;
+    }
+
+    this.#rotor = value;
+
+    if (prev && prev.actor === this) {
+      prev.actor = undefined;
+    }
+
+    if (value && value.actor !== this) {
+      value.actor = this;
+    }
   }
 
   select() {
@@ -238,39 +274,6 @@ export class Gear implements Actor {
   #addLayers() {
     for (let i = 0; i < 2; ++i) {
       this.#scene.addToLayer(this.#visuals[i], i + 1);
-    }
-  }
-
-  get radii() {
-    return this.#radii;
-  }
-
-  get types() {
-    return this.#types;
-  }
-
-  get rotor() {
-    return this.#rotor;
-  }
-
-  // shaft leads, gear follows
-  set rotor(value) {
-    const prev = this.#rotor;
-    if (prev === value) {
-      if (prev) {
-        this.position = prev.position;
-      }
-      return;
-    }
-
-    this.#rotor = value;
-
-    if (prev && prev.actor === this) {
-      prev.actor = undefined;
-    }
-
-    if (value && value.actor !== this) {
-      value.actor = this;
     }
   }
 }

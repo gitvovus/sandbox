@@ -1,5 +1,6 @@
 import { ref } from 'vue';
 
+import { performanceTestDuration, testPerformance } from '@/lib/system';
 import { ControlsModel } from '@/modules/controls-model';
 import { ReactiveModel } from '@/modules/reactive-model';
 import { GearBoxModel } from '@/modules/gear-box-model';
@@ -30,6 +31,8 @@ export class AppModel extends ViewModel {
 
   constructor() {
     super('app-view');
+    // testPerformance();
+    // console.log(`${performanceTestDuration?.toFixed()}ms`);
   }
 
   get toolBarAlignment() {

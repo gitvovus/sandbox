@@ -1,5 +1,6 @@
 import { Item } from '@/lib/reactive';
-import { Vector2 } from '@/lib/svg';
+import { Vector2, length, normalize } from '@/lib/svg';
+import { grid } from '@/modules/gear-box/drawings';
 import { Camera } from '@/modules/svg/camera';
 import { Controller } from '@/modules/svg/controller';
 import { ViewModel } from '@/modules/view-model';
@@ -47,31 +48,54 @@ class PathBuilder {
   }
 }
 
-function tri() {
-  const path = new PathBuilder(0);
-  return path.M(2, 0, -1, 1, -1, -1).get();
-}
-
 const x = (r: number, a: number) => r * Math.cos(a);
 const y = (r: number, a: number) => r * Math.sin(a);
 const f = (n: number) => n.toFixed(3);
+const v2 = (x: number, y: number) => new Vector2(x, y);
 
 export class SvgModel extends ViewModel {
   root = new Item('svg');
+  defs = new Item('defs');
+  gradients: Item[] = [];
   content = new Item('g');
 
-  #camera = new Camera({ scale: new Vector2(1, -1) });
+  #camera = new Camera({ scale: v2(1, -1) });
   #controller = new Controller(this.root, this.content, this.#camera);
 
   #element?: HTMLElement;
-  #s = 1.3;
+  #s = 24.8;
+
+  #styleIndex = 0;
+  #styles = ['gradient-green', 'gradient-yellow', 'gradient-red'];
+  #styledCircle = new Item('circle', { cx: 0, cy: 0, r: 3, class: this.#styles[this.#styleIndex] });
 
   constructor() {
     super('svg-view');
-    this.root.add(this.content);
+
+    (<[string, string][]>[
+      ['green', '#00ff00'],
+      ['yellow', '#c0c000'],
+      ['red', '#ff0000'],
+    ]).forEach(([name, fill]) => {
+      const g = new Item('radialGradient', { id: `gradient-${name}` });
+      g.add(
+        new Item('stop', { offset: 0.2, 'stop-color': `${fill}40` }),
+        new Item('stop', { offset: 1, 'stop-color': `${fill}00` }),
+      );
+      this.gradients.push(g);
+    });
+
+    this.defs.add(...this.gradients);
+
     this.#createStatic();
     this.#createScene();
-    this.#controller.setReferenceSize(this.#s, this.#s);
+    this.root.add(this.defs, this.content);
+    this.#controller.resize(this.#s, this.#s);
+  }
+
+  test() {
+    this.#styleIndex = (this.#styleIndex + 1) % this.#styles.length;
+    this.#styledCircle.attributes.class = this.#styles[this.#styleIndex];
   }
 
   mount(element: HTMLElement) {
@@ -84,31 +108,99 @@ export class SvgModel extends ViewModel {
     this.#controller.unmount();
   }
 
-  test() {}
-
-  #grid(size: number, step: number, strokeWidth: number, stroke: string) {
-    const grid = new Item('g', { stroke, 'stroke-width': strokeWidth });
-    const x = -size / 2;
-    const s = -2 * x;
-    const n = Math.floor(size / step / 2);
-    for (let i = -n; i <= n; ++i) {
-      grid.add(
-        new Item('path', { d: `M${x} ${i * step}h${s}`, 'vector-effect': 'non-scaling-stroke' }),
-        new Item('path', { d: `M${i * step} ${x}v${s}`, 'vector-effect': 'non-scaling-stroke' }),
-      );
-    }
-    return grid;
-  }
-
   #createStatic() {
     this.content.add(
-      this.#grid(this.#s, 0.1, 1, '#00000010'),
-      this.#grid(this.#s, 0.5, 1, '#00000030'),
-      this.#grid(this.#s, 1.0, 1, '#000000'),
+      grid(this.#s, this.#s, 1, 1, '#00000020'),
+      grid(this.#s, this.#s, 5, 1, '#00000040'),
+      grid(this.#s, this.#s, 10, 1, '#000000'),
     );
   }
 
   #createScene() {
+    this.#createLevel();
+    this.#createGradient();
+    // this.#createGear();
+  }
+
+  #createLevel() {
+    const s = [v2(0, 0)];
+    const m: Vector2[] = [];
+    const d: Vector2[] = [];
+
+    m.push(this.#fromOne(s[0], v2(3, 4), 10));
+    d.push(this.#fromTwo(s[0], m[0], 6, 8));
+    d.push(this.#fromTwo(m[0], s[0], 8, 6));
+
+    const sw = 2;
+    const mw = 2;
+    const dw = 2;
+
+    let x = 0;
+    let y = 0;
+    let w = sw * s.length + mw * m.length + dw * d.length;
+
+    s.forEach((v) => {
+      x += sw * v.x;
+      y += sw * v.y;
+    });
+    m.forEach((v) => {
+      x += mw * v.x;
+      y += mw * v.y;
+    });
+    d.forEach((v) => {
+      x += dw * v.x;
+      y += dw * v.y;
+    });
+
+    x /= w;
+    y /= w;
+
+    s.forEach((v) => {
+      v.x -= x;
+      v.y -= y;
+    });
+    m.forEach((v) => {
+      v.x -= x;
+      v.y -= y;
+    });
+    d.forEach((v) => {
+      v.x -= x;
+      v.y -= y;
+    });
+
+    const g = new Item('g');
+    s.forEach((v) => g.add(this.#circle(v, '#20c00080')));
+    m.forEach((v) => g.add(this.#circle(v, '#e0e02080')));
+    d.forEach((v) => g.add(this.#circle(v, '#f0200080')));
+    this.content.add(g);
+  }
+
+  #fromOne(a: Vector2, direction: Vector2, distance: number) {
+    const d = normalize(direction);
+    return v2(a.x + d.x * distance, a.y + d.y * distance);
+  }
+
+  #fromTwo(a: Vector2, b: Vector2, da: number, db: number) {
+    const ab = v2(b.x - a.x, b.y - a.y);
+    const d = length(ab);
+    const x = (d * d + da * da - db * db) / (2 * d);
+    const y = Math.sqrt(da * da - x * x);
+
+    const dx = v2((ab.x * x) / d, (ab.y * x) / d);
+    const dy = v2((-ab.y * y) / d, (ab.x * y) / d);
+
+    return v2(a.x + dx.x + dy.x, a.y + dx.y + dy.y);
+  }
+
+  #circle(v: Vector2, fill: string) {
+    return new Item('circle', { cx: v.x, cy: v.y, r: 0.4, fill });
+  }
+
+  #createGradient() {
+    this.content.add(this.#styledCircle);
+  }
+
+  #createGear() {
     const r = 5;
     const cx = -r;
     const cy = 0;
@@ -122,68 +214,65 @@ export class SvgModel extends ViewModel {
       ref.push(`A ${f(r)} ${f(r)} 0 0 1 ${f(cx + x(r, a))} ${f(cy + y(r, a))}`);
     }
 
-    const g = new Item('g', { fill: 'none', stroke: 'gray', 'stroke-width': 0.005 });
+    const g1 = new Item('g', { fill: 'none', stroke: 'gray', 'stroke-width': 0.01 });
+    const g2 = new Item('g', {
+      fill: 'none',
+      stroke: 'gray',
+      'stroke-width': 0.01,
+      transform: 'scale(1, -1) translate(0.5 0)',
+    });
 
-    g.add(
-      // new Item('path', {
-      //   d: `M ${f(cx + x(r, d0))} ${f(cy + y(r, d0))} A ${f(r)} ${f(r)} 0 0 1 ${f(cx + x(r, -d0))} ${f(cy + y(r, -d0))}`,
-      // }),
+    g1.add(new Item('path', { d: this.#gear() }));
+    g2.add(new Item('path', { d: this.#gear() }));
 
-      // new Item('path', { d: 'M -2,2 C -1.5,2 -1.5,2 -1,0 C -0.5,-2 -0.5,-2 0,-2' }),
-      new Item('path', { d: this.#gear(), transform: 'translate(-0.5, -5)' }),
-
-      // new Item('path', { d: ref.join(''), fill: 'none', stroke: 'gray', 'stroke-width': 0.02 }),
-    );
-
-    this.content.add(g);
+    this.content.add(g1, g2);
   }
 
   #gear() {
-    const r = 5;
-    const h = 1;
-    const m = 0.1;
-    const rr = r - 0.5 * h;
-    const rb = rr + m;
-    const rt = r + 0.5 * h - m;
-    const rq = rt - 0.5 * m;
-    const rbq = rq - rb;
-    const rqt = rt - rq;
+    const p: [number, number][] = [
+      [0.0, 0.0],
+      [0.26, 0.4],
+      [0.42, 0.9],
+    ];
+    for (let i = p.length - 1; i >= 0; --i) {
+      p.push([1 - p[i][0], p[i][1]]);
+    }
+    for (let i = 0; i < p.length; ++i) {
+      p[i][0] -= 0.5;
+      p[i][1] -= 0.5;
+    }
 
-    const d = 1;
-    const ab = 0.21 * d;
-    // const am = 0.30 * d;
-    const aq = 0.36 * d;
-    const at = 0.5 * d;
-    const abq = aq - ab;
-    const aqt = at - aq;
+    const c: [number, number][] = [
+      [0.19, 0.0],
+      [0.19, 0.0],
+      [0.37, 0.88],
+      [0.37, 0.88],
+      [0.5, 0.91],
+    ];
+    for (let i = c.length - 1; i >= 0; --i) {
+      c.push([1 - c[i][0], c[i][1]]);
+    }
+    for (let i = 0; i < c.length; ++i) {
+      c[i][0] -= 0.5;
+      c[i][1] -= 0.5;
+    }
 
-    this.content.add(
-      new Item('circle', {
-        cx: d - ab - 0.15 * abq,
-        cy: rb + 0.1 * rbq,
-        fill: 'orange',
-        transform: 'translate(-0.5, -5)',
-        r: 0.01,
-      }),
-      new Item('circle', {
-        cx: d - ab - 0.15 * abq,
-        cy: rb + 0.1 * rbq,
-        fill: 'orange',
-        transform: 'translate(-0.5, -5)',
-        r: 0.01,
-      }),
-    );
+    const gp = new Item('g', { fill: 'darkred' });
+    p.forEach(([x, y]) => gp.add(new Item('circle', { cx: x, cy: y, r: 0.01 })));
+
+    const gc = new Item('g', { fill: 'orange' });
+    c.forEach(([x, y]) => gc.add(new Item('circle', { cx: x, cy: y, r: 0.01 })));
+
+    this.content.add(gc);
+    this.content.add(gp);
 
     return new PathBuilder()
-      .M(0, rr)
-      .C(0.4 * ab, rr, 0.85 * ab, rr, ab, rb)
-
-      .C(ab + 0.15 * abq, rb + 0.1 * rbq, ab + 0.65 * abq, rb + 0.9 * rbq, aq, rq)
-      .C(aq + 0.15 * aqt, rq + 0.7 * rqt, d - aq - 0.15 * aqt, rq + 0.7 * rqt, d - aq, rq)
-
-      .C(d - ab - 0.15 * abq, rb + 0.1 * rbq, d - ab - 0.65 * abq, rb + 0.9 * rbq, d - ab, rb)
-
-      .C(d - 0.4 * ab, rr, d - 0.85 * ab, rr, d, rr)
+      .M(...p[0])
+      .C(...c[0], ...c[1], ...p[1])
+      .C(...c[2], ...c[3], ...p[2])
+      .C(...c[4], ...c[5], ...p[3])
+      .C(...c[6], ...c[7], ...p[4])
+      .C(...c[8], ...c[9], ...p[5])
       .get();
   }
 }
