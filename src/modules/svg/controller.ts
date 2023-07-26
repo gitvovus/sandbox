@@ -8,6 +8,8 @@ import { Animation } from '@/lib/animation';
 import { Camera } from '@/modules/svg/camera';
 import { time } from '@/lib/std';
 
+export type ViewBox = { left: number; top: number; width: number; height: number };
+
 export enum Gesture {
   NONE,
   DRAG,
@@ -40,7 +42,7 @@ export class Controller implements std.IDisposable {
   #ch = 0;
   #vw = 2;
   #vh = 2;
-  #viewBox = shallowReactive<svg.ViewBox>({ left: -1, top: -1, width: 2, height: 2 });
+  #viewBox = shallowReactive<ViewBox>({ left: -1, top: -1, width: 2, height: 2 });
 
   #element?: HTMLElement;
   #root: re.Item;
@@ -155,7 +157,7 @@ export class Controller implements std.IDisposable {
       h = this.#vh;
     }
     this.#viewBox = { left: -w / 2, top: -h / 2, width: w, height: h };
-    this.#root.attributes.viewBox = svg.toViewBox(this.#viewBox);
+    this.#root.attributes.viewBox = `${this.#viewBox.left} ${this.#viewBox.top} ${w} ${h}`;
   };
 
   #resetFrame = (dt: number) => {
@@ -172,7 +174,6 @@ export class Controller implements std.IDisposable {
   };
 
   #setZoom(zoom: number) {
-    // this.#zoom = zoom;
     const scale = this.#defaultCamera.scale;
     const newScale = new svg.Vector2(scale.x * zoom, scale.y * zoom);
     const newCamera = new Camera({
@@ -252,7 +253,6 @@ export class Controller implements std.IDisposable {
     this.#zoomTo = std.clamp(k * this.#zoomFrom, this.#config.minZoom, this.#config.maxZoom);
     this.#zoomStart = std.time();
     this.#zoomPosition = this.toCamera(e);
-    this.#zoomAnimation.stop();
     this.#resetAnimation.stop();
     this.#zoomAnimation.start(this.#zoomFrame);
   };

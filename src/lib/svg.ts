@@ -1,5 +1,3 @@
-export type ViewBox = { left: number; top: number; width: number; height: number };
-
 export type Vector2Elements = [number, number];
 export type Matrix2x3Elements = [number, number, number, number, number, number];
 
@@ -114,8 +112,4 @@ export class Matrix2x3 {
 
 export function toTransform(matrix: Matrix2x3) {
   return `matrix(${matrix.elements.join(' ')})`;
-}
-
-export function toViewBox({ left, top, width, height }: ViewBox) {
-  return `${left} ${top} ${width} ${height}`;
 }
