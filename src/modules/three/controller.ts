@@ -14,16 +14,15 @@ export interface Options {
 }
 
 export class Controller implements std.IDisposable {
-  lookAt = new tri.Vector3(0, 0, 0);
-  radius = 6;
-  phi = 0;
-  theta = 0;
-  zoom = 1;
-
-  minRadius = 2;
-  maxRadius = 10;
-  movementSpeed = 10;
-  rotationSpeed = 1;
+  #phi = 0;
+  #theta = 0;
+  #radius = 6;
+  #lookAt = new tri.Vector3(0, 0, 0);
+  #zoom = 1;
+  #minRadius = 2;
+  #maxRadius = 10;
+  #movementSpeed = 10;
+  #rotationSpeed = 1;
 
   #element?: HTMLElement;
   #disposer = new std.Disposable();
@@ -42,17 +41,26 @@ export class Controller implements std.IDisposable {
   #panY = new tri.Vector3();
 
   constructor(options?: Partial<Options>) {
-    Object.assign(this, options);
+    options?.phi && (this.#phi = options.phi);
+    options?.theta && (this.#theta = options.theta);
+    options?.radius && (this.#radius = options.radius);
+    options?.lookAt && (this.#lookAt = options.lookAt.clone());
+    options?.zoom && (this.#zoom = options.zoom);
+    options?.minRadius && (this.#minRadius = options.minRadius);
+    options?.minRadius && (this.#minRadius = options.minRadius);
+    options?.movementSpeed && (this.#movementSpeed = options.movementSpeed);
+    options?.rotationSpeed && (this.#rotationSpeed = options.rotationSpeed);
+
     Object.assign(this.#initializer, {
-      phi: this.phi,
-      theta: this.theta,
-      radius: this.radius,
-      lookAt: this.lookAt.clone(),
-      zoom: this.zoom,
-      minRadius: this.minRadius,
-      maxRadius: this.maxRadius,
-      movementSpeed: this.movementSpeed,
-      rotationSpeed: this.rotationSpeed,
+      phi: this.#phi,
+      theta: this.#theta,
+      radius: this.#radius,
+      lookAt: this.#lookAt.clone(),
+      zoom: this.#zoom,
+      minRadius: this.#minRadius,
+      maxRadius: this.#maxRadius,
+      movementSpeed: this.#movementSpeed,
+      rotationSpeed: this.#rotationSpeed,
     });
   }
 
@@ -61,23 +69,23 @@ export class Controller implements std.IDisposable {
   }
 
   update(camera: tri.Camera) {
-    const time = Date.now() * 0.001;
+    const time = std.time();
     const dt = time - this.#lastUpdate;
     this.#lastUpdate = time;
 
-    this.radius += dt * this.#movement * this.movementSpeed;
-    this.phi += dt * this.#phiRotation * this.rotationSpeed;
-    this.theta += dt * this.#thetaRotation * this.rotationSpeed;
+    this.#radius += dt * this.#movement * this.#movementSpeed;
+    this.#phi += dt * this.#phiRotation * this.#rotationSpeed;
+    this.#theta += dt * this.#thetaRotation * this.#rotationSpeed;
 
-    this.radius = std.clamp(this.radius, this.minRadius, this.maxRadius);
-    this.theta = std.clamp(this.theta, this.#minTheta, this.#maxTheta);
+    this.#radius = std.clamp(this.#radius, this.#minRadius, this.#maxRadius);
+    this.#theta = std.clamp(this.#theta, this.#minTheta, this.#maxTheta);
 
-    const x = this.lookAt.x + this.radius * Math.cos(this.phi) * Math.cos(this.theta);
-    const y = this.lookAt.y + this.radius * Math.sin(this.phi) * Math.cos(this.theta);
-    const z = this.lookAt.z + this.radius * Math.sin(this.theta);
+    const x = this.#lookAt.x + this.#radius * Math.cos(this.#phi) * Math.cos(this.#theta);
+    const y = this.#lookAt.y + this.#radius * Math.sin(this.#phi) * Math.cos(this.#theta);
+    const z = this.#lookAt.z + this.#radius * Math.sin(this.#theta);
 
     camera.position.set(x, y, z);
-    camera.lookAt(this.lookAt);
+    camera.lookAt(this.#lookAt);
   }
 
   mount(element: HTMLElement) {
@@ -98,21 +106,19 @@ export class Controller implements std.IDisposable {
   }
 
   readonly #pick = (e: PointerEvent) => {
-    if (!(e.buttons & 3) || this.#trackPointer) {
+    if (!(e.buttons & (std.Buttons.LEFT | std.Buttons.RIGHT)) || this.#trackPointer) {
       return;
     }
 
-    const cosPhi = Math.cos(this.phi);
-    const sinPhi = Math.sin(this.phi);
-    const cosTheta = Math.cos(this.theta);
-    const sinTheta = Math.sin(this.theta);
-    this.#panX.set(-sinPhi, cosPhi, 0).multiplyScalar(this.radius);
-    this.#panY.set(-cosPhi * sinTheta, -sinPhi * sinTheta, cosTheta).multiplyScalar(this.radius);
+    const cosPhi = Math.cos(this.#phi);
+    const sinPhi = Math.sin(this.#phi);
+    const cosTheta = Math.cos(this.#theta);
+    const sinTheta = Math.sin(this.#theta);
+    this.#panX.set(-sinPhi, cosPhi, 0).multiplyScalar(this.#radius);
+    this.#panY.set(-cosPhi * sinTheta, -sinPhi * sinTheta, cosTheta).multiplyScalar(this.#radius);
 
     this.#trackPointer = true;
-    const { x, y } = std.elementOffset(this.#element!, e);
-    this.#pointer.x = x;
-    this.#pointer.y = y;
+    this.#pointer = std.elementOffset(this.#element!, e);
     this.#element!.setPointerCapture(e.pointerId);
   };
 
@@ -124,23 +130,22 @@ export class Controller implements std.IDisposable {
     const { x, y } = std.elementOffset(this.#element!, e);
     const dx = x - this.#pointer.x;
     const dy = y - this.#pointer.y;
-    this.#pointer.x = x;
-    this.#pointer.y = y;
+    this.#pointer = { x, y };
 
-    if (e.buttons & 1) {
-      this.phi -= (dx * 2 * Math.PI * this.rotationSpeed) / this.#element!.clientWidth;
-      this.theta += (dy * 2 * Math.PI * this.rotationSpeed) / this.#element!.clientHeight;
-    } else if (e.buttons & 2) {
+    if (e.buttons & std.Buttons.LEFT) {
+      this.#phi -= (dx * 2 * Math.PI * this.#rotationSpeed) / this.#element!.clientWidth;
+      this.#theta += (dy * 2 * Math.PI * this.#rotationSpeed) / this.#element!.clientHeight;
+    } else if (e.buttons & std.Buttons.RIGHT) {
       const delta = this.#panX
         .clone()
         .multiplyScalar(dx / this.#element!.clientWidth)
         .add(this.#panY.clone().multiplyScalar(-dy / this.#element!.clientHeight));
-      this.lookAt.sub(delta);
+      this.#lookAt.sub(delta);
     }
   };
 
   readonly #drop = (e: PointerEvent) => {
-    if (this.#trackPointer && !(e.buttons & 3)) {
+    if (this.#trackPointer && !(e.buttons & (std.Buttons.LEFT | std.Buttons.RIGHT))) {
       this.#element!.releasePointerCapture(e.pointerId);
       this.#trackPointer = false;
     }
@@ -148,7 +153,7 @@ export class Controller implements std.IDisposable {
 
   readonly #wheel = (e: WheelEvent) => {
     const dy = e.deltaY > 0 ? 1 : -1;
-    this.radius += 0.05 * dy * this.movementSpeed;
+    this.#radius += 0.05 * dy * this.#movementSpeed;
     e.stopPropagation();
     e.preventDefault();
   };
@@ -181,8 +186,8 @@ export class Controller implements std.IDisposable {
         Object.assign(this, this.#initializer);
         break;
       case 'End':
-        this.phi = -Math.PI / 2;
-        this.theta = 0;
+        this.#phi = -Math.PI / 2;
+        this.#theta = 0;
         break;
       default:
         return;

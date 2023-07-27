@@ -28,15 +28,15 @@ export class Bicubic extends std.Disposable {
   #dragCenter!: tri.Vector3;
   #dragScale = 1;
 
-  #gridSize = 5;
+  #gridSize = 7;
   #subdiv = 10;
 
   readonly #minGridSize = 2;
-  readonly #maxGridSize = 8;
+  readonly #maxGridSize = 10;
   readonly #minSubdiv = 2;
   readonly #maxSubdiv = 16;
-  readonly #minZ = -1;
-  readonly #maxZ = 1;
+  readonly #minZ = -2;
+  readonly #maxZ = 2;
 
   readonly #meshColor = 0xffff00;
   readonly #loResColor = 0xf06000;
@@ -48,11 +48,11 @@ export class Bicubic extends std.Disposable {
     this.#scene = scene;
     this.#camera = camera;
     this.#controller = new Controller({
-      phi: -Math.PI / 2,
-      theta: Math.PI / 4,
-      radius: 5,
-      minRadius: 1,
-      lookAt: new tri.Vector3(0, 0, 0.25),
+      phi: -Math.PI / 3,
+      theta: Math.PI / 6,
+      radius: 4,
+      minRadius: 2,
+      lookAt: new tri.Vector3(0, 0, 0),
       zoom: 1.5,
     });
 
@@ -104,7 +104,7 @@ export class Bicubic extends std.Disposable {
   }
 
   #defaultZ(x: number, y: number) {
-    return 0.5 * Math.cos(x) * Math.cos(y);
+    return Math.cos(x) * Math.cos(y);
   }
 
   #reset(z: (x: number, y: number) => number, all: boolean = false) {

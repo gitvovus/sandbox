@@ -47,6 +47,14 @@ export enum Mouse {
   FORWARD = 4,
 }
 
+export enum Buttons {
+  LEFT = 1,
+  RIGHT = 2,
+  MIDDLE = 4,
+  BACK = 8,
+  FORWARD = 16,
+}
+
 /**
  * HTMLElement.addEventListener wrapper.
  * @param type event type.
