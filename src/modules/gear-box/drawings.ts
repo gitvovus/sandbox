@@ -98,8 +98,8 @@ export function drawShaft(radius?: number) {
   return path.join('');
 }
 
-function stub(gearOptions: DrawingOptions) {
-  const data = drawingData(gearOptions);
+function stub(options: DrawingOptions) {
+  const data = drawingData(options);
 
   const r0 = data.radius - 0.5 * data.toothHeight;
   const sr = data.shaftRadius;
@@ -114,8 +114,45 @@ function stub(gearOptions: DrawingOptions) {
   return path.join('');
 }
 
-function gear(gearOptions: DrawingOptions) {
-  const data = drawingData(gearOptions);
+function simpleGear(options: DrawingOptions) {
+  const data = drawingData(options);
+  const h = data.toothHeight;
+  const n = teethPerUnitRadius * data.radius;
+  const sr = data.shaftRadius;
+
+  const da = (2 * Math.PI) / n;
+  const a0 = da * 0.19;
+  const a1 = da * 0.37;
+  const a2 = da - a1;
+  const a3 = da - a0;
+
+  const r1 = data.radius - 0.5 * h;
+  const r2 = r1 + (1 - data.margin) * h;
+
+  const rh1 = f3(h);
+  const rh2 = f3(2 * h);
+
+  const path = [`M${x3(r1, -a0)} ${y3(r1, -a0)}`];
+
+  for (let i = 0; i < n; ++i) {
+    const phi = i * da;
+    path.push(
+      ` ${x3(r1, phi + a0)} ${y3(r1, phi + a0)}`,
+      ` ${x3(r2, phi + a1)} ${y3(r2, phi + a1)}`,
+      ` ${x3(r2, phi + a2)} ${y3(r2, phi + a2)}`,
+      ` ${x3(r1, phi + a3)} ${y3(r1, phi + a3)}`,
+    );
+  }
+  path.push('z');
+
+  path.push(cuts(data));
+  path.push(drawShaft(sr + data.shaftMargin));
+
+  return path.join('');
+}
+
+function gear(options: DrawingOptions) {
+  const data = drawingData(options);
   const h = data.toothHeight;
   const n = teethPerUnitRadius * data.radius;
   const sr = data.shaftRadius;
@@ -154,7 +191,7 @@ function gear(gearOptions: DrawingOptions) {
 export function draw(type: ShapeType, options: DrawingOptions) {
   switch (type) {
     case 'gear':
-      return gear(options);
+      return simpleGear(options);
     case 'stub':
       return stub(options);
   }

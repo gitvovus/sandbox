@@ -97,7 +97,7 @@ export function elementOffset(element: Element, e: MouseEvent): { x: number; y: 
  * @param fireImmediately if true then additionally immediately calls callback.
  * @returns function that should be called to stop per-frame calls.
  */
-export function onAnimationFrame(callback: () => void, fireImmediately = true) {
+export function onAnimationFrame(callback: () => void, fireImmediately = false) {
   let handle = 0;
   const frameHandler = () => {
     handle = window.requestAnimationFrame(frameHandler);
@@ -110,11 +110,11 @@ export function onAnimationFrame(callback: () => void, fireImmediately = true) {
   return () => window.cancelAnimationFrame(handle);
 }
 
-export type Disposer = () => void;
-
 export interface IDisposable {
   dispose(): void;
 }
+
+export type Disposer = () => void;
 
 export class Disposable implements IDisposable {
   readonly #disposers: Disposer[] = [];

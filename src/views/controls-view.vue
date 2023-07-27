@@ -46,7 +46,7 @@ defineProps<{ model: ControlsModel }>();
   user-select: none;
   box-shadow: 0 0 1em inset rgba(black, 0.5);
   text-shadow: 0 0 5px black;
-  transform: translate(-50% -50%);
+  transform-origin: (50% 100%);
   transition: all 0.2s ease-in-out;
 
   &[disabled] {
@@ -63,7 +63,6 @@ defineProps<{ model: ControlsModel }>();
     // margin: 0 1em;
     z-index: 1;
     transform: scale(125%);
-    transform-origin: (50% 100%);
   }
   &:hover:not([checked]) {
     background-color: rgba(white, 0.0625);

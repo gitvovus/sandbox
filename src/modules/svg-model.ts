@@ -1,5 +1,5 @@
 import { Item } from '@/lib/reactive';
-import { Vector2, length, normalize } from '@/lib/bi';
+import { Vec, length, normalize } from '@/lib/bi';
 import { grid } from '@/modules/gear-box/drawings';
 import { Camera } from '@/modules/svg/camera';
 import { Controller } from '@/modules/svg/controller';
@@ -51,7 +51,7 @@ class PathBuilder {
 const x = (r: number, a: number) => r * Math.cos(a);
 const y = (r: number, a: number) => r * Math.sin(a);
 const f = (n: number) => n.toFixed(3);
-const v2 = (x: number, y: number) => new Vector2(x, y);
+const v2 = (x: number, y: number) => new Vec(x, y);
 
 export class SvgModel extends ViewModel {
   root = new Item('svg');
@@ -124,8 +124,8 @@ export class SvgModel extends ViewModel {
 
   #createLevel() {
     const s = [v2(0, 0)];
-    const m: Vector2[] = [];
-    const d: Vector2[] = [];
+    const m: Vec[] = [];
+    const d: Vec[] = [];
 
     m.push(this.#fromOne(s[0], v2(3, 4), 10));
     d.push(this.#fromTwo(s[0], m[0], 6, 8));
@@ -175,12 +175,12 @@ export class SvgModel extends ViewModel {
     this.content.add(g);
   }
 
-  #fromOne(a: Vector2, direction: Vector2, distance: number) {
+  #fromOne(a: Vec, direction: Vec, distance: number) {
     const d = normalize(direction);
     return v2(a.x + d.x * distance, a.y + d.y * distance);
   }
 
-  #fromTwo(a: Vector2, b: Vector2, da: number, db: number) {
+  #fromTwo(a: Vec, b: Vec, da: number, db: number) {
     const ab = v2(b.x - a.x, b.y - a.y);
     const d = length(ab);
     const x = (d * d + da * da - db * db) / (2 * d);
@@ -192,7 +192,7 @@ export class SvgModel extends ViewModel {
     return v2(a.x + dx.x + dy.x, a.y + dx.y + dy.y);
   }
 
-  #circle(v: Vector2, fill: string) {
+  #circle(v: Vec, fill: string) {
     return new Item('circle', { cx: v.x, cy: v.y, r: 0.4, fill });
   }
 

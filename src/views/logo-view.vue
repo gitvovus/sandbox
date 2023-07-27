@@ -67,13 +67,13 @@ defineProps<{ model: LogoModel }>();
 
 .logo-title {
   font-size: 12px;
-  font-weight: bold;
+  // font-weight: bold;
   text-anchor: middle;
 }
 
 .logo-ext {
   font-size: 4px;
-  font-weight: bold;
+  // font-weight: bold;
 }
 
 .logo-details {

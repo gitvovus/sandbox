@@ -13,6 +13,7 @@ import LogoView from '@/views/logo-view.vue';
 import LoremView from '@/views/lorem-view.vue';
 import ReactiveView from '@/views/reactive-view.vue';
 import SvgView from '@/views/svg-view.vue';
+import ThreeView from '@/views/three-view.vue';
 import ViewContainer from '@/views/view-container.vue';
 
 import { AppModel } from '@/modules/app-model';
@@ -36,6 +37,7 @@ export class Application {
       .component('lorem-view', LoremView)
       .component('reactive-view', ReactiveView)
       .component('svg-view', SvgView)
+      .component('three-view', ThreeView)
       .component('view-container', ViewContainer);
   }
 

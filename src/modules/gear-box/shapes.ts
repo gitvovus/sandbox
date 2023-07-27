@@ -11,14 +11,14 @@ export type RotorType = 'source' | 'mediator' | 'destination';
 export interface Actor {
   readonly radii: [number, number];
   readonly types: [ShapeType, ShapeType];
-  position: bi.Vector2;
+  position: bi.Vec;
   rotation: number;
   rotor?: Rotor;
 }
 
 export interface Rotor {
   readonly type: RotorType;
-  readonly position: bi.Vector2;
+  readonly position: bi.Vec;
   rotation: number;
   speed: number;
   actor?: Actor;
@@ -71,6 +71,9 @@ export class Shaft implements Rotor {
     this.#type = type;
     this.#scene = scene;
     this.#back = useT(back, { id: `ref:shaft-back:${index}`, class: `shaft-back ${type}` });
+    if (type !== 'source') {
+      this.#back.attributes.class += ' unpowered';
+    }
     this.#base = useT(base, { id: `ref:shaft-base:${index}`, class: `shaft-base` });
     this.#shaft = useT(shaft, { id: `ref:shaft:${index}`, class: `shaft ${type}` });
   }

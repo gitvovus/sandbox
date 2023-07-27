@@ -104,7 +104,7 @@ export class Solver {
             }
           } else {
             // sync rotation
-            const delta = new bi.Vector2(b.position.x - a.position.x, b.position.y - a.position.y);
+            const delta = new bi.Vec(b.position.x - a.position.x, b.position.y - a.position.y);
             const angle = std.mod(Math.atan2(delta.y, delta.x), 2 * Math.PI);
 
             const aAngle = std.mod(angle - aData.rotation, 2 * Math.PI);

@@ -1,5 +1,5 @@
 import { Item } from '@/lib/reactive';
-import { Vector2, distance, length, normalize } from '@/lib/bi';
+import { Vec, distance, length, normalize } from '@/lib/bi';
 import { Disposable, Mouse, clamp, onElementEvent, time } from '@/lib/std';
 import { Animation } from '@/lib/animation';
 import { drawBase, drawShaft, grid } from '@/modules/gear-box/drawings';
@@ -12,27 +12,27 @@ import { Controller, Gesture } from '@/modules/svg/controller';
 import { type IViewModel } from '@/modules/view-model';
 
 class Level {
-  rotors: { type: RotorType; position: Vector2 }[] = [{ type: 'source', position: new Vector2(0, 0) }];
+  rotors: { type: RotorType; position: Vec }[] = [{ type: 'source', position: new Vec(0, 0) }];
 
-  add(position: Vector2, type: RotorType = 'mediator') {
+  add(position: Vec, type: RotorType = 'mediator') {
     this.rotors.push({ type, position });
   }
 
-  fromOne(a: Vector2, direction: Vector2, distance: number) {
+  fromOne(a: Vec, direction: Vec, distance: number) {
     const d = normalize(direction);
-    return new Vector2(a.x + d.x * distance, a.y + d.y * distance);
+    return new Vec(a.x + d.x * distance, a.y + d.y * distance);
   }
 
-  fromTwo(a: Vector2, b: Vector2, da: number, db: number) {
-    const ab = new Vector2(b.x - a.x, b.y - a.y);
+  fromTwo(a: Vec, b: Vec, da: number, db: number) {
+    const ab = new Vec(b.x - a.x, b.y - a.y);
     const d = length(ab);
     const x = (d * d + da * da - db * db) / (2 * d);
     const y = Math.sqrt(da * da - x * x);
 
-    const dx = new Vector2((ab.x * x) / d, (ab.y * x) / d);
-    const dy = new Vector2((-ab.y * y) / d, (ab.x * y) / d);
+    const dx = new Vec((ab.x * x) / d, (ab.y * x) / d);
+    const dy = new Vec((-ab.y * y) / d, (ab.x * y) / d);
 
-    return new Vector2(a.x + dx.x + dy.x, a.y + dx.y + dy.y);
+    return new Vec(a.x + dx.x + dy.x, a.y + dx.y + dy.y);
   }
 }
 
@@ -45,7 +45,7 @@ export class GearBoxModel extends Disposable implements IViewModel {
   readonly key = Symbol();
 
   readonly #scene = new Scene('gb:', 24, 24, 3, 0.2, false);
-  readonly #camera = new Camera({ scale: new Vector2(1, -1) });
+  readonly #camera = new Camera({ scale: new Vec(1, -1) });
   readonly #controller = new Controller(this.#scene.root, this.#scene.content, this.#camera);
 
   readonly #shafts: Shaft[] = [];
@@ -72,8 +72,8 @@ export class GearBoxModel extends Disposable implements IViewModel {
 
   #gesture = Gesture.NONE;
   #pickedGear!: Gear;
-  #pickedPoint!: Vector2;
-  #pickedPosition!: Vector2;
+  #pickedPoint!: Vec;
+  #pickedPosition!: Vec;
 
   #selected?: Gear;
 
@@ -259,7 +259,7 @@ export class GearBoxModel extends Disposable implements IViewModel {
 
   #addShaft(type: RotorType, index: number, x: number, y: number) {
     const shaft = new Shaft(type, this.#scene, this.#shaftBackLight, this.#shaftBaseShape, this.#shaftShape, index);
-    shaft.position = new Vector2(x, y);
+    shaft.position = new Vec(x, y);
     this.#shafts.push(shaft);
     shaft.addToScene();
   }
@@ -307,7 +307,7 @@ export class GearBoxModel extends Disposable implements IViewModel {
     return undefined;
   }
 
-  #findShaft(position: Vector2, maxDistance: number) {
+  #findShaft(position: Vec, maxDistance: number) {
     let found: Shaft | undefined;
     let min = maxDistance;
     this.#shafts.forEach((shaft) => {
@@ -352,8 +352,8 @@ export class GearBoxModel extends Disposable implements IViewModel {
     }
 
     const point = this.#camera.transform.transform(this.#controller.toCamera(e));
-    const delta = new Vector2(point.x - this.#pickedPoint.x, point.y - this.#pickedPoint.y);
-    const position = new Vector2(this.#pickedPosition.x + delta.x, this.#pickedPosition.y + delta.y);
+    const delta = new Vec(point.x - this.#pickedPoint.x, point.y - this.#pickedPoint.y);
+    const position = new Vec(this.#pickedPosition.x + delta.x, this.#pickedPosition.y + delta.y);
     const shaft = this.#findShaft(position, 0.5);
 
     if (shaft && shaft === this.#pickedGear.rotor) return;

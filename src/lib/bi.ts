@@ -1,99 +1,56 @@
-export type Vector2Elements = [number, number];
-export type Matrix2x3Elements = [number, number, number, number, number, number];
+import * as std from '@/lib/std';
 
-export class Vector2 {
-  readonly elements: Vector2Elements;
+export type MatElements = [number, number, number, number, number, number];
 
-  constructor(...elements: Vector2Elements) {
-    this.elements = elements;
-  }
+export class Vec {
+  x: number;
+  y: number;
 
-  get x() {
-    return this.elements[0];
-  }
-
-  set x(value) {
-    this.elements[0] = value;
-  }
-
-  get y() {
-    return this.elements[1];
-  }
-
-  set y(value) {
-    this.elements[1] = value;
+  constructor(x: number, y: number) {
+    this.x = x;
+    this.y = y;
   }
 
   clone() {
-    return new Vector2(...this.elements);
+    return new Vec(this.x, this.y);
   }
 }
 
-export function squareDistance(a: Vector2, b: Vector2) {
-  const dx = a.x - b.x;
-  const dy = a.y - b.y;
-  return dx * dx + dy * dy;
-}
-
-export function distance(a: Vector2, b: Vector2) {
-  return Math.sqrt(squareDistance(a, b));
-}
-
-export function squareLength(v: Vector2) {
-  return v.x * v.x + v.y * v.y;
-}
-
-export function length(v: Vector2) {
-  return Math.sqrt(squareLength(v));
-}
-
-export function normalize(v: Vector2) {
-  const rl = 1 / length(v);
-  return new Vector2(v.x * rl, v.y * rl);
-}
-
-export class Matrix2x3 {
+export class Mat {
   static translation(x: number, y: number) {
-    return new Matrix2x3(1, 0, 0, 1, x, y);
+    return new Mat(1, 0, 0, 1, x, y);
   }
 
   static rotation(angle: number) {
     const sin = Math.sin(angle);
     const cos = Math.cos(angle);
-    return new Matrix2x3(cos, sin, -sin, cos, 0, 0);
+    return new Mat(cos, sin, -sin, cos, 0, 0);
   }
 
   static scale(x: number, y: number) {
-    return new Matrix2x3(x, 0, 0, y, 0, 0);
+    return new Mat(x, 0, 0, y, 0, 0);
   }
 
-  static inverse(matrix: Matrix2x3) {
+  static inverse(matrix: Mat) {
     const m = matrix.elements;
     const k = 1 / (m[0] * m[3] - m[1] * m[2]);
-    return new Matrix2x3(
-      m[3] * k,
-      -m[1] * k,
-      -m[2] * k,
-      m[0] * k,
-      (m[2] * m[5] - m[3] * m[4]) * k,
-      (m[1] * m[4] - m[0] * m[5]) * k,
-    );
+    return new Mat(m[3] * k, -m[1] * k, -m[2] * k, m[0] * k, (m[2] * m[5] - m[3] * m[4]) * k, (m[1] * m[4] - m[0] * m[5]) * k);
   }
 
-  readonly elements: Matrix2x3Elements;
+  readonly elements: MatElements;
 
-  constructor(...elements: Matrix2x3Elements) {
+  constructor(...elements: MatElements) {
     this.elements = elements;
   }
 
   clone() {
-    return new Matrix2x3(...this.elements);
+    return new Mat(...this.elements);
   }
 
-  multiply(m: Matrix2x3) {
+  multiply(m: Mat) {
     const a = this.elements;
     const b = m.elements;
-    return new Matrix2x3(
+    return new Mat(
       a[0] * b[0] + a[2] * b[1],
       a[1] * b[0] + a[3] * b[1],
       a[0] * b[2] + a[2] * b[3],
@@ -103,13 +60,39 @@ export class Matrix2x3 {
     );
   }
 
-  transform(vector: Vector2) {
+  transform(v: Vec) {
     const m = this.elements;
-    const v = vector.elements;
-    return new Vector2(m[0] * v[0] + m[2] * v[1] + m[4], m[1] * v[0] + m[3] * v[1] + m[5]);
+    return new Vec(m[0] * v.x + m[2] * v.y + m[4], m[1] * v.x + m[3] * v.y + m[5]);
+  }
+
+  toCss() {
+    return `matrix(${this.elements.join(', ')})`;
   }
 }
 
-export function toTransform(matrix: Matrix2x3) {
-  return `matrix(${matrix.elements.join(' ')})`;
+export function mix(a: Vec, b: Vec, k: number) {
+  return new Vec(std.mix(a.x, b.x, k), std.mix(a.y, b.y, k));
+}
+
+export function squareDistance(a: Vec, b: Vec) {
+  const dx = a.x - b.x;
+  const dy = a.y - b.y;
+  return dx * dx + dy * dy;
+}
+
+export function distance(a: Vec, b: Vec) {
+  return Math.sqrt(squareDistance(a, b));
+}
+
+export function squareLength(v: Vec) {
+  return v.x * v.x + v.y * v.y;
+}
+
+export function length(v: Vec) {
+  return Math.sqrt(squareLength(v));
+}
+
+export function normalize(v: Vec) {
+  const k = 1 / length(v);
+  return new Vec(v.x * k, v.y * k);
 }

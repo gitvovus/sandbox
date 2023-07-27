@@ -1,4 +1,4 @@
-import { Vector2 } from '@/lib/bi';
+import { Vec } from '@/lib/bi';
 import { Item, type Attributes } from '@/lib/reactive';
 import { Camera } from '@/modules/svg/camera';
 import { Controller } from '@/modules/svg/controller';
@@ -7,7 +7,7 @@ import { ViewModel } from '@/modules/view-model';
 
 export class LayeredModel extends ViewModel {
   readonly #scene = new Scene('lm', 20, 20, 4, 0.25);
-  readonly #camera = new Camera({ scale: new Vector2(1, -1) });
+  readonly #camera = new Camera({ scale: new Vec(1, -1) });
   readonly #controller = new Controller(this.#scene.root, this.#scene.content, this.#camera);
 
   constructor() {

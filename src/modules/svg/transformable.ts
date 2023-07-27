@@ -4,19 +4,19 @@ import * as re from '@/lib/reactive';
 import * as std from '@/lib/std';
 import * as bi from '@/lib/bi';
 
-const rotation = bi.Matrix2x3.rotation;
-const scale = bi.Matrix2x3.scale;
-const translation = bi.Matrix2x3.translation;
+const rotation = bi.Mat.rotation;
+const scale = bi.Mat.scale;
+const translation = bi.Mat.translation;
 
 export class Transformable extends re.Item implements std.IDisposable {
   readonly #disposer = new std.Disposable();
-  readonly #position = ref(new bi.Vector2(0, 0));
+  readonly #position = ref(new bi.Vec(0, 0));
   readonly #scale = ref(1);
   readonly #rotation = ref(0);
 
   constructor(tag: string, data?: re.Attributes) {
     super(tag, data);
-    this.#disposer.addDisposers(watchEffect(() => (this.attributes.transform = bi.toTransform(this.transform))));
+    this.#disposer.addDisposers(watchEffect(() => (this.attributes.transform = this.transform.toCss())));
   }
 
   dispose() {

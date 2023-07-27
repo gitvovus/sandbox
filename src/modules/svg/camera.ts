@@ -1,16 +1,16 @@
 import { ref } from 'vue';
 import * as bi from '@/lib/bi';
 
-const rotation = bi.Matrix2x3.rotation;
-const scale = bi.Matrix2x3.scale;
-const translation = bi.Matrix2x3.translation;
+const rotation = bi.Mat.rotation;
+const scale = bi.Mat.scale;
+const translation = bi.Mat.translation;
 
 export class Camera {
-  readonly #position = ref(new bi.Vector2(0, 0));
+  readonly #position = ref(new bi.Vec(0, 0));
   readonly #rotation = ref(0);
-  readonly #scale = ref(new bi.Vector2(1, 1));
+  readonly #scale = ref(new bi.Vec(1, 1));
 
-  constructor(options: { position?: bi.Vector2; rotation?: number; scale?: bi.Vector2 } = {}) {
+  constructor(options: { position?: bi.Vec; rotation?: number; scale?: bi.Vec } = {}) {
     if (options.position) {
       this.position = options.position;
     }
@@ -56,7 +56,7 @@ export class Camera {
       .multiply(scale(this.scale.x, this.scale.y));
   }
 
-  get inverseTransform() {
+  get inverse() {
     return scale(1 / this.scale.x, 1 / this.scale.y)
       .multiply(rotation(-this.rotation))
       .multiply(translation(-this.position.x, -this.position.y));

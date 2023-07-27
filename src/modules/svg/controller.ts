@@ -52,22 +52,22 @@ export class Controller implements std.IDisposable {
 
   #gesture = Gesture.NONE;
   #pickedOffset = { x: 0, y: 0 };
-  #pickedPoint = new bi.Vector2(0, 0);
-  #pickedPosition = new bi.Vector2(0, 0);
+  #pickedPoint = new bi.Vec(0, 0);
+  #pickedPosition = new bi.Vec(0, 0);
   #pickedRotation = 0;
-  #pickedTransform = new bi.Matrix2x3(1, 0, 0, 1, 0, 0);
+  #pickedTransform = new bi.Mat(1, 0, 0, 1, 0, 0);
 
   #zoomAnimation = new Animation();
   #zoomStart = 0;
   #zoomDuration = 0.25;
   #zoomFrom = 0;
   #zoomTo = 0;
-  #zoomPosition = new bi.Vector2(0, 0);
+  #zoomPosition = new bi.Vec(0, 0);
 
   #resetAnimation = new Animation();
   #resetStart = 0;
   #resetDuration = 0.25;
-  #resetPosition = new bi.Vector2(0, 0);
+  #resetPosition = new bi.Vec(0, 0);
   #resetRotation = 0;
   #resetZoom = 1;
 
@@ -98,8 +98,8 @@ export class Controller implements std.IDisposable {
       std.onElementEvent(element, 'pointermove', this.#drag),
       std.onElementEvent(element, 'pointerup', this.#drop),
       std.onElementEvent(element, 'wheel', this.#wheel, { passive: false }),
-      std.onAnimationFrame(this.#update),
-      watchEffect(() => (this.#scene.attributes.transform = bi.toTransform(this.#camera.inverseTransform))),
+      std.onAnimationFrame(this.#update, true),
+      watchEffect(() => (this.#scene.attributes.transform = this.#camera.inverse.toCss())),
     );
   }
 
@@ -127,7 +127,7 @@ export class Controller implements std.IDisposable {
 
   toCamera(e: MouseEvent) {
     const { x, y } = std.elementOffset(this.#element!, e);
-    return new bi.Vector2(
+    return new bi.Vec(
       this.#viewBox.left + (this.#viewBox.width * x) / this.#cw,
       this.#viewBox.top + (this.#viewBox.height * y) / this.#ch,
     );
@@ -166,16 +166,16 @@ export class Controller implements std.IDisposable {
       this.#resetAnimation.stop();
       k = 1;
     }
-    this.#camera.position = new bi.Vector2(std.mix(this.#resetPosition.x, 0, k), std.mix(this.#resetPosition.y, 0, k));
+    this.#camera.position = new bi.Vec(std.mix(this.#resetPosition.x, 0, k), std.mix(this.#resetPosition.y, 0, k));
     this.#camera.rotation = std.mix(this.#resetRotation, 0, k);
     const zoom = std.mix(this.#resetZoom, 1, k);
     const scale = this.#defaultCamera.scale;
-    this.#camera.scale = new bi.Vector2(scale.x * zoom, scale.y * zoom);
+    this.#camera.scale = new bi.Vec(scale.x * zoom, scale.y * zoom);
   };
 
   #setZoom(zoom: number) {
     const scale = this.#defaultCamera.scale;
-    const newScale = new bi.Vector2(scale.x * zoom, scale.y * zoom);
+    const newScale = new bi.Vec(scale.x * zoom, scale.y * zoom);
     const newCamera = new Camera({
       position: this.#camera.position,
       rotation: this.#camera.rotation,
@@ -185,7 +185,7 @@ export class Controller implements std.IDisposable {
     const oldPos = this.#camera.transform.transform(this.#zoomPosition);
     const newPos = newCamera.transform.transform(this.#zoomPosition);
 
-    this.#camera.position = new bi.Vector2(
+    this.#camera.position = new bi.Vec(
       this.#camera.position.x + oldPos.x - newPos.x,
       this.#camera.position.y + oldPos.y - newPos.y,
     );
@@ -227,8 +227,8 @@ export class Controller implements std.IDisposable {
     if (this.#gesture === Gesture.NONE) return;
     if (this.#gesture === Gesture.DRAG) {
       const point = this.#pickedTransform.transform(this.toCamera(e));
-      const delta = new bi.Vector2(point.x - this.#pickedPoint.x, point.y - this.#pickedPoint.y);
-      this.#camera.position = new bi.Vector2(this.#pickedPosition.x - delta.x, this.#pickedPosition.y - delta.y);
+      const delta = new bi.Vec(point.x - this.#pickedPoint.x, point.y - this.#pickedPoint.y);
+      this.#camera.position = new bi.Vec(this.#pickedPosition.x - delta.x, this.#pickedPosition.y - delta.y);
     } else {
       const offset = std.elementOffset(this.#element!, e);
       const delta = (2 * Math.PI * (offset.x - this.#pickedOffset.x)) / this.#element!.clientWidth;

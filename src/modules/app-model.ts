@@ -8,6 +8,7 @@ import { ViewModel } from '@/modules/view-model';
 import { LogoModel } from '@/modules/logo-model';
 import { LayeredModel } from '@/modules/layered-model';
 import { SvgModel } from '@/modules/svg-model';
+import { ThreeModel } from '@/modules/three-model';
 
 export enum ToolBarAlignment {
   LEFT,
@@ -18,6 +19,7 @@ export enum ToolBarAlignment {
 export class AppModel extends ViewModel {
   readonly pages: ViewModel[] = [
     new LogoModel(),
+    new ThreeModel(),
     new GearBoxModel(),
     // new LayeredModel(),
     new SvgModel(),
