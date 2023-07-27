@@ -1,6 +1,6 @@
 import * as tri from 'three';
 
-import * as geometry from '@/lib/geometry';
+import * as geo from '@/lib/geometry';
 
 export class SelectionGroup {
   readonly items: tri.Object3D[] = [];
@@ -25,7 +25,7 @@ export class SelectionGroup {
     }
 
     if (this.#hoveredObject) {
-      geometry.setColor(
+      geo.setColor(
         this.#hoveredObject,
         this.#hoveredObject === this.#selectedObject ? this.#selectedColor : this.#hoveredSavedColor,
       );
@@ -33,8 +33,8 @@ export class SelectionGroup {
 
     this.#hoveredObject = value;
     if (this.#hoveredObject) {
-      this.#hoveredSavedColor = geometry.getColor(this.#hoveredObject);
-      geometry.setColor(
+      this.#hoveredSavedColor = geo.getColor(this.#hoveredObject);
+      geo.setColor(
         this.#hoveredObject,
         this.#hoveredObject === this.#selectedObject ? this.#combinedColor : this.#hoveredColor,
       );
@@ -51,7 +51,7 @@ export class SelectionGroup {
     }
 
     if (this.#selectedObject) {
-      geometry.setColor(
+      geo.setColor(
         this.#selectedObject,
         this.#selectedObject === this.#hoveredObject ? this.#hoveredColor : this.#selectedSavedColor,
       );
@@ -60,8 +60,8 @@ export class SelectionGroup {
     this.#selectedObject = value;
     if (this.#selectedObject) {
       this.#selectedSavedColor =
-        this.#selectedObject === this.#hoveredObject ? this.#hoveredSavedColor : geometry.getColor(this.#selectedObject);
-      geometry.setColor(
+        this.#selectedObject === this.#hoveredObject ? this.#hoveredSavedColor : geo.getColor(this.#selectedObject);
+      geo.setColor(
         this.#selectedObject,
         this.#selectedObject === this.#hoveredObject ? this.#combinedColor : this.#selectedColor,
       );

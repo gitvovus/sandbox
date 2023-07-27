@@ -80,9 +80,6 @@ export class Mockup extends std.Disposable {
       zoom: 1.5,
     });
 
-    this.#setupScene();
-    this.#setupObjects();
-
     this.addDisposers(
       watch(
         () => this.#model.selectedItem,
@@ -95,6 +92,9 @@ export class Mockup extends std.Disposable {
         geo.dispose(this.#root);
       },
     );
+
+    this.#setupScene();
+    this.#setupObjects();
   }
 
   update() {

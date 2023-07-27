@@ -97,6 +97,62 @@ export class Controller implements std.IDisposable {
     this.dispose();
   }
 
+  readonly #pick = (e: PointerEvent) => {
+    if (!(e.buttons & 3) || this.#trackPointer) {
+      return;
+    }
+
+    const cosPhi = Math.cos(this.phi);
+    const sinPhi = Math.sin(this.phi);
+    const cosTheta = Math.cos(this.theta);
+    const sinTheta = Math.sin(this.theta);
+    this.#panX.set(-sinPhi, cosPhi, 0).multiplyScalar(this.radius);
+    this.#panY.set(-cosPhi * sinTheta, -sinPhi * sinTheta, cosTheta).multiplyScalar(this.radius);
+
+    this.#trackPointer = true;
+    const { x, y } = std.elementOffset(this.#element!, e);
+    this.#pointer.x = x;
+    this.#pointer.y = y;
+    this.#element!.setPointerCapture(e.pointerId);
+  };
+
+  readonly #drag = (e: PointerEvent) => {
+    if (!this.#trackPointer) {
+      return;
+    }
+
+    const { x, y } = std.elementOffset(this.#element!, e);
+    const dx = x - this.#pointer.x;
+    const dy = y - this.#pointer.y;
+    this.#pointer.x = x;
+    this.#pointer.y = y;
+
+    if (e.buttons & 1) {
+      this.phi -= (dx * 2 * Math.PI * this.rotationSpeed) / this.#element!.clientWidth;
+      this.theta += (dy * 2 * Math.PI * this.rotationSpeed) / this.#element!.clientHeight;
+    } else if (e.buttons & 2) {
+      const delta = this.#panX
+        .clone()
+        .multiplyScalar(dx / this.#element!.clientWidth)
+        .add(this.#panY.clone().multiplyScalar(-dy / this.#element!.clientHeight));
+      this.lookAt.sub(delta);
+    }
+  };
+
+  readonly #drop = (e: PointerEvent) => {
+    if (this.#trackPointer && !(e.buttons & 3)) {
+      this.#element!.releasePointerCapture(e.pointerId);
+      this.#trackPointer = false;
+    }
+  };
+
+  readonly #wheel = (e: WheelEvent) => {
+    const dy = e.deltaY > 0 ? 1 : -1;
+    this.radius += 0.05 * dy * this.movementSpeed;
+    e.stopPropagation();
+    e.preventDefault();
+  };
+
   readonly #keyDown = (e: KeyboardEvent) => {
     switch (e.code) {
       case 'KeyW':
@@ -163,62 +219,6 @@ export class Controller implements std.IDisposable {
         return;
     }
     e.stopImmediatePropagation();
-    e.preventDefault();
-  };
-
-  readonly #pick = (e: PointerEvent) => {
-    if (!(e.buttons & 3) || this.#trackPointer) {
-      return;
-    }
-
-    const cosPhi = Math.cos(this.phi);
-    const sinPhi = Math.sin(this.phi);
-    const cosTheta = Math.cos(this.theta);
-    const sinTheta = Math.sin(this.theta);
-    this.#panX.set(-sinPhi, cosPhi, 0).multiplyScalar(this.radius);
-    this.#panY.set(-cosPhi * sinTheta, -sinPhi * sinTheta, cosTheta).multiplyScalar(this.radius);
-
-    this.#trackPointer = true;
-    const { x, y } = std.elementOffset(this.#element!, e);
-    this.#pointer.x = x;
-    this.#pointer.y = y;
-    this.#element!.setPointerCapture(e.pointerId);
-  };
-
-  readonly #drag = (e: PointerEvent) => {
-    if (!this.#trackPointer) {
-      return;
-    }
-
-    const { x, y } = std.elementOffset(this.#element!, e);
-    const dx = x - this.#pointer.x;
-    const dy = y - this.#pointer.y;
-    this.#pointer.x = x;
-    this.#pointer.y = y;
-
-    if (e.buttons & 1) {
-      this.phi -= (dx * 2 * Math.PI * this.rotationSpeed) / this.#element!.clientWidth;
-      this.theta += (dy * 2 * Math.PI * this.rotationSpeed) / this.#element!.clientHeight;
-    } else if (e.buttons & 2) {
-      const delta = this.#panX
-        .clone()
-        .multiplyScalar(dx / this.#element!.clientWidth)
-        .add(this.#panY.clone().multiplyScalar(-dy / this.#element!.clientHeight));
-      this.lookAt.sub(delta);
-    }
-  };
-
-  readonly #drop = (e: PointerEvent) => {
-    if (this.#trackPointer && !(e.buttons & 3)) {
-      this.#element!.releasePointerCapture(e.pointerId);
-      this.#trackPointer = false;
-    }
-  };
-
-  readonly #wheel = (e: WheelEvent) => {
-    const dy = e.deltaY > 0 ? 1 : -1;
-    this.radius += 0.05 * dy * this.movementSpeed;
-    e.stopPropagation();
     e.preventDefault();
   };
 }

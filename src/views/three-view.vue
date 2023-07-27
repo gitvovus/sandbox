@@ -16,7 +16,7 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div ref="root" class="view">
+  <div ref="root" class="view" tabindex="0">
     <canvas ref="canvas" class="three-viewport"></canvas>
     <slot />
   </div>

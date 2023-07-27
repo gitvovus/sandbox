@@ -1,6 +1,7 @@
 import * as tri from 'three';
 
 import * as std from '@/lib/std';
+import { Bicubic } from '@/modules/three/bicubic';
 import { Mockup } from '@/modules/three/mockup';
 import { ViewModel } from '@/modules/view-model';
 
@@ -8,7 +9,7 @@ export class ThreeModel extends ViewModel implements std.IDisposable {
   readonly #disposer = new std.Disposable();
   readonly #mounted = new std.Disposable();
 
-  readonly #mockup: Mockup;
+  readonly #demo: Bicubic;
   readonly #scene: tri.Scene;
   readonly #camera: tri.PerspectiveCamera;
   #renderer!: tri.WebGLRenderer;
@@ -28,9 +29,9 @@ export class ThreeModel extends ViewModel implements std.IDisposable {
     this.#scene.add(new tri.AmbientLight(0x404040));
     this.#scene.add(this.#camera);
 
-    this.#mockup = new Mockup(this.#scene, this.#camera);
+    this.#demo = new Bicubic(this.#scene, this.#camera);
 
-    this.#disposer.addDisposers(() => this.#mockup.dispose());
+    this.#disposer.addDisposers(() => this.#demo.dispose());
   }
 
   dispose() {
@@ -41,14 +42,14 @@ export class ThreeModel extends ViewModel implements std.IDisposable {
   mount(element: HTMLElement, canvas: HTMLCanvasElement) {
     this.#element = element;
 
-    const bg = new tri.Color(0x405060);
+    const bg = new tri.Color(0x384048);
     this.#renderer = new tri.WebGLRenderer({ canvas, antialias: true });
     this.#renderer.setClearColor(bg);
     this.#renderer.setPixelRatio(window.devicePixelRatio);
-    this.#mockup.mount(element);
+    this.#demo.mount(element);
 
     this.#mounted.addDisposers(std.onAnimationFrame(this.#render), () => {
-      this.#mockup.unmount();
+      this.#demo.unmount();
       this.#element = undefined;
       this.#width = 0;
       this.#height = 0;
@@ -62,7 +63,7 @@ export class ThreeModel extends ViewModel implements std.IDisposable {
 
   readonly #render = () => {
     this.#resize();
-    this.#mockup.update();
+    this.#demo.update();
     this.#renderer.render(this.#scene, this.#camera);
   };
 

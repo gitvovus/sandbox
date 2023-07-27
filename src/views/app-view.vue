@@ -15,7 +15,9 @@ defineProps<{ model: AppModel }>();
         <div class="w-content">
           <lorem-view />
         </div>
-        <div class="w-footer">Footer</div>
+        <div class="w-footer">
+          <ui-button class="button mouse" @click="model.showDialog = false">Close</ui-button>
+        </div>
       </div>
     </ui-dialog>
     <div class="app-bar">
