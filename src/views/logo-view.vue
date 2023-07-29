@@ -51,10 +51,10 @@ defineProps<{ model: LogoModel }>();
 <style lang="scss">
 .logo-wrapper {
   position: absolute;
-  margin: 5vh 5vw;
-  width: 90vw;
-  height: 90vh;
+  width: 100%;
+  height: 100%;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   user-select: none;
