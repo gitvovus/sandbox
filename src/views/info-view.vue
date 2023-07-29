@@ -15,7 +15,7 @@ defineProps<{ model: InfoModel }>();
   </div>
 </template>
 
-<style lang="scss">
+<style>
 .info-grid {
   display: grid;
   grid-template-columns: auto 1fr;

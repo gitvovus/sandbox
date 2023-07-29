@@ -141,9 +141,7 @@ defineProps<{ model: ControlsModel }>();
   </div>
 </template>
 
-<style lang="scss">
-@use '@/style/vars' as *;
-
+<style>
 .view.controls-view {
   overflow: auto;
   border-radius: 0;
@@ -158,15 +156,6 @@ defineProps<{ model: ControlsModel }>();
 
 .flex-right {
   margin-left: auto;
-}
-
-.icon {
-  &.expand {
-    transform: rotate(-90deg);
-  }
-  &.collapse {
-    transform: rotate(90deg);
-  }
 }
 
 .popup-anchor {

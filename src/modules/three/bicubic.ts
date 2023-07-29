@@ -53,7 +53,6 @@ export class Bicubic extends std.Disposable {
       radius: 4,
       minRadius: 2,
       lookAt: new tri.Vector3(0, 0, 0),
-      zoom: 1.5,
     });
 
     this.addDisposers(() => {

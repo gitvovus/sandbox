@@ -56,73 +56,9 @@ function focus(e: FocusEvent) {
   </button>
 </template>
 
-<style lang="scss">
-@use '@/style/theme' as *;
-@use '@/style/vars' as *;
-
-@mixin tint($tint) {
-  &[disabled] {
-    opacity: 0.5;
-    pointer-events: none;
-  }
-  &:focus {
-    border-color: rgba($tint, 0.25);
-  }
-  &[checked] {
-    background-color: rgba($tint, 0.125);
-  }
-  &:hover:not([checked]) {
-    background-color: rgba($tint, 0.125);
-  }
-  &:hover[checked] {
-    background-color: rgba($tint, 0.375);
-  }
-  &:active:hover {
-    background-color: rgba($tint, 0.625);
-  }
-}
-
-@mixin pretty(
-  $primary,
-  $alpha-border-focus-checked,
-  $alpha-bg-hover-checked,
-  $alpha-border-hover-checked,
-  $alpha-bg-active,
-  $alpha-border-active
-) {
-  color: $primary;
-  $inverse: invert($primary);
-  &:focus {
-    border-color: rgba($primary, 0.125);
-  }
-  &[checked] {
-    background-color: rgba(white, 0.25);
-    border-color: rgba($inverse, 0.125);
-    box-shadow: inset 0 0 5px -1px rgba(black, 0.5);
-    text-shadow: 0 0 3px $inverse;
-  }
-  &:focus[checked] {
-    border-color: rgba(white, $alpha-border-focus-checked);
-  }
-  &:hover:not([checked]) {
-    background-color: rgba($primary, 0.0625);
-    border-color: rgba($primary, 0.125);
-  }
-  &:hover[checked] {
-    background-color: rgba(white, $alpha-bg-hover-checked);
-    border-color: rgba(white, $alpha-border-hover-checked);
-  }
-  &:active:hover {
-    background-color: rgba($primary, $alpha-bg-active);
-    border-color: rgba(white, $alpha-border-active);
-    box-shadow: inset 0 0 5px -1px rgba(black, 0.5);
-    color: $inverse;
-    text-shadow: 0 0 3px $primary;
-  }
-}
-
+<style>
 .button {
-  background: rgba(white, 0.0625);
+  background: rgba(255, 255, 255, 0.0625);
   border: 1px solid transparent;
   border-radius: 0.25em;
   color: inherit;
@@ -130,36 +66,51 @@ function focus(e: FocusEvent) {
   user-select: none;
   margin: 0.375em;
   padding: 0.5em 0.75em;
-  transition: background-color $transition, border-color $transition, box-shadow $transition, text-shadow $transition;
+  transition: background-color var(--transition), border-color var(--transition), box-shadow var(--transition),
+    text-shadow var(--transition);
+}
 
-  @include tint(white);
+.button[disabled] {
+  opacity: 0.5;
+  pointer-events: none;
+}
 
-  &.pretty {
-    @include pretty(
-      $primary: map-get($dark, tx),
-      $alpha-border-focus-checked: 0.25,
-      $alpha-bg-hover-checked: 0.125,
-      $alpha-border-hover-checked: 0.125,
-      $alpha-bg-active: 0.125,
-      $alpha-border-active: 0.25
-    );
-  }
+.button:focus {
+  border-color: rgba(255, 255, 255, 0.25);
+}
 
-  &.round {
-    border-radius: 50vh;
-  }
+.button[checked] {
+  background-color: rgba(255, 255, 255, 0.125);
+}
 
-  &.iconic {
-    width: 24px;
-    height: 24px;
-    margin: 2px;
-    padding: 3px;
-    &:hover {
-      padding: 1px;
-    }
-    &:active:hover {
-      padding: 2px;
-    }
-  }
+.button:hover:not([checked]) {
+  background-color: rgba(255, 255, 255, 0.125);
+}
+
+.button:hover[checked] {
+  background-color: rgba(255, 255, 255, 0.375);
+}
+
+.button:active:hover {
+  background-color: rgba(255, 255, 255, 0.625);
+}
+
+.button.round {
+  border-radius: 50vh;
+}
+
+.button.iconic {
+  width: 24px;
+  height: 24px;
+  margin: 2px;
+  padding: 3px;
+}
+
+.button.iconic:hover {
+  padding: 1px;
+}
+
+.button.iconic:active:hover {
+  padding: 2px;
 }
 </style>

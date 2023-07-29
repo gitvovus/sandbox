@@ -27,69 +27,75 @@ onBeforeUnmount(() => {
   </div>
 </template>
 
-<style lang="scss">
-$shape-shadow: drop-shadow(0 0 0.04px rgba(black, 0.5));
-$shaft-shadow: drop-shadow(0 0 0.1px black);
-$gear-selected: drop-shadow(0 0 0.1px rgba(black, 1));
+<style>
+.shaft-back.powered {
+  fill: url(#shaft-back-powered);
+}
 
-.shaft-back {
-  &.powered {
-    fill: url(#shaft-back-powered);
-  }
-  &.unpowered {
-    fill: url(#shaft-back-unpowered);
-  }
-  &.unpowered.destination {
-    fill: url(#shaft-back-unpowered-destination);
-  }
+.shaft-back.unpowered {
+  fill: url(#shaft-back-unpowered);
+}
+
+.shaft-back.unpowered.destination {
+  fill: url(#shaft-back-unpowered-destination);
 }
 
 .shaft-base {
   fill: #506070;
-  filter: $shape-shadow;
+  filter: var(--shape-shadow);
 }
 
 .shaft {
-  filter: $shaft-shadow;
-  &.source {
-    fill: #209010;
-  }
-  &.mediator {
-    fill: #e0c000;
-  }
-  &.destination {
-    fill: #f03020;
-  }
+  filter: var(--shaft-shadow);
+}
+
+.shaft.source {
+  fill: #209010;
+}
+
+.shaft.mediator {
+  fill: #e0c000;
+}
+
+.shaft.destination {
+  fill: #f03020;
 }
 
 .gear,
 .stub {
-  filter: $shape-shadow;
-  &.selected {
-    opacity: 0.6;
-    filter: $gear-selected;
-  }
+  filter: var(--shape-shadow);
   transition: all 0.15s ease-in-out;
+}
+.gear.selected,
+.stub.selected {
+  opacity: 0.6;
+  filter: var(--gear-selected);
 }
 
 .fill-0 {
   fill: #c0a010;
 }
+
 .fill-1 {
   fill: #4080a0;
 }
+
 .fill-2 {
   fill: #c02030;
 }
+
 .fill-3 {
   fill: #30a020;
 }
+
 .fill-4 {
   fill: #0050f0;
 }
+
 .fill-5 {
   fill: #e06000;
 }
+
 .fill-6 {
   fill: #e080b0;
 }

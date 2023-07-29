@@ -11,11 +11,8 @@ import AppView from '@/views/app-view.vue';
 import ControlsView from '@/views/controls-view.vue';
 import GearBoxView from '@/views/gear-box-view.vue';
 import InfoView from '@/views/info-view.vue';
-import LayeredView from '@/views/layered-view.vue';
 import LogoView from '@/views/logo-view.vue';
 import LoremView from '@/views/lorem-view.vue';
-import PropertiesView from '@/views/properties-view.vue';
-import ReactiveView from '@/views/reactive-view.vue';
 import SvgView from '@/views/svg-view.vue';
 import ThreeView from '@/views/three-view.vue';
 import ViewContainer from '@/views/view-container.vue';
@@ -39,11 +36,8 @@ export class Application {
       .component('controls-view', ControlsView)
       .component('gear-box-view', GearBoxView)
       .component('info-view', InfoView)
-      .component('layered-view', LayeredView)
       .component('logo-view', LogoView)
       .component('lorem-view', LoremView)
-      .component('properties-view', PropertiesView)
-      .component('reactive-view', ReactiveView)
       .component('svg-view', SvgView)
       .component('three-view', ThreeView)
       .component('view-container', ViewContainer);

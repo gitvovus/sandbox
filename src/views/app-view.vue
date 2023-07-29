@@ -59,44 +59,46 @@ defineProps<{ model: AppModel }>();
   </div>
 </template>
 
-<style lang="scss">
-@use '@/style/vars' as *;
-
+<style>
 .app-bar {
   position: absolute;
   width: 100%;
   bottom: 0;
   display: flex;
   pointer-events: none;
-  z-index: $z-app;
+  z-index: var(--z-app);
 }
 
 .app-buttons {
   display: flex;
   align-items: center;
   border-radius: 4px 4px 0 0;
-  box-shadow: 0 0 8px rgba(black, 0.5);
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.5);
   pointer-events: auto;
   background-color: var(--bg);
   padding: 0 0.5em;
-  & .v-separator {
-    align-self: stretch;
-  }
-  & .text {
-    margin: 0 0.5em;
-    padding-bottom: 2px;
-  }
-  & .button.iconic {
-    margin: 0 5px;
-  }
+}
+
+.app-buttons .v-separator {
+  align-self: stretch;
+}
+
+.app-buttons .text {
+  margin: 0 0.5em;
+  padding-bottom: 2px;
+}
+
+.app-buttons .button.iconic {
+  margin: 0 5px;
 }
 
 .spacer {
   flex-grow: 1;
-  transition: flex-grow $transition;
-  &.collapsed {
-    flex-grow: 0;
-  }
+  transition: flex-grow var(--transition);
+}
+
+.spacer.collapsed {
+  flex-grow: 0;
 }
 
 .v-enter-from,
@@ -105,6 +107,6 @@ defineProps<{ model: AppModel }>();
 }
 .v-enter-active,
 .v-leave-active {
-  transition: opacity $page-transition;
+  transition: opacity var(--page-transition);
 }
 </style>

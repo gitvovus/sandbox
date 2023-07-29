@@ -2,12 +2,9 @@ import { ref } from 'vue';
 
 import { performanceTestDuration, testPerformance } from '@/lib/system';
 import { ControlsModel } from '@/modules/controls-model';
-import { ReactiveModel } from '@/modules/reactive-model';
 import { GearBoxModel } from '@/modules/gear-box-model';
 import { ViewModel } from '@/modules/view-model';
 import { LogoModel } from '@/modules/logo-model';
-import { LayeredModel } from '@/modules/layered-model';
-import { PropertiesModel } from '@/modules/properties-model';
 import { SvgModel } from '@/modules/svg-model';
 import { ThreeModel } from '@/modules/three-model';
 
@@ -23,10 +20,7 @@ export class AppModel extends ViewModel {
     new ThreeModel(),
     new GearBoxModel(),
     new ControlsModel(),
-    // new LayeredModel(),
     // new SvgModel(),
-    // new ReactiveModel(),
-    // new PropertiesModel(),
   ];
 
   #toolBarAlignment = ref(ToolBarAlignment.CENTER);

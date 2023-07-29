@@ -1,7 +1,0 @@
-$icons: ('brightness', 'contrast', 'down', 'expand', 'gt', 'lt', 'up');
-
-@each $icon in $icons {
-  .icon-#{$icon} {
-    mask-image: url('@/assets/#{$icon}.svg');
-  }
-}

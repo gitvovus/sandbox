@@ -1,5 +1,36 @@
-@use '@/style/theme' as *;
-@use '@/style/vars' as *;
+:root {
+  --bg: #202830;
+  --tx: #d0d0d0;
+  --view-bg: #384048;
+  --view-border: #444e58;
+  --bg-over: rgba(9, 30, 51, 0.75);
+  --bg-dk: rgba(0, 0, 0, 0.2);
+  --bg-lt: rgba(255, 255, 255, 0.1);
+  --scroll-track: #1d242b;
+  --scroll-thumb: #2a353f;
+
+  --transition: 0.2s;
+  --page-transition: 1s;
+
+  --r: 4px;
+  --shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+
+  --w-margin: 16px;
+  --w-radius: 4px;
+  --w-resize: 8px;
+  --w-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+  --w-splitter: 1px solid #a0a0a0;
+
+  --z-app: 20;
+  --z-window: 10;
+
+  --view-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+  --popup-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+
+  --shape-shadow: drop-shadow(0 0 0.04px rgba(0, 0, 0, 0.5));
+  --shaft-shadow: drop-shadow(0 0 0.1px black);
+  --gear-selected: drop-shadow(0 0 0.1px black);
+}
 
 *,
 *::before,
@@ -43,9 +74,9 @@ body {
 }
 
 input {
-  background: rgba(black, 0.0625);
+  background: rgba(0, 0, 0, 0.0625);
   border: none;
-  border-bottom: 1px solid rgba(white, 0.0625);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.0625);
   color: inherit;
   padding: 0.25em;
 }
@@ -71,7 +102,7 @@ p {
 
 .app {
   background: var(--bg-over);
-  box-shadow: 0 0 25vw rgba(black, 1) inset;
+  box-shadow: 0 0 25vw rgba(0, 0, 0, 1) inset;
 }
 
 .app,
@@ -88,7 +119,7 @@ p {
   background-color: var(--view-bg);
   border: 1px solid var(--view-border);
   border-radius: 0.5em;
-  box-shadow: $view-shadow;
+  box-shadow: var(--view-shadow);
 }
 
 .round {
@@ -111,7 +142,6 @@ p {
   border-right: 1px solid var(--bg-lt);
 }
 
-// dialog
 .w-panel {
   width: 100%;
   height: 100%;
@@ -125,19 +155,19 @@ p {
 .w-header,
 .w-footer {
   display: flex;
-  margin: $w-margin;
+  margin: var(--w-margin);
   align-items: center;
   justify-content: center;
 }
 
 .w-header {
-  border-bottom: $w-splitter;
-  padding: calc($w-margin / 2) $w-margin $w-margin;
+  border-bottom: var(--w-splitter);
+  padding: calc(var(--w-margin) / 2) var(--w-margin) var(--w-margin);
 }
 
 .w-footer {
-  border-top: $w-splitter;
-  padding: $w-margin $w-margin calc($w-margin / 2);
+  border-top: var(--w-splitter);
+  padding: var(--w-margin) var(--w-margin) calc(var(--w-margin) / 2);
 }
 
 .w-content {
@@ -145,7 +175,7 @@ p {
   flex: 1 1 auto;
   overflow: auto;
   pointer-events: auto;
-  padding: 0 $w-margin;
+  padding: 0 var(--w-margin);
 }
 
 .anchor {

@@ -48,7 +48,7 @@ defineProps<{ model: LogoModel }>();
   </div>
 </template>
 
-<style lang="scss">
+<style>
 .logo-wrapper {
   position: absolute;
   width: 100%;
@@ -62,13 +62,11 @@ defineProps<{ model: LogoModel }>();
 
 .logo-title {
   font-size: 12px;
-  // font-weight: bold;
   text-anchor: middle;
 }
 
 .logo-ext {
   font-size: 4px;
-  // font-weight: bold;
 }
 
 .logo-details {

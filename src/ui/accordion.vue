@@ -34,14 +34,13 @@ function expand(expanded: boolean) {
   </div>
 </template>
 
-<style lang="scss">
-@use '@/style/vars' as *;
-
+<style>
 .accordion {
   height: 0;
   overflow: hidden;
-  transition: height $transition;
+  transition: height var(--transition);
 }
+
 .accordion-content {
   border: 1px solid transparent;
 }

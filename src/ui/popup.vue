@@ -52,19 +52,18 @@ function focusout(e: FocusEvent) {
   </div>
 </template>
 
-<style lang="scss">
-@use '@/style/vars' as *;
-
+<style>
 .popup {
   position: fixed;
   display: none;
   overflow: auto;
   background-color: var(--bg);
-  border: 1px solid rgba(white, 0.0625);
-  box-shadow: $popup-shadow;
+  border: 1px solid rgba(255, 255, 255, 0.0625);
+  box-shadow: var(--popup-shadow);
   z-index: 1;
-  &.show {
-    display: block;
-  }
+}
+
+.popup.show {
+  display: block;
 }
 </style>

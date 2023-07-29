@@ -63,11 +63,12 @@ defineProps<Props>();
   </div>
 </template>
 
-<style lang="scss">
+<style>
 .lorem {
   max-width: 40em;
-  > p::first-letter {
-    font-weight: bold;
-  }
+}
+
+.lorem > p::first-letter {
+  font-weight: bold;
 }
 </style>

@@ -62,18 +62,18 @@ onBeforeUnmount(() => {
   </div>
 </template>
 
-<style lang="scss">
-@use '@/style/vars.scss' as *;
-
+<style>
 .dialog {
-  border-radius: $w-radius;
+  border-radius: var(--w-radius);
   position: fixed;
   visibility: hidden;
-  z-index: $z-window;
-  &.show {
-    visibility: visible;
-  }
+  z-index: var(--z-window);
 }
+
+.dialog.show {
+  visibility: visible;
+}
+
 .dialog-grid {
   display: grid;
   position: absolute;
@@ -81,15 +81,15 @@ onBeforeUnmount(() => {
   top: 0;
   right: 0;
   bottom: 0;
-  margin: -$w-resize;
-  grid-template-columns: $w-resize * 2 auto $w-resize * 2;
-  grid-template-rows: $w-resize * 2 auto $w-resize * 2;
+  margin: calc(-var(--w-resize));
+  grid-template-columns: calc(var(--w-resize) * 2) auto calc(var(--w-resize) * 2);
+  grid-template-rows: calc(var(--w-resize) * 2) auto calc(var(--w-resize) * 2);
 }
 .dialog-content {
-  box-shadow: $w-shadow;
+  box-shadow: var(--w-shadow);
   z-index: 1;
-  margin: -$w-resize;
-  border-radius: $w-radius;
+  margin: calc(-var(--w-resize));
+  border-radius: var(--w-radius);
   overflow: auto;
   cursor: auto;
 }
@@ -97,7 +97,7 @@ onBeforeUnmount(() => {
 .effect .dialog-content {
   transform: scale(0.5);
   opacity: 0;
-  transition: all $transition;
+  transition: all var(--transition);
 }
 
 .show.effect .dialog-content {

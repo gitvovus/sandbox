@@ -77,7 +77,6 @@ export class Mockup extends std.Disposable {
       radius: 5,
       minRadius: 1,
       lookAt: new tri.Vector3(0, 0, 0.25),
-      zoom: 1.5,
     });
 
     this.addDisposers(
