@@ -65,6 +65,7 @@ defineProps<Props>();
 
 <style lang="scss">
 .lorem {
+  max-width: 40em;
   > p::first-letter {
     font-weight: bold;
   }

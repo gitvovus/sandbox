@@ -56,14 +56,9 @@ defineProps<{ model: LogoModel }>();
   height: 90vh;
   display: flex;
   justify-content: center;
+  align-items: center;
   user-select: none;
-  // border: 1px solid darkred;
 }
-
-// .logo {
-//   border: 1px solid black;
-//   align-self: center;
-// }
 
 .logo-title {
   font-size: 12px;

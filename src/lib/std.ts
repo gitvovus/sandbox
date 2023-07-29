@@ -39,7 +39,7 @@ export interface Point {
   y: number;
 }
 
-export enum Mouse {
+export const enum Mouse {
   LEFT = 0,
   MIDDLE = 1,
   RIGHT = 2,
@@ -47,7 +47,7 @@ export enum Mouse {
   FORWARD = 4,
 }
 
-export enum Buttons {
+export const enum Buttons {
   LEFT = 1,
   RIGHT = 2,
   MIDDLE = 4,

@@ -4,19 +4,17 @@ $font-base: 14px;
 $transition: 0.2s;
 $page-transition: 1s;
 
-$bg-dark: #404040;
-$text-dark: #d0d0d0;
-
 $r: 4px;
-$shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+$shadow: 0 0 5px rgba(black, 0.5);
 
 $w-margin: 16px;
 $w-radius: $r;
 $w-resize: 8px;
-$w-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+$w-shadow: 0 0 50px rgba(black, 0.5);
 $w-splitter: 1px solid #a0a0a0;
 
 $z-app: 20;
 $z-window: 10;
 
-$view-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+$view-shadow: 0 0 50px rgba(black, 0.5);
+$popup-shadow: 0 0 10px rgba(black, 0.5);

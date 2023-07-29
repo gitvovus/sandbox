@@ -7,10 +7,11 @@ import { GearBoxModel } from '@/modules/gear-box-model';
 import { ViewModel } from '@/modules/view-model';
 import { LogoModel } from '@/modules/logo-model';
 import { LayeredModel } from '@/modules/layered-model';
+import { PropertiesModel } from '@/modules/properties-model';
 import { SvgModel } from '@/modules/svg-model';
 import { ThreeModel } from '@/modules/three-model';
 
-export enum ToolBarAlignment {
+export const enum ToolBarAlignment {
   LEFT,
   CENTER,
   RIGHT,
@@ -21,10 +22,11 @@ export class AppModel extends ViewModel {
     new LogoModel(),
     new ThreeModel(),
     new GearBoxModel(),
-    // new LayeredModel(),
-    new SvgModel(),
     new ControlsModel(),
-    new ReactiveModel(),
+    // new LayeredModel(),
+    // new SvgModel(),
+    // new ReactiveModel(),
+    // new PropertiesModel(),
   ];
 
   #toolBarAlignment = ref(ToolBarAlignment.CENTER);

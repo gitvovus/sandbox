@@ -1,28 +1,30 @@
 import * as tri from 'three';
 import * as std from '@/lib/std';
 
-export interface Options {
+export type Config = {
   phi: number;
   theta: number;
   radius: number;
   lookAt: tri.Vector3;
-  zoom: number;
   minRadius: number;
   maxRadius: number;
   movementSpeed: number;
   rotationSpeed: number;
-}
+};
+
+const defaultConfig: Config = {
+  phi: 0,
+  theta: 0,
+  radius: 6,
+  lookAt: new tri.Vector3(0, 0, 0),
+  minRadius: 2,
+  maxRadius: 10,
+  movementSpeed: 10,
+  rotationSpeed: 1,
+};
 
 export class Controller implements std.IDisposable {
-  #phi = 0;
-  #theta = 0;
-  #radius = 6;
-  #lookAt = new tri.Vector3(0, 0, 0);
-  #zoom = 1;
-  #minRadius = 2;
-  #maxRadius = 10;
-  #movementSpeed = 10;
-  #rotationSpeed = 1;
+  #config = defaultConfig;
 
   #element?: HTMLElement;
   #disposer = new std.Disposable();
@@ -33,35 +35,16 @@ export class Controller implements std.IDisposable {
   #phiRotation = 0;
   #thetaRotation = 0;
 
-  #initializer: Partial<Options> = {};
+  #initializer: Config;
   #lastUpdate = Date.now() * 0.001;
   #trackPointer = false;
   #pointer = { x: 0, y: 0 };
   #panX = new tri.Vector3();
   #panY = new tri.Vector3();
 
-  constructor(options?: Partial<Options>) {
-    options?.phi && (this.#phi = options.phi);
-    options?.theta && (this.#theta = options.theta);
-    options?.radius && (this.#radius = options.radius);
-    options?.lookAt && (this.#lookAt = options.lookAt.clone());
-    options?.zoom && (this.#zoom = options.zoom);
-    options?.minRadius && (this.#minRadius = options.minRadius);
-    options?.minRadius && (this.#minRadius = options.minRadius);
-    options?.movementSpeed && (this.#movementSpeed = options.movementSpeed);
-    options?.rotationSpeed && (this.#rotationSpeed = options.rotationSpeed);
-
-    Object.assign(this.#initializer, {
-      phi: this.#phi,
-      theta: this.#theta,
-      radius: this.#radius,
-      lookAt: this.#lookAt.clone(),
-      zoom: this.#zoom,
-      minRadius: this.#minRadius,
-      maxRadius: this.#maxRadius,
-      movementSpeed: this.#movementSpeed,
-      rotationSpeed: this.#rotationSpeed,
-    });
+  constructor(options?: Partial<Config>) {
+    Object.assign(this.#config, options);
+    this.#initializer = { ...this.#config };
   }
 
   dispose() {
@@ -73,19 +56,19 @@ export class Controller implements std.IDisposable {
     const dt = time - this.#lastUpdate;
     this.#lastUpdate = time;
 
-    this.#radius += dt * this.#movement * this.#movementSpeed;
-    this.#phi += dt * this.#phiRotation * this.#rotationSpeed;
-    this.#theta += dt * this.#thetaRotation * this.#rotationSpeed;
+    this.#config.radius += dt * this.#movement * this.#config.movementSpeed;
+    this.#config.phi += dt * this.#phiRotation * this.#config.rotationSpeed;
+    this.#config.theta += dt * this.#thetaRotation * this.#config.rotationSpeed;
 
-    this.#radius = std.clamp(this.#radius, this.#minRadius, this.#maxRadius);
-    this.#theta = std.clamp(this.#theta, this.#minTheta, this.#maxTheta);
+    this.#config.radius = std.clamp(this.#config.radius, this.#config.minRadius, this.#config.maxRadius);
+    this.#config.theta = std.clamp(this.#config.theta, this.#minTheta, this.#maxTheta);
 
-    const x = this.#lookAt.x + this.#radius * Math.cos(this.#phi) * Math.cos(this.#theta);
-    const y = this.#lookAt.y + this.#radius * Math.sin(this.#phi) * Math.cos(this.#theta);
-    const z = this.#lookAt.z + this.#radius * Math.sin(this.#theta);
+    const x = this.#config.lookAt.x + this.#config.radius * Math.cos(this.#config.phi) * Math.cos(this.#config.theta);
+    const y = this.#config.lookAt.y + this.#config.radius * Math.sin(this.#config.phi) * Math.cos(this.#config.theta);
+    const z = this.#config.lookAt.z + this.#config.radius * Math.sin(this.#config.theta);
 
     camera.position.set(x, y, z);
-    camera.lookAt(this.#lookAt);
+    camera.lookAt(this.#config.lookAt);
   }
 
   mount(element: HTMLElement) {
@@ -110,12 +93,12 @@ export class Controller implements std.IDisposable {
       return;
     }
 
-    const cosPhi = Math.cos(this.#phi);
-    const sinPhi = Math.sin(this.#phi);
-    const cosTheta = Math.cos(this.#theta);
-    const sinTheta = Math.sin(this.#theta);
-    this.#panX.set(-sinPhi, cosPhi, 0).multiplyScalar(this.#radius);
-    this.#panY.set(-cosPhi * sinTheta, -sinPhi * sinTheta, cosTheta).multiplyScalar(this.#radius);
+    const cosPhi = Math.cos(this.#config.phi);
+    const sinPhi = Math.sin(this.#config.phi);
+    const cosTheta = Math.cos(this.#config.theta);
+    const sinTheta = Math.sin(this.#config.theta);
+    this.#panX.set(-sinPhi, cosPhi, 0).multiplyScalar(this.#config.radius);
+    this.#panY.set(-cosPhi * sinTheta, -sinPhi * sinTheta, cosTheta).multiplyScalar(this.#config.radius);
 
     this.#trackPointer = true;
     this.#pointer = std.elementOffset(this.#element!, e);
@@ -133,14 +116,14 @@ export class Controller implements std.IDisposable {
     this.#pointer = { x, y };
 
     if (e.buttons & std.Buttons.LEFT) {
-      this.#phi -= (dx * 2 * Math.PI * this.#rotationSpeed) / this.#element!.clientWidth;
-      this.#theta += (dy * 2 * Math.PI * this.#rotationSpeed) / this.#element!.clientHeight;
+      this.#config.phi -= (dx * 2 * Math.PI * this.#config.rotationSpeed) / this.#element!.clientWidth;
+      this.#config.theta += (dy * 2 * Math.PI * this.#config.rotationSpeed) / this.#element!.clientHeight;
     } else if (e.buttons & std.Buttons.RIGHT) {
       const delta = this.#panX
         .clone()
         .multiplyScalar(dx / this.#element!.clientWidth)
         .add(this.#panY.clone().multiplyScalar(-dy / this.#element!.clientHeight));
-      this.#lookAt.sub(delta);
+      this.#config.lookAt.sub(delta);
     }
   };
 
@@ -153,7 +136,7 @@ export class Controller implements std.IDisposable {
 
   readonly #wheel = (e: WheelEvent) => {
     const dy = e.deltaY > 0 ? 1 : -1;
-    this.#radius += 0.05 * dy * this.#movementSpeed;
+    this.#config.radius += 0.05 * dy * this.#config.movementSpeed;
     e.stopPropagation();
     e.preventDefault();
   };
@@ -183,11 +166,11 @@ export class Controller implements std.IDisposable {
         this.#thetaRotation = -1;
         break;
       case 'Home':
-        Object.assign(this, this.#initializer);
+        Object.assign(this.#config, this.#initializer);
         break;
       case 'End':
-        this.#phi = -Math.PI / 2;
-        this.#theta = 0;
+        this.#config.phi = -Math.PI / 2;
+        this.#config.theta = 0;
         break;
       default:
         return;

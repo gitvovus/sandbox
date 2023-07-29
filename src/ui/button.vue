@@ -57,8 +57,8 @@ function focus(e: FocusEvent) {
 </template>
 
 <style lang="scss">
-@use 'src/style/theme' as *;
-@use 'src/style/vars' as *;
+@use '@/style/theme' as *;
+@use '@/style/vars' as *;
 
 @mixin tint($tint) {
   &[disabled] {
@@ -143,6 +143,23 @@ function focus(e: FocusEvent) {
       $alpha-bg-active: 0.125,
       $alpha-border-active: 0.25
     );
+  }
+
+  &.round {
+    border-radius: 50vh;
+  }
+
+  &.iconic {
+    width: 24px;
+    height: 24px;
+    margin: 2px;
+    padding: 3px;
+    &:hover {
+      padding: 1px;
+    }
+    &:active:hover {
+      padding: 2px;
+    }
   }
 }
 </style>

@@ -10,13 +10,13 @@ import { time } from '@/lib/std';
 
 export type ViewBox = { left: number; top: number; width: number; height: number };
 
-export enum Gesture {
+export const enum Gesture {
   NONE,
   DRAG,
   ROTATE,
 }
 
-export type ControllerConfig = {
+export type Config = {
   pan: boolean;
   zoom: boolean;
   rotate: boolean;
@@ -24,9 +24,7 @@ export type ControllerConfig = {
   maxZoom: number;
 };
 
-export type ControllerOptions = Partial<ControllerConfig>;
-
-const defaultConfig: ControllerConfig = {
+const defaultConfig: Config = {
   pan: true,
   zoom: true,
   rotate: true,
@@ -35,7 +33,7 @@ const defaultConfig: ControllerConfig = {
 };
 
 export class Controller implements std.IDisposable {
-  #config: ControllerConfig;
+  #config: Config;
   #disposer = new std.Disposable();
 
   #cw = 0;
@@ -71,7 +69,7 @@ export class Controller implements std.IDisposable {
   #resetRotation = 0;
   #resetZoom = 1;
 
-  constructor(root: re.Item, scene: re.Item, camera: Camera, options?: ControllerOptions) {
+  constructor(root: re.Item, scene: re.Item, camera: Camera, options?: Partial<Config>) {
     this.#config = Object.assign({ ...defaultConfig }, options);
     this.#root = root;
     this.#scene = scene;

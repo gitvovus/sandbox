@@ -30,7 +30,7 @@ defineProps<{ model: AppModel }>();
           v-model="model.toolBarAlignment"
           :toggle="[ToolBarAlignment.LEFT, ToolBarAlignment.CENTER]"
         >
-          <div class="icon icon-lt"></div>
+          <ui-icon class="icon-lt" />
         </ui-button>
         <ui-button class="button round pretty" toggle v-model="model.showDialog">D</ui-button>
         <span class="v-separator" />
@@ -51,7 +51,7 @@ defineProps<{ model: AppModel }>();
           v-model="model.toolBarAlignment"
           :toggle="[ToolBarAlignment.RIGHT, ToolBarAlignment.CENTER]"
         >
-          <div class="icon icon-gt"></div>
+          <ui-icon class="icon-gt" />
         </ui-button>
       </div>
       <div :class="['spacer', { collapsed: model.toolBarAlignment === ToolBarAlignment.RIGHT }]"></div>
@@ -60,12 +60,7 @@ defineProps<{ model: AppModel }>();
 </template>
 
 <style lang="scss">
-@use '@/style/icons' as *;
 @use '@/style/vars' as *;
-
-.icon {
-  background-color: var(--tx);
-}
 
 .app-bar {
   position: absolute;
@@ -102,37 +97,6 @@ defineProps<{ model: AppModel }>();
   &.collapsed {
     flex-grow: 0;
   }
-}
-
-.button.round {
-  border-radius: 50vh;
-}
-
-.button.iconic {
-  width: 24px;
-  height: 24px;
-  margin: 2px;
-  padding: 3px;
-  &:hover {
-    padding: 1px;
-  }
-  &:hover:active {
-    padding: 2px;
-  }
-}
-
-.icon {
-  width: 100%;
-  height: 100%;
-  vertical-align: middle;
-  mask-position: center;
-  mask-repeat: no-repeat;
-  transform: rotate(0);
-  transition: transform $transition;
-}
-
-.icon.rotated {
-  transform: rotate(180deg);
 }
 
 .v-enter-from,
