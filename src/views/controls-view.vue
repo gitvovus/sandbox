@@ -5,6 +5,36 @@ defineProps<{ model: ControlsModel }>();
 
 <template>
   <div class="view controls-view">
+    <!-- popup -->
+    <div>
+      <ui-button class="button" :disabled="model.popup" toggle v-model="model.popup">Popup</ui-button>
+      <div class="popup-anchor">
+        <ui-popup class="popup-content" v-model="model.popup">
+          <p>
+            Popup is persistent until it loses focus. If you want popup to be closed when some element inside is clicked, add
+            'action' class to this element, like it is done for these buttons:
+          </p>
+          <div>
+            <ui-button class="button action round" @click="model.click('ok')">Ok</ui-button>
+            <ui-button class="button action round" @click="model.click('cancel')">Cancel</ui-button>
+          </div>
+          <div class="h-separator"></div>
+          <div class="expand-header">
+            <input type="text" v-model="model.text" />
+            <ui-button
+              v-for="(item, i) in model.paragraphs"
+              :key="i"
+              class="button round"
+              :toggle="[item]"
+              v-model="model.lorem.paragraphs"
+            >
+              {{ item }}
+            </ui-button>
+          </div>
+          <lorem-view :model="model.lorem" />
+        </ui-popup>
+      </div>
+    </div>
     <!-- buttons -->
     <div>
       <div class="expand-header">
@@ -70,36 +100,6 @@ defineProps<{ model: ControlsModel }>();
         </div>
       </ui-accordion>
     </div>
-    <!-- popup -->
-    <div>
-      <ui-button class="button" :disabled="model.popup" toggle v-model="model.popup">Popup</ui-button>
-      <div class="popup-anchor">
-        <ui-popup class="popup-sample content" v-model="model.popup">
-          <p>
-            Popup is persistent until it loses focus. If you want popup to be closed when some element inside is clicked, add
-            'action' class to this element, like it is done for these buttons:
-          </p>
-          <div>
-            <ui-button class="button action round" @click="model.click('ok')">Ok</ui-button>
-            <ui-button class="button action round" @click="model.click('cancel')">Cancel</ui-button>
-          </div>
-          <div class="h-separator"></div>
-          <div class="expand-header">
-            <input type="text" v-model="model.text" />
-            <ui-button
-              v-for="(item, i) in model.paragraphs"
-              :key="i"
-              class="button round"
-              :toggle="[item]"
-              v-model="model.lorem.paragraphs"
-            >
-              {{ item }}
-            </ui-button>
-          </div>
-          <lorem-view :model="model.lorem" />
-        </ui-popup>
-      </div>
-    </div>
     <!-- accordions -->
     <div>
       <div class="expand-header">
@@ -154,10 +154,6 @@ defineProps<{ model: ControlsModel }>();
   background-color: var(--bg);
 }
 
-.flex-right {
-  margin-left: auto;
-}
-
 .popup-anchor {
   display: inline-block;
   position: relative;
@@ -165,9 +161,10 @@ defineProps<{ model: ControlsModel }>();
   height: 0;
 }
 
-.popup-sample {
-  width: 50%;
-  max-height: 50%;
+.popup-content {
+  max-width: 25em;
+  max-height: 40em;
+  padding: 0 0.5em;
 }
 
 .content {
