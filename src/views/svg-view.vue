@@ -23,7 +23,7 @@ onBeforeUnmount(() => {
   </div>
 </template>
 
-<style lang="scss">
+<style>
 .gradient-green {
   fill: url('#gradient-green');
 }

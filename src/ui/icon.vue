@@ -4,7 +4,7 @@
   <div class="icon"></div>
 </template>
 
-<style lang="scss">
+<style>
 .icon {
   background-color: var(--tx);
   width: 100%;
