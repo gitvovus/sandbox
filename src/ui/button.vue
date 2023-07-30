@@ -43,8 +43,8 @@ function focus(e: FocusEvent) {
   if (prop.noFocus !== undefined) {
     e.preventDefault();
     root.value?.blur();
-    if (e.relatedTarget && (e.relatedTarget as any).focus) {
-      (e.relatedTarget as any).focus();
+    if ((e.relatedTarget as HTMLElement)?.focus) {
+      (e.relatedTarget as HTMLElement).focus();
     }
   }
 }

@@ -102,16 +102,16 @@ export function elementOffset(element: Element, e: MouseEvent): { x: number; y: 
 /**
  * Calls given callback every animation frame.
  * @param callback callback to call.
- * @param fireImmediately if true then additionally immediately calls callback.
+ * @param immediate if true then additionally immediately calls callback.
  * @returns function that should be called to stop per-frame calls.
  */
-export function onAnimationFrame(callback: () => void, fireImmediately = false) {
+export function onAnimationFrame(callback: () => void, immediate = false) {
   let handle = 0;
   const frameHandler = () => {
     handle = window.requestAnimationFrame(frameHandler);
     callback();
   };
-  if (fireImmediately) {
+  if (immediate) {
     callback();
   }
   handle = window.requestAnimationFrame(frameHandler);

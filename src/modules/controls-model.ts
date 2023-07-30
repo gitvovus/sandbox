@@ -4,7 +4,7 @@ import { LoremModel } from '@/modules/lorem-model';
 import { ViewModel } from '@/modules/view-model';
 
 export class ControlsModel extends ViewModel {
-  readonly lorem = new LoremModel(1);
+  readonly lorem = new LoremModel(4);
   readonly paragraphs = [1, 2, 4, 8];
 
   // buttons
@@ -25,7 +25,7 @@ export class ControlsModel extends ViewModel {
   readonly #text = ref('text');
 
   // accordions
-  readonly #expanded = ref(false);
+  readonly #expanded = ref(true);
   readonly #expandedGroup = ref<number | undefined>();
 
   constructor() {
@@ -100,22 +100,3 @@ export class ControlsModel extends ViewModel {
     this.#expandedGroup.value = value;
   }
 }
-
-/*
-  // slider & spin-box
-  public sliderMin = 10;
-  public sliderMax = 50;
-  public spinValues = [10, 20, 30, 40, 50];
-  @observable public spinValue = 30;
-
-  @observable public readonly list = [new ListItem('First'), new ListItem('Second')];
-
-  @action public click(message: string) {
-    this.message = message;
-  }
-
-  @action public reset() {
-    this.spinValue = 30;
-  }
-
-*/

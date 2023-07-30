@@ -12,7 +12,7 @@ onMounted(() => {
 });
 
 onBeforeUnmount(() => {
-  unwatch && unwatch();
+  unwatch?.();
   unwatch = undefined;
 });
 
