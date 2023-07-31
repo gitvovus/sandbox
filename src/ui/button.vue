@@ -8,9 +8,7 @@ interface Props {
 }
 
 const prop = defineProps<Props>();
-
 const emit = defineEmits(['click', 'update:modelValue']);
-
 const root = ref<HTMLElement | null>(null);
 
 const checked = computed(() => {
@@ -58,7 +56,7 @@ function focus(e: FocusEvent) {
 
 <style>
 .button {
-  background: rgba(255, 255, 255, 0.0625);
+  background: rgb(255 255 255 / 0.0625);
   border: 1px solid transparent;
   border-radius: 0.25em;
   color: inherit;
@@ -76,23 +74,23 @@ function focus(e: FocusEvent) {
 }
 
 .button:focus {
-  border-color: rgba(255, 255, 255, 0.25);
+  border-color: rgb(255 255 255 / 0.25);
 }
 
 .button[checked] {
-  background-color: rgba(255, 255, 255, 0.125);
+  background-color: rgb(255 255 255 / 0.125);
 }
 
 .button:hover:not([checked]) {
-  background-color: rgba(255, 255, 255, 0.125);
+  background-color: rgb(255 255 255 / 0.125);
 }
 
 .button:hover[checked] {
-  background-color: rgba(255, 255, 255, 0.375);
+  background-color: rgb(255 255 255 / 0.375);
 }
 
 .button:active:hover {
-  background-color: rgba(255, 255, 255, 0.625);
+  background-color: rgb(255 255 255 / 0.625);
 }
 
 .button.round {

@@ -3,9 +3,9 @@
   --tx: #d0d0d0;
   --view-bg: #384048;
   --view-border: #444e58;
-  --bg-over: rgba(9, 30, 51, 0.75);
-  --bg-dk: rgba(0, 0, 0, 0.2);
-  --bg-lt: rgba(255, 255, 255, 0.1);
+  --bg-over: rgb(9 30 51 / 0.75);
+  --bg-dk: rgb(0 0 0 / 0.2);
+  --bg-lt: rgb(255 255 255 / 0.1);
   --scroll-track: #1d242b;
   --scroll-thumb: #2a353f;
 
@@ -13,21 +13,21 @@
   --page-transition: 1s;
 
   --r: 4px;
-  --shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+  --shadow: 0 0 5px rgb(0 0 0 / 0.5);
 
   --w-margin: 16px;
   --w-radius: 4px;
   --w-resize: 8px;
-  --w-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
+  --w-shadow: 0 0 50px rgb(0 0 0 / 0.5);
   --w-splitter: 1px solid #a0a0a0;
 
   --z-app: 20;
   --z-window: 10;
 
-  --view-shadow: 0 0 50px rgba(0, 0, 0, 0.5);
-  --popup-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  --view-shadow: 0 0 50px rgb(0 0 0 / 0.5);
+  --popup-shadow: 0 0 10px rgb(0 0 0 / 0.5);
 
-  --shape-shadow: drop-shadow(0 0 0.04px rgba(0, 0, 0, 0.5));
+  --shape-shadow: drop-shadow(0 0 0.04px rgb(0 0 0 / 0.5));
   --shaft-shadow: drop-shadow(0 0 0.1px black);
   --gear-selected: drop-shadow(0 0 0.1px black);
 }
@@ -74,9 +74,9 @@ body {
 }
 
 input {
-  background: rgba(0, 0, 0, 0.0625);
+  background: rgb(0 0 0 / 0.0625);
   border: none;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.0625);
+  border-bottom: 1px solid rgb(255 255 255 / 0.0625);
   color: inherit;
   padding: 0.25em;
 }
@@ -102,7 +102,7 @@ p {
 
 .app {
   background: var(--bg-over);
-  box-shadow: 0 0 25vw rgba(0, 0, 0, 1) inset;
+  box-shadow: 0 0 25vw rgb(0 0 0) inset;
 }
 
 .app,

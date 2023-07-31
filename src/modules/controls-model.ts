@@ -25,7 +25,7 @@ export class ControlsModel extends ViewModel {
   readonly #text = ref('text');
 
   // accordions
-  readonly #expanded = ref(true);
+  readonly #expanded = ref(false);
   readonly #expandedGroup = ref<number | undefined>();
 
   constructor() {

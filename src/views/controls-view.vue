@@ -41,7 +41,7 @@ defineProps<{ model: ControlsModel }>();
         Buttons:
         <div class="flex-right">
           <ui-button class="button round iconic" @click="model.buttons = !model.buttons">
-            <ui-icon :class="['icon-gt', model.buttons ? 'collapse' : '']" />
+            <ui-icon :class="['icon-gt', model.buttons ? 'r90' : '']" />
           </ui-button>
         </div>
       </div>
@@ -57,7 +57,7 @@ defineProps<{ model: ControlsModel }>();
           <ui-button
             v-for="(item, i) in model.group"
             :key="`index[${i}]`"
-            class="button round pretty"
+            class="button round"
             :toggle="[i]"
             v-model="model.index"
           >
@@ -69,7 +69,7 @@ defineProps<{ model: ControlsModel }>();
           <ui-button
             v-for="(item, i) in model.items"
             :key="`object[${i}]`"
-            class="button round pretty"
+            class="button round"
             :toggle="[model.items[i]]"
             v-model="model.selectedItem"
           >
@@ -83,7 +83,7 @@ defineProps<{ model: ControlsModel }>();
           <ui-button
             v-for="(item, i) in model.group"
             :key="`checkbox[${i}]`"
-            class="button round pretty"
+            class="button round"
             toggle
             v-model="model.group[i]"
           >
@@ -117,7 +117,7 @@ defineProps<{ model: ControlsModel }>();
         </div>
         <div class="flex-right">
           <ui-button class="button round iconic" @click="model.expanded = !model.expanded">
-            <ui-icon :class="['icon-gt', model.expanded ? 'collapse' : '']" />
+            <ui-icon :class="['icon-gt', model.expanded ? 'r90' : '']" />
           </ui-button>
         </div>
       </div>
@@ -129,7 +129,7 @@ defineProps<{ model: ControlsModel }>();
           <div>Expand (radio #{{ i }}):</div>
           <div class="flex-right">
             <ui-button class="button round iconic" :toggle="[i, undefined]" v-model="model.expandedGroup">
-              <ui-icon :class="['icon-gt', model.expandedGroup === i ? 'collapse' : '']" />
+              <ui-icon :class="['icon-gt', model.expandedGroup === i ? 'r90' : '']" />
             </ui-button>
           </div>
         </div>
@@ -137,6 +137,12 @@ defineProps<{ model: ControlsModel }>();
           <lorem-view :paragraphs="1" class="content" />
         </ui-accordion>
       </template>
+    </div>
+    <!-- icons -->
+    <div class="icons">
+      <div v-for="item in ['down', 'gt', 'lt', 'up']" :key="item" class="icon-content">
+        <ui-icon :class="`icon-${item}`" />
+      </div>
     </div>
   </div>
 </template>
@@ -163,11 +169,33 @@ defineProps<{ model: ControlsModel }>();
 
 .popup-content {
   max-width: 25em;
-  max-height: 40em;
+  max-height: 30em;
   padding: 0 0.5em;
 }
 
 .content {
-  padding: 0 10px;
+  padding: 0 0.5em;
+}
+
+.icons {
+  display: flex;
+  justify-content: center;
+  border: 1px solid rgb(255 255 255 / 0.0625);
+  border-radius: 0.25rem;
+  margin: 1em;
+  padding: 1em;
+}
+
+.icon-content {
+  width: 64px;
+  height: 64px;
+  margin: 0.25rem;
+  color: green;
+  background-color: rgb(0 0 0 / 0.25);
+  border-radius: 0.25rem;
+}
+
+.icon-content:hover {
+  color: red;
 }
 </style>

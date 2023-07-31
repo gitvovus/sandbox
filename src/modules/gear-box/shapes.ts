@@ -126,6 +126,7 @@ export class Shaft implements Rotor {
     if (prev === value) {
       if (prev) {
         prev.position = this.position;
+        this.rotation = prev.rotation;
       }
       return;
     }
@@ -139,6 +140,7 @@ export class Shaft implements Rotor {
     if (value && value.rotor !== this) {
       value.rotor = this;
       value.position = this.position;
+      this.rotation = value.rotation;
     }
   }
 

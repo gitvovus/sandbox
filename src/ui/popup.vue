@@ -58,7 +58,7 @@ function focusout(e: FocusEvent) {
   display: none;
   overflow: auto;
   background-color: var(--bg);
-  border: 1px solid rgba(255, 255, 255, 0.0625);
+  border: 1px solid rgb(255 255 255 / 0.0625);
   box-shadow: var(--popup-shadow);
   z-index: 1;
 }

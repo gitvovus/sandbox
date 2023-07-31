@@ -107,7 +107,7 @@ export class GearBoxModel extends Disposable implements IViewModel {
     this.dispose();
   }
 
-  check() {
+  solve() {
     this.#solver.clear();
     this.#shafts.forEach((shaft) => this.#solver.addRotor(shaft));
 
@@ -116,6 +116,10 @@ export class GearBoxModel extends Disposable implements IViewModel {
       ok = false;
       // console.log('check failed:', failure.type);
     });
+  }
+
+  check() {
+    this.solve();
     this.sway();
   }
 
@@ -360,6 +364,7 @@ export class GearBoxModel extends Disposable implements IViewModel {
 
     if (shaft && !shaft.actor) {
       shaft.actor = this.#pickedGear;
+      this.solve();
       return;
     }
 
