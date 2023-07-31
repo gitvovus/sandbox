@@ -44,7 +44,7 @@ export class GearBoxModel extends Disposable implements IViewModel {
   readonly component = 'gear-box-view';
   readonly key = Symbol();
 
-  readonly #scene = new Scene('gb:', 24, 24, 3, 0.2, false);
+  readonly #scene = new Scene('gb:', 29.8, 29.8, 3, 0.25, true);
   readonly #camera = new Camera({ scale: new Vec(1, -1) });
   readonly #controller = new Controller(this.#scene.root, this.#scene.content, this.#camera);
 
@@ -175,20 +175,13 @@ export class GearBoxModel extends Disposable implements IViewModel {
   };
 
   #createStatic() {
-    this.#scene.background.add(grid(this.#scene.width, this.#scene.height, 7, 1, '#00000040'));
+    this.#scene.background.add(grid(this.#scene.width, this.#scene.height, 1, 1, '#00000010'));
+    this.#scene.background.add(grid(this.#scene.width, this.#scene.height, 5, 1, '#00000040'));
   }
 
   #createShapes() {
     [2, 3, 4, 5].forEach((i) => {
-      this.#stubShapes.set(
-        i,
-        new Shape('stub', {
-          radius: i,
-          thickness: 0.2 + 0.01 * i,
-          spokeThickness: 0.2 + 0.01 * i,
-          spokes: 6,
-        }),
-      );
+      this.#stubShapes.set(i, new Shape('stub', { radius: i, thickness: 0.3, spokeThickness: 0.3, spokes: 6 }));
     });
 
     [

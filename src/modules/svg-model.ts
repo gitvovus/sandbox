@@ -64,6 +64,7 @@ export class SvgModel extends ViewModel {
 
   #element?: HTMLElement;
   #s = 24.8;
+  // #s = 1.8;
 
   #styleIndex = 0;
   #styles = ['gradient-green', 'gradient-yellow', 'gradient-red'];
@@ -113,6 +114,9 @@ export class SvgModel extends ViewModel {
       grid(this.#s, this.#s, 1, 1, '#00000020'),
       grid(this.#s, this.#s, 5, 1, '#00000040'),
       grid(this.#s, this.#s, 10, 1, '#000000'),
+      // grid(this.#s, this.#s, 0.1, 1, '#00000020'),
+      // grid(this.#s, this.#s, 0.5, 1, '#00000040'),
+      // grid(this.#s, this.#s, 1.0, 1, '#000000'),
     );
   }
 

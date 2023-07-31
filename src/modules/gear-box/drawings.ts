@@ -2,7 +2,7 @@ import { x3, y3, f3 } from '@/lib/helpers';
 import { Item } from '@/lib/reactive';
 import { type ShapeType } from '@/modules/gear-box/shapes';
 
-export const teethPerUnitRadius = 8;
+export const teethPerUnitRadius = 5;
 
 export type DrawingOptions = {
   radius: number;
@@ -25,10 +25,10 @@ const defaultData: DrawingData = {
   radius: 1,
   innerRadius: 1,
   offset: 0,
-  thickness: 0.25,
+  thickness: 0.375,
   spokeThickness: 0.375,
   spokes: 3,
-  toothHeight: 0.5,
+  toothHeight: 0.7,
   shaftRadius: 0.375,
   baseRadius: 0.75,
   teethPerUnitRadius,
@@ -129,9 +129,6 @@ function simpleGear(options: DrawingOptions) {
   const r1 = data.radius - 0.5 * h;
   const r2 = r1 + (1 - data.margin) * h;
 
-  const rh1 = f3(h);
-  const rh2 = f3(2 * h);
-
   const path = [`M${x3(r1, -a0)} ${y3(r1, -a0)}`];
 
   for (let i = 0; i < n; ++i) {
@@ -154,31 +151,37 @@ function simpleGear(options: DrawingOptions) {
 function gear(options: DrawingOptions) {
   const data = drawingData(options);
   const h = data.toothHeight;
+  const m = data.margin;
   const n = teethPerUnitRadius * data.radius;
   const sr = data.shaftRadius;
 
   const da = (2 * Math.PI) / n;
-  const a0 = da * 0.19;
-  const a1 = da * 0.37;
-  const a2 = da - a1;
-  const a3 = da - a0;
+  const a0 = 0;
+  const a1 = da * 0.45;
+  const a2 = da * 0.17;
+  const a3 = da * 0.5;
+  const a5 = da - a1;
+  const a6 = da;
 
-  const r1 = data.radius - 0.5 * h;
-  const r2 = r1 + (1 - data.margin) * h;
+  const r0 = data.radius - 0.5 * h;
+  const r1 = r0 / Math.cos(a1);
+  const r3 = r0 + h - m;
+  const r2 = r3 / Math.cos(a3 - a2);
+  const r5 = r1;
+  const r6 = r0;
 
-  const rh1 = f3(h);
-  const rh2 = f3(2 * h);
+  const r = [r2, r3, r5, r6];
+  const a = [a2, a3, a5, a6];
 
-  const path = [`M${x3(r1, -a0)} ${y3(r1, -a0)}`];
+  const path = [`M${x3(r0, a0)} ${y3(r0, a0)} C ${x3(r1, a1)} ${y3(r1, a1)} `];
 
   for (let i = 0; i < n; ++i) {
     const phi = i * da;
-    path.push(
-      `A${rh1} ${rh1} 0 0 0 ${x3(r1, phi + a0)} ${y3(r1, phi + a0)}`,
-      `A${rh2} ${rh2} 0 0 1 ${x3(r2, phi + a1)} ${y3(r2, phi + a1)}`,
-      `A${rh1} ${rh1} 0 0 1 ${x3(r2, phi + a2)} ${y3(r2, phi + a2)}`,
-      `A${rh2} ${rh2} 0 0 1 ${x3(r1, phi + a3)} ${y3(r1, phi + a3)}`,
-    );
+    const c = (idx: number) => `${x3(r[idx], phi + a[idx])} ${y3(r[idx], phi + a[idx])}`;
+    if (i !== 0) {
+      path.push('S ');
+    }
+    path.push(`${c(0)} ${c(1)} S ${c(2)} ${c(3)} `);
   }
   path.push('z');
 
@@ -191,7 +194,7 @@ function gear(options: DrawingOptions) {
 export function draw(type: ShapeType, options: DrawingOptions) {
   switch (type) {
     case 'gear':
-      return simpleGear(options);
+      return gear(options);
     case 'stub':
       return stub(options);
   }
