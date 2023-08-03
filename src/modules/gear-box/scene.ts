@@ -7,8 +7,8 @@ export class Scene {
 
   readonly #width: number;
   readonly #height: number;
-  readonly #ox: number;
-  readonly #oy: number;
+  readonly #dx: number;
+  readonly #dy: number;
 
   readonly #defs = new Item('defs');
   readonly #shadow: Item;
@@ -27,8 +27,8 @@ export class Scene {
     this.id = id;
     this.#width = width;
     this.#height = height;
-    this.#ox = offset;
-    this.#oy = -offset;
+    this.#dx = offset;
+    this.#dy = -offset;
 
     this.#shadow = new Item('rect', {
       id: `${this.id}:shadow`,
@@ -44,28 +44,29 @@ export class Scene {
     this.#content.add(this.#background);
 
     for (let i = 0; i < layers; ++i) {
-      const filter = new Item('mask', { id: `${this.id}:filter:${i}` });
-      this.#filters.push(filter);
-      if (i > 0) {
-        filter.add(new Item('g', { fill: 'white' }));
-      }
-
-      const mask = new Item('mask', { id: `${this.id}:mask:${i}` });
-      this.#masks.push(mask);
-      if (i === 0) {
-        mask.add(new Item('g', { fill: 'white' }), new Item('g', { fill: 'black' }));
-      } else {
-        mask.add(new Item('g', { fill: 'white', mask: `url(#${filter.attributes.id})` }));
-      }
-
-      if (shadows) this.#defs.add(filter, mask);
-
       const layer = new Item('g');
       this.#layers.push(layer);
       this.#content.add(layer);
 
-      if (shadows && i < layers - 1) {
-        this.#content.add(this.#use(this.#shadow, { mask: `url(#${mask.attributes.id})` }));
+      if (i < layers - 1) {
+        const filter = new Item('mask', { id: `${this.id}:filter:${i}` });
+        this.#filters.push(filter);
+        if (i > 0) {
+          filter.add(new Item('g', { fill: 'white' }));
+        }
+
+        const mask = new Item('mask', { id: `${this.id}:mask:${i}` });
+        this.#masks.push(mask);
+        if (i === 0) {
+          mask.add(new Item('g', { fill: 'white' }), new Item('g', { fill: 'black' }));
+        } else {
+          mask.add(new Item('g', { fill: 'white', mask: `url(#${filter.attributes.id})` }));
+        }
+
+        if (shadows) {
+          this.#defs.add(filter, mask);
+          this.#content.add(this.#use(this.#shadow, { mask: `url(#${mask.attributes.id})` }));
+        }
       }
     }
 
@@ -106,12 +107,12 @@ export class Scene {
   addToLayer(item: Item, index: number) {
     this.#layers[index].add(item);
 
-    if (index > 0) {
+    if (index > 0 && index < this.#layers.length - 1) {
       this.#filters[index].items[0].add(this.#sameRef(item));
     }
 
     for (let i = 0; i < index; ++i) {
-      this.#masks[i].items[0].add(this.#sameRef(item, { x: this.#ox * (index - i), y: this.#oy * (index - i) }));
+      this.#masks[i].items[0].add(this.#sameRef(item, { x: this.#dx * (index - i), y: this.#dy * (index - i) }));
     }
   }
 

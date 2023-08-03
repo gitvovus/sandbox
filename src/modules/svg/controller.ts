@@ -28,8 +28,8 @@ const defaultConfig: Config = {
   pan: true,
   zoom: true,
   rotate: true,
-  minZoom: 0.25,
-  maxZoom: 4,
+  minZoom: 0.5,
+  maxZoom: 2,
 };
 
 export class Controller implements std.IDisposable {

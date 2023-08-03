@@ -46,12 +46,15 @@ export class GearBoxModel extends Disposable implements IViewModel {
 
   readonly #scene = new Scene('gb:', 29.8, 29.8, 3, 0.25, true);
   readonly #camera = new Camera({ scale: new Vec(1, -1) });
-  readonly #controller = new Controller(this.#scene.root, this.#scene.content, this.#camera);
+  readonly #controller = new Controller(this.#scene.root, this.#scene.content, this.#camera, {
+    minZoom: 16 / 25,
+    maxZoom: 25 / 16,
+  });
 
   readonly #shafts: Shaft[] = [];
   readonly #gears: Gear[] = [];
 
-  readonly #shaftBackLight = new Item('circle', { id: 'shaft-back', r: 2.25 });
+  readonly #shaftBackLight = new Item('circle', { id: 'shaft-back', r: 3 });
   readonly #shaftBaseShape = new Item('path', { id: 'shaft-base', d: drawBase() });
   readonly #shaftShape = new Item('path', { id: 'shaft', d: drawShaft() });
   readonly #stubShapes = new Map<number, Shape>();
@@ -181,7 +184,10 @@ export class GearBoxModel extends Disposable implements IViewModel {
 
   #createShapes() {
     [2, 3, 4, 5].forEach((i) => {
-      this.#stubShapes.set(i, new Shape('stub', { radius: i, thickness: 0.3, spokeThickness: 0.3, spokes: 6 }));
+      this.#stubShapes.set(
+        i,
+        new Shape('stub', { radius: i, thickness: 0.3, offset: -Math.PI / 10, spokeThickness: 0.25, spokes: 5 }),
+      );
     });
 
     [

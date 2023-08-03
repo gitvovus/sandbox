@@ -7,9 +7,8 @@
 <style>
 .icon {
   background-color: currentColor;
-  width: 100%;
-  height: 100%;
-  vertical-align: middle;
+  width: 1em;
+  height: 1em;
   mask-position: center;
   mask-repeat: no-repeat;
   transition: transform var(--transition);
@@ -49,6 +48,10 @@
 
 .icon-lt {
   mask-image: url('@/assets/lt.svg');
+}
+
+.icon-quad {
+  mask-image: url('@/assets/quad.svg');
 }
 
 .icon-up {

@@ -2,7 +2,7 @@ import { x3, y3, f3 } from '@/lib/helpers';
 import { Item } from '@/lib/reactive';
 import { type ShapeType } from '@/modules/gear-box/shapes';
 
-export const teethPerUnitRadius = 5;
+export const teethPerUnitRadius = 4;
 
 export type DrawingOptions = {
   radius: number;
@@ -28,7 +28,7 @@ const defaultData: DrawingData = {
   thickness: 0.375,
   spokeThickness: 0.375,
   spokes: 3,
-  toothHeight: 0.7,
+  toothHeight: 0.875,
   shaftRadius: 0.375,
   baseRadius: 0.75,
   teethPerUnitRadius,

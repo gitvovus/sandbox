@@ -102,13 +102,16 @@ function focus(e: FocusEvent) {
   height: 24px;
   margin: 2px;
   padding: 3px;
+  font-size: 16px;
 }
 
 .button.iconic:hover {
   padding: 1px;
+  font-size: 20px;
 }
 
 .button.iconic:active:hover {
   padding: 2px;
+  font-size: 18px;
 }
 </style>

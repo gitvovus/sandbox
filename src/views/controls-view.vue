@@ -144,10 +144,29 @@ defineProps<{ model: ControlsModel }>();
         <ui-icon :class="`icon-${item}`" />
       </div>
     </div>
+    <p class="inline-icons">
+      Inline
+      <ui-icon class="inline icon-down" />
+      <ui-icon class="inline icon-gt" />
+      <ui-icon class="inline icon-quad" />
+      <ui-icon class="inline icon-lt" />
+      <ui-icon class="inline icon-up" />
+      icons
+    </p>
   </div>
 </template>
 
 <style>
+.inline-icons {
+  font-size: 4em;
+  background-color: darkslategrey;
+}
+
+.inline.icon {
+  display: inline flow-root;
+  margin-bottom: -0.2em;
+}
+
 .view.controls-view {
   overflow: auto;
   border-radius: 0;
@@ -191,6 +210,7 @@ defineProps<{ model: ControlsModel }>();
   height: 64px;
   margin: 0.25rem;
   color: green;
+  font-size: 64px;
   background-color: rgb(0 0 0 / 0.25);
   border-radius: 0.25rem;
 }
