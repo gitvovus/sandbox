@@ -19,8 +19,8 @@ onBeforeUnmount(() => {
     <ui-item class="overlay" :model="model.root" />
     <div class="anchor top right flex">
       <ui-button class="button" @click.stop="model.check()">check</ui-button>
-      <ui-button class="button" @click.stop="model.startRotation()">animate</ui-button>
-      <ui-button class="button" @click.stop="model.stopRotation()">stop</ui-button>
+      <ui-button class="button" @click.stop="model.start()">start</ui-button>
+      <ui-button class="button" @click.stop="model.stop()">stop</ui-button>
     </div>
     <!-- <info-view class="debug anchor bottom left m-05" :model="model.info" /> -->
     <slot />
@@ -63,13 +63,12 @@ onBeforeUnmount(() => {
 
 .gear,
 .stub {
-  filter: var(--shape-shadow);
   transition: all 0.15s ease-in-out;
+  filter: var(--shape-shadow);
 }
 .gear.selected,
 .stub.selected {
-  opacity: 0.6;
-  filter: var(--gear-selected);
+  filter: var(--shape-selected);
 }
 
 .fill-0 {

@@ -1,8 +1,8 @@
 import { Item } from '@/lib/reactive';
-import { Vec, distance, length, normalize } from '@/lib/bi';
+import { Vec, distance } from '@/lib/bi';
 import { Disposable, Mouse, clamp, onElementEvent, time } from '@/lib/std';
 import { Animation } from '@/lib/animation';
-import { drawBase, drawShaft, grid } from '@/modules/gear-box/drawings';
+import { circleGrid, drawBase, drawShaft } from '@/modules/gear-box/drawings';
 import { Gear, Shaft, Shape, type RotorType } from '@/modules/gear-box/shapes';
 import { Scene } from '@/modules/gear-box/scene';
 import { Solver } from '@/modules/gear-box/solver';
@@ -10,35 +10,7 @@ import { InfoModel } from '@/modules/info-model';
 import { Camera } from '@/modules/svg/camera';
 import { Controller, Gesture } from '@/modules/svg/controller';
 import { type IViewModel } from '@/modules/view-model';
-
-class Level {
-  rotors: { type: RotorType; position: Vec }[] = [{ type: 'source', position: new Vec(0, 0) }];
-
-  add(position: Vec, type: RotorType = 'mediator') {
-    this.rotors.push({ type, position });
-  }
-
-  fromOne(a: Vec, direction: Vec, distance: number) {
-    const d = normalize(direction);
-    return new Vec(a.x + d.x * distance, a.y + d.y * distance);
-  }
-
-  fromTwo(a: Vec, b: Vec, da: number, db: number) {
-    const ab = new Vec(b.x - a.x, b.y - a.y);
-    const d = length(ab);
-    const x = (d * d + da * da - db * db) / (2 * d);
-    const y = Math.sqrt(da * da - x * x);
-
-    const dx = new Vec((ab.x * x) / d, (ab.y * x) / d);
-    const dy = new Vec((-ab.y * y) / d, (ab.x * y) / d);
-
-    return new Vec(a.x + dx.x + dy.x, a.y + dx.y + dy.y);
-  }
-}
-
-function sampleLevel() {
-  const level = new Level();
-}
+import { levels, type LevelData } from '@/modules/gear-box/levels';
 
 export class GearBoxModel extends Disposable implements IViewModel {
   readonly component = 'gear-box-view';
@@ -47,8 +19,8 @@ export class GearBoxModel extends Disposable implements IViewModel {
   readonly #scene = new Scene('gb:', 29.8, 29.8, 3, 0.25, true);
   readonly #camera = new Camera({ scale: new Vec(1, -1) });
   readonly #controller = new Controller(this.#scene.root, this.#scene.content, this.#camera, {
-    minZoom: 16 / 25,
-    maxZoom: 25 / 16,
+    minZoom: 64 / 125,
+    maxZoom: 125 / 64,
   });
 
   readonly #shafts: Shaft[] = [];
@@ -87,7 +59,7 @@ export class GearBoxModel extends Disposable implements IViewModel {
     this.#controller.resize(this.#scene.width, this.#scene.height);
     this.#createShapes();
     this.#createStatic();
-    this.#createSample();
+    this.#load(levels[0]);
   }
 
   get root() {
@@ -104,6 +76,7 @@ export class GearBoxModel extends Disposable implements IViewModel {
       () => this.#controller.dispose(),
     );
     this.#controller.mount(element);
+    this.check();
   }
 
   unmount() {
@@ -126,12 +99,12 @@ export class GearBoxModel extends Disposable implements IViewModel {
     this.sway();
   }
 
-  startRotation() {
+  start() {
     this.#acceleration = this.#maxAcceleration;
     this.#rotationAnimation.start(this.#rotationFrame);
   }
 
-  stopRotation() {
+  stop() {
     this.#acceleration = -this.#maxAcceleration;
   }
 
@@ -178,8 +151,10 @@ export class GearBoxModel extends Disposable implements IViewModel {
   };
 
   #createStatic() {
-    this.#scene.background.add(grid(this.#scene.width, this.#scene.height, 1, 1, '#00000010'));
-    this.#scene.background.add(grid(this.#scene.width, this.#scene.height, 5, 1, '#00000040'));
+    this.#scene.background.add(
+      circleGrid(this.#scene.width, 1, 1, '#00000010'),
+      circleGrid(this.#scene.width, 5, 1, '#00000040'),
+    );
   }
 
   #createShapes() {
@@ -215,49 +190,19 @@ export class GearBoxModel extends Disposable implements IViewModel {
     });
   }
 
-  #createSample() {
-    const s = (i: number) => this.#stubShapes.get(i)!;
-    const g = (i: number) => this.#gearShapes.get(i)!;
-
-    (<[RotorType, number, number][]>[
-      ['source', -2, 4],
-      ['mediator', -2, -4],
-      ['destination', 5, -4],
-      ['destination', 5, 4],
-    ]).forEach(([type, x, y], i) => {
-      this.#addShaft(type, i, x, y);
-      this.#solver.addRotor(this.#shafts[i]);
+  #load(level: LevelData) {
+    level.shafts.forEach(([type, x, y], i) => this.#addShaft(type, i, x, y));
+    level.gears.forEach((gear, i) => {
+      const types = [gear[0].type, gear[1].type];
+      const radii = [gear[0].radius, gear[1].radius];
+      const fills = [gear[0].fill, gear[1].fill];
+      const shapes = [
+        types[0] === 'gear' ? this.#gearShapes.get(radii[0])! : this.#stubShapes.get(radii[0])!,
+        types[1] === 'gear' ? this.#gearShapes.get(radii[1])! : this.#stubShapes.get(radii[1])!,
+      ];
+      this.#addGear(i, shapes[0], shapes[1], fills[0], fills[1]);
     });
-
-    this.#shafts[0].speed = 1;
-
-    (<[[Shape, Shape], [string, string]][]>[
-      [
-        [g(5), s(3)],
-        ['fill-5', 'fill-3'],
-      ],
-      [
-        [g(3), g(5)],
-        ['fill-2', 'fill-4'],
-      ],
-      [
-        [g(3), g(2)],
-        ['fill-0', 'fill-1'],
-      ],
-      [
-        [g(2), g(4)],
-        ['fill-6', 'fill-1'],
-      ],
-    ]).forEach(([shape, fill], i) => {
-      this.#addGear(i, shape[0], shape[1], fill[0], fill[1]);
-    });
-
-    for (let i = 0; i < this.#shafts.length; ++i) {
-      this.#gears[i].position = this.#shafts[i].position; // TODO: make it automatic
-      this.#shafts[i].actor = this.#gears[i];
-    }
-
-    this.check();
+    level.connections.forEach(({ shaft, gear }) => (this.#shafts[shaft].actor = this.#gears[gear]));
   }
 
   #addShaft(type: RotorType, index: number, x: number, y: number) {
@@ -332,6 +277,8 @@ export class GearBoxModel extends Disposable implements IViewModel {
     e.stopPropagation();
     e.stopImmediatePropagation();
 
+    gear.moveToTop();
+
     if (e.button === Mouse.RIGHT) {
       gear.flip();
       if (gear.rotor) this.check();
@@ -354,10 +301,12 @@ export class GearBoxModel extends Disposable implements IViewModel {
       return;
     }
 
+    const catchDistance = 0.5;
+
     const point = this.#camera.transform.transform(this.#controller.toCamera(e));
     const delta = new Vec(point.x - this.#pickedPoint.x, point.y - this.#pickedPoint.y);
     const position = new Vec(this.#pickedPosition.x + delta.x, this.#pickedPosition.y + delta.y);
-    const shaft = this.#findShaft(position, 0.5);
+    const shaft = this.#findShaft(position, catchDistance);
 
     if (shaft && shaft === this.#pickedGear.rotor) return;
 

@@ -8,6 +8,8 @@ export type ShapeType = 'gear' | 'stub';
 
 export type RotorType = 'source' | 'mediator' | 'destination';
 
+export type RotorState = 'ok' | 'block' | 'collision';
+
 export interface Actor {
   readonly radii: [number, number];
   readonly types: [ShapeType, ShapeType];
@@ -22,6 +24,7 @@ export interface Rotor {
   rotation: number;
   speed: number;
   actor?: Actor;
+  state: RotorState;
 }
 
 function use(item: Item, attributes?: Attributes) {
@@ -63,6 +66,7 @@ export class Shaft implements Rotor {
   readonly #shaft: Transformable;
 
   // Rotor
+  state: RotorState = 'ok';
   readonly #type: RotorType;
   #speed = 0;
   #actor?: Actor;
@@ -264,6 +268,10 @@ export class Gear implements Actor {
       this.#scene.remove(`#${ref.attributes.id}`);
       this.#scene.removeDef(ref.attributes.id!);
     });
+  }
+
+  moveToTop() {
+    this.#visuals.forEach((visual) => (visual.index = -1));
   }
 
   flip() {

@@ -217,3 +217,18 @@ export function grid(width: number, height: number, step: number, strokeWidth: n
 
   return grid;
 }
+
+export function circleGrid(d: number, step: number, strokeWidth: number, stroke: string) {
+  const grid = new Item('g', { stroke, 'stroke-width': strokeWidth });
+  const r = d / 2;
+  const n = Math.floor(r / step);
+  for (let i = -n; i <= n; ++i) {
+    const a = i * step;
+    const b = Math.sqrt(r * r - a * a);
+    grid.add(
+      new Item('line', { x1: a, y1: -b, x2: a, y2: b, 'vector-effect': 'non-scaling-stroke' }),
+      new Item('line', { x1: -b, y1: a, x2: b, y2: a, 'vector-effect': 'non-scaling-stroke' }),
+    );
+  }
+  return grid;
+}

@@ -45,7 +45,64 @@ export class Solver {
       return;
     }
 
-    const data = new Map<Rotor, SolverData>([[source, { speed: source.speed, rotation: source.rotation, source }]]);
+    this.rotors.forEach((rotor) => {
+      rotor.state = 'ok';
+      rotor.speed = 0;
+    });
+
+    // check all pairs
+    for (let i = 0; i < this.rotors.length - 1; ++i) {
+      for (let j = i + 1; j < this.rotors.length; ++j) {
+        const a = this.rotors[i];
+        const ar = a.actor ? [...a.actor.radii] : [1, 1];
+        const at: [ShapeType, ShapeType] = a.actor ? [...a.actor.types] : ['stub', 'stub'];
+
+        const b = this.rotors[j];
+        const br = b.actor ? [...b.actor.radii] : [1, 1];
+        const bt: [ShapeType, ShapeType] = b.actor ? [...b.actor.types] : ['stub', 'stub'];
+
+        const abDistance = this.#distance(a, b);
+        const contactDistances = [ar[0] + br[0], ar[1] + br[1]];
+
+        // no contact
+        if (abDistance > contactDistances[0] + eps && abDistance > contactDistances[1] + eps) {
+          continue;
+        }
+
+        // collision
+        if (contactDistances[0] > abDistance + eps || contactDistances[1] > abDistance + eps) {
+          if (a.state === 'ok') a.state = 'collision';
+          if (b.state === 'ok') b.state = 'collision';
+          fail({ type: 'collision', rotors: [a, b] });
+          continue;
+        }
+
+        // relative speeds at contact points
+        const speeds = [0, 0];
+        contactDistances.forEach((distance, index) => {
+          if (Math.abs(distance - abDistance) < eps && at[index] === 'gear' && bt[index] === 'gear') {
+            speeds[index] = -ar[index] / br[index];
+          }
+        });
+
+        // direct block: two contact points, different gear ratios: unable to sync rotation
+        const abs = speeds.map(Math.abs);
+        if (abs[0] > 0 && abs[1] > 0 && Math.abs(abs[0] - abs[1]) > eps) {
+          if (a.state === 'ok') a.state = 'block';
+          if (b.state === 'ok') b.state = 'block';
+          fail({ type: 'block', rotors: [a, b] });
+          continue;
+        }
+      }
+    }
+
+    if (source.state !== 'ok') {
+      fail({ type: 'not finished' });
+      return;
+    }
+
+    source.speed = 1;
+    const data = new Map<Rotor, SolverData>([[source, { speed: source.speed, rotation: source.rotation }]]);
     let current: Set<Rotor>;
     let next = new Set<Rotor>([source]);
 
@@ -60,6 +117,7 @@ export class Solver {
 
         this.rotors.forEach((b) => {
           if (a === b || aData.source === b || data.get(b)?.source === a) return;
+          if (a.state !== 'ok' && b.state !== 'ok') return;
 
           const br = b.actor ? [...b.actor.radii] : [1, 1];
           const bt: [ShapeType, ShapeType] = b.actor ? [...b.actor.types] : ['stub', 'stub'];
@@ -67,18 +125,14 @@ export class Solver {
           const abDistance = this.#distance(a, b);
           const contactDistances = [ar[0] + br[0], ar[1] + br[1]];
 
-          // collision
-          if (contactDistances[0] > abDistance + eps || contactDistances[1] > abDistance + eps) {
-            fail({ type: 'collision', rotors: [a, b] });
-            return;
-          }
-
           // no contact
           if (abDistance > contactDistances[0] + eps && abDistance > contactDistances[1] + eps) {
             return;
           }
 
-          // speeds at contact points
+          // collision - already checked
+
+          // absolute speeds at contact points
           const speeds = [0, 0];
           contactDistances.forEach((distance, index) => {
             if (Math.abs(distance - abDistance) < eps && at[index] === 'gear' && bt[index] === 'gear') {
@@ -86,19 +140,26 @@ export class Solver {
             }
           });
 
-          // block: two contact points, different gear ratios: unable to sync rotation
           const abs = speeds.map(Math.abs);
-          if (abs[0] > 0 && abs[1] > 0 && Math.abs(abs[0] - abs[1]) > eps) {
+          // block: contact with blocked gear
+          if ((abs[0] > 0 || abs[1] > 0) && (a.state !== 'ok' || b.state !== 'ok')) {
+            if (a.state === 'ok') a.state = 'block';
+            if (b.state === 'ok') b.state = 'block';
             fail({ type: 'block', rotors: [a, b] });
             return;
           }
 
+          // direct block - already checked
+
+          // block: two contact actors, different gear ratios: unable to sync rotation
           const speed = abs[0] > abs[1] ? speeds[0] : speeds[1];
           const contactIndex = abs[0] > abs[1] ? 0 : 1;
 
           if (data.has(b)) {
             const bData = data.get(b)!;
             if (Math.abs(bData.speed - speed) > eps) {
+              if (a.state === 'ok') a.state = 'block';
+              if (b.state === 'ok') b.state = 'block';
               fail({ type: 'block', rotors: [a, b] });
               return;
             }
@@ -134,7 +195,7 @@ export class Solver {
       } else {
         const rotorData = data.get(rotor)!;
         if (rotorData.speed === 0) {
-          fail({ type: 'not finished' }); // TODO: this should not happen (remove?)
+          fail({ type: 'not finished' });
         }
       }
     });
