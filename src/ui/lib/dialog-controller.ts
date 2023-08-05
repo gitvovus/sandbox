@@ -1,5 +1,7 @@
 import { ref } from 'vue';
 
+import { Disposable, onElementEvent } from '@/lib/std';
+
 interface Handler {
   element: HTMLElement;
   pick: (e: PointerEvent) => void;
@@ -8,6 +10,8 @@ interface Handler {
 }
 
 export class Controller {
+  #mounted = new Disposable();
+
   #l = ref(0);
   #t = ref(0);
   #w = ref(800);
@@ -133,21 +137,17 @@ export class Controller {
       drop: this.#seDrop,
     };
 
-    this.#cc.element.addEventListener('dblclick', this.#dblClick);
+    this.#mounted.addDisposers(onElementEvent(this.#cc.element, 'dblclick', this.#dblClick));
 
     [this.#nw, this.#nn, this.#ne, this.#ww, this.#cc, this.#ee, this.#sw, this.#ss, this.#se].forEach((item) =>
-      item.element.addEventListener('pointerdown', item.pick),
+      this.#mounted.addDisposers(onElementEvent(item.element, 'pointerdown', item.pick)),
     );
 
     this.center();
   }
 
   unmount() {
-    this.#cc.element.removeEventListener('dblclick', this.#dblClick);
-
-    [this.#nw, this.#nn, this.#ne, this.#ww, this.#cc, this.#ee, this.#sw, this.#ss, this.#se].forEach((item) =>
-      item.element.removeEventListener('pointerdown', item.pick),
-    );
+    this.#mounted.dispose();
   }
 
   center() {
@@ -155,6 +155,17 @@ export class Controller {
     const height = window.innerHeight;
     this.left = Math.floor(0.5 * (width - this.width));
     this.top = Math.floor(0.5 * (height - this.height));
+  }
+
+  fit() {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
+    if (this.width > w) this.width = w;
+    if (this.height > h) this.height = h;
+    if (this.left < 0) this.left = 0;
+    if (this.top < 0) this.top = 0;
+    if (this.left + this.width > w) this.left = (w - this.width) / 2;
+    if (this.top + this.height > h) this.top = (h - this.height) / 2;
   }
 
   #capture(h: Handler, e: PointerEvent) {

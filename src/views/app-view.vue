@@ -10,13 +10,13 @@ defineProps<{ model: AppModel }>();
       <component v-if="model.activePage !== undefined" :is="model.activePage.component" :model="model.activePage" />
     </transition>
     <teleport to="body">
-      <ui-dialog :class="['effect', { show: model.showDialog }]" :width="600" :height="720">
-        <div class="w-panel">
-          <div class="w-header">Header</div>
-          <div class="w-content">
+      <ui-dialog class="effect" :show="model.showDialog" :width="600" :height="720">
+        <div class="dlg-panel">
+          <div class="dlg-header">Draggable/resizable</div>
+          <div class="dlg-content">
             <lorem-view />
           </div>
-          <div class="w-footer">
+          <div class="dlg-footer">
             <ui-button class="button mouse" @click="model.showDialog = false">Close</ui-button>
           </div>
         </div>
@@ -69,23 +69,40 @@ defineProps<{ model: AppModel }>();
   display: flex;
   align-items: center;
   border-radius: 4px 4px 0 0;
-  box-shadow: 0 0 8px rgb(0 0 0 / 0.5);
+  box-shadow: var(--shadow);
   pointer-events: auto;
   background-color: var(--bg);
-  padding: 0 0.5em;
+  padding: 0.33em 0.5em;
+  gap: 0.5em;
 }
 
-.app-buttons .v-separator {
-  align-self: stretch;
+.app-buttons .button {
+  margin: 0;
 }
 
-.app-buttons .text {
-  margin: 0 0.5em;
-  padding-bottom: 2px;
+.dlg-panel {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  pointer-events: none;
+  background-color: var(--bg);
 }
 
-.app-buttons .button.iconic {
-  margin: 0 5px;
+.dlg-header,
+.dlg-footer {
+  display: flex;
+  margin: var(--dlg-margin);
+  align-items: center;
+  justify-content: center;
+}
+
+.dlg-content {
+  position: relative;
+  flex: 1 1 auto;
+  overflow: auto;
+  pointer-events: auto;
+  padding: 0 var(--dlg-margin);
 }
 
 .spacer {

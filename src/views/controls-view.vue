@@ -48,9 +48,9 @@ defineProps<{ model: ControlsModel }>();
       <ui-accordion :expanded="model.buttons">
         <div class="m-1">
           <input type="text" value="text" style="width: 100px" />
-          <ui-button class="button">focusable</ui-button>
-          <ui-button class="button" no-focus tabindex="-1">non-focusable</ui-button>
-          <ui-button class="button">focusable</ui-button>
+          <ui-button class="button" @click="model.click('focusable')">focusable</ui-button>
+          <ui-button class="button" @click="model.click('non-focusable')" no-focus tabindex="-1">non-focusable</ui-button>
+          <ui-button class="button" @click="model.click('focusable')">focusable</ui-button>
         </div>
         <div class="m-1">
           <div>Radio (index): {{ model.index }}</div>
@@ -199,16 +199,17 @@ defineProps<{ model: ControlsModel }>();
 .icons {
   display: flex;
   justify-content: center;
+  align-items: center;
   border: 1px solid rgb(255 255 255 / 0.0625);
   border-radius: 0.25rem;
   margin: 1em;
   padding: 1em;
+  gap: 0.5em;
 }
 
 .icon-content {
   width: 64px;
   height: 64px;
-  margin: 0.25rem;
   color: green;
   font-size: 64px;
   background-color: rgb(0 0 0 / 0.25);

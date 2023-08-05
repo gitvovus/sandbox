@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref } from 'vue';
+import { onMounted, onBeforeUnmount, ref, watch } from 'vue';
 import { Controller } from '@/ui/lib/dialog-controller';
 
 type Props = {
+  show: boolean;
   left?: number;
   top?: number;
   width?: number;
@@ -13,6 +14,7 @@ const props = defineProps<Props>();
 
 const root = ref();
 const controller = new Controller();
+let unmount: () => void;
 
 onMounted(() => {
   if (props.left !== undefined) {
@@ -28,9 +30,16 @@ onMounted(() => {
     controller.height = props.height;
   }
   controller.mount(root.value);
+  unmount = watch(
+    () => props.show,
+    (show) => {
+      if (show) controller.fit();
+    },
+  );
 });
 
 onBeforeUnmount(() => {
+  unmount();
   controller.unmount();
 });
 </script>
@@ -38,7 +47,7 @@ onBeforeUnmount(() => {
 <template>
   <div
     ref="root"
-    class="dialog"
+    :class="['dialog', { show }]"
     :style="{
       left: `${controller.left}px`,
       top: `${controller.top}px`,
@@ -46,7 +55,7 @@ onBeforeUnmount(() => {
       height: `${controller.height}px`,
     }"
   >
-    <div class="dialog-grid">
+    <div class="dialog-layout">
       <div class="nw-resize"></div>
       <div class="nn-resize"></div>
       <div class="ne-resize"></div>
@@ -64,32 +73,32 @@ onBeforeUnmount(() => {
 
 <style>
 .dialog {
-  border-radius: var(--w-radius);
+  border-radius: var(--dlg-radius);
   position: fixed;
   visibility: hidden;
-  z-index: var(--z-window);
+  z-index: var(--z-dlg);
 }
 
 .dialog.show {
   visibility: visible;
 }
 
-.dialog-grid {
+.dialog-layout {
   display: grid;
   position: absolute;
   left: 0;
   top: 0;
   right: 0;
   bottom: 0;
-  margin: calc(-var(--w-resize));
-  grid-template-columns: calc(var(--w-resize) * 2) auto calc(var(--w-resize) * 2);
-  grid-template-rows: calc(var(--w-resize) * 2) auto calc(var(--w-resize) * 2);
+  margin: calc(-var(--dlg-resize));
+  grid-template-columns: calc(var(--dlg-resize) * 2) auto calc(var(--dlg-resize) * 2);
+  grid-template-rows: calc(var(--dlg-resize) * 2) auto calc(var(--dlg-resize) * 2);
 }
 .dialog-content {
-  box-shadow: var(--w-shadow);
+  box-shadow: var(--dlg-shadow);
   z-index: 1;
-  margin: calc(-var(--w-resize));
-  border-radius: var(--w-radius);
+  margin: calc(-var(--dlg-resize));
+  border-radius: var(--dlg-radius);
   overflow: auto;
   cursor: auto;
 }
