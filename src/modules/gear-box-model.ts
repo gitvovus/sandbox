@@ -2,7 +2,7 @@ import { Item } from '@/lib/reactive';
 import { Vec, distance } from '@/lib/bi';
 import { Disposable, Mouse, clamp, onElementEvent, time } from '@/lib/std';
 import { Animation } from '@/lib/animation';
-import { circleGrid, drawBase, drawShaft } from '@/modules/gear-box/drawings';
+import { drawBase, drawShaft, prettyGrid } from '@/modules/gear-box/drawings';
 import { Gear, Shaft, Shape, type RotorType } from '@/modules/gear-box/shapes';
 import { Scene } from '@/modules/gear-box/scene';
 import { Solver } from '@/modules/gear-box/solver';
@@ -26,9 +26,21 @@ export class GearBoxModel extends Disposable implements IViewModel {
   readonly #shafts: Shaft[] = [];
   readonly #gears: Gear[] = [];
 
-  readonly #shaftBackLight = new Item('circle', { id: 'shaft-back', r: 3 });
-  readonly #shaftBaseShape = new Item('path', { id: 'shaft-base', d: drawBase() });
-  readonly #shaftShape = new Item('path', { id: 'shaft', d: drawShaft() });
+  readonly #shaftBackLight = new Item('circle', {
+    id: 'shaft-back',
+    r: 3.5,
+  });
+  readonly #shaftBaseShape = new Item('path', {
+    id: 'shaft-base',
+    d: drawBase(),
+    stroke: 'black',
+    'stroke-width': 0.25,
+    'vector-effect': 'non-scaling-stroke',
+  });
+  readonly #shaftShape = new Item('path', {
+    id: 'shaft',
+    d: drawShaft(),
+  });
   readonly #stubShapes = new Map<number, Shape>();
   readonly #gearShapes = new Map<number, Shape>();
 
@@ -37,7 +49,7 @@ export class GearBoxModel extends Disposable implements IViewModel {
   #speed = 0;
   #maxSpeed = 0.75;
   #acceleration = 0;
-  #maxAcceleration = 2 * this.#maxSpeed;
+  #maxAcceleration = this.#maxSpeed;
 
   #rotationAnimation = new Animation();
 
@@ -136,13 +148,13 @@ export class GearBoxModel extends Disposable implements IViewModel {
     this.#speed = clamp(this.#speed + dt * this.#swayAcceleration, -this.#maxSpeed, this.#maxSpeed);
     this.#rotate(dt * this.#speed);
     const now = time() - this.#swayStart;
-    if (now > 0.15) {
+    if (now > 0.2) {
       this.#swayAcceleration = this.#maxAcceleration;
     }
-    if (now > 0.45) {
+    if (now > 0.6) {
       this.#swayAcceleration = -this.#maxAcceleration;
     }
-    if (now > 0.7) {
+    if (now > 1) {
       this.#swayAnimation.stop();
       if (!this.#rotationAnimation.isActive()) {
         this.#speed = 0;
@@ -152,8 +164,8 @@ export class GearBoxModel extends Disposable implements IViewModel {
 
   #createStatic() {
     this.#scene.background.add(
-      circleGrid(this.#scene.width, 1, 1, '#00000010'),
-      circleGrid(this.#scene.width, 5, 1, '#00000040'),
+      prettyGrid(this.#scene.width / 2, this.#scene.width / 3, 1, 1, '#00000010'),
+      prettyGrid(this.#scene.width / 2, this.#scene.width / 3, 5, 1, '#00000040'),
     );
   }
 
@@ -183,7 +195,7 @@ export class GearBoxModel extends Disposable implements IViewModel {
     ].forEach(([name, fill]) => {
       const gradient = new Item('radialGradient', { id: `shaft-back-${name}` });
       gradient.add(
-        new Item('stop', { offset: 0.2, 'stop-color': `${fill}30` }),
+        new Item('stop', { offset: 0.25, 'stop-color': `${fill}40` }),
         new Item('stop', { offset: 1, 'stop-color': `${fill}00` }),
       );
       this.#scene.addDefs(gradient);
@@ -255,9 +267,9 @@ export class GearBoxModel extends Disposable implements IViewModel {
     return undefined;
   }
 
-  #findShaft(position: Vec, maxDistance: number) {
+  #findShaft(position: Vec, catchDistance: number) {
     let found: Shaft | undefined;
-    let min = maxDistance;
+    let min = catchDistance;
     this.#shafts.forEach((shaft) => {
       const d = distance(shaft.position, position);
       if (d < min) {

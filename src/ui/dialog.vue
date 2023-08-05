@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref } from 'vue';
-import { Controller } from '@/modules/dialog-controller';
+import { Controller } from '@/ui/lib/dialog-controller';
 
 type Props = {
   left?: number;

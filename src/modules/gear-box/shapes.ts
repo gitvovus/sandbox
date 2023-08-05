@@ -51,7 +51,13 @@ export class Shape {
     this.radius = options.radius;
 
     const id = `shape:${type}-${options.radius}`;
-    this.shape = new Item('path', { id, d: draw(type, options), 'fill-rule': 'evenodd' });
+    this.shape = new Item('path', {
+      id,
+      d: draw(type, options),
+      'fill-rule': 'evenodd',
+      'stroke-width': 0.5,
+      'vector-effect': 'non-scaling-stroke',
+    });
   }
 
   get id() {
@@ -157,7 +163,7 @@ export class Shaft implements Rotor {
 
   removeFromScene() {
     [this.#back, this.#base, this.#shaft].forEach((item) => {
-      this.#scene.remove(item.attributes.href!);
+      this.#scene.removeRefs(item.attributes.href!);
       this.#scene.removeDef(item.attributes.id!);
     });
   }
@@ -265,7 +271,7 @@ export class Gear implements Actor {
 
   removeFromScene() {
     this.#refs.forEach((ref) => {
-      this.#scene.remove(`#${ref.attributes.id}`);
+      this.#scene.removeRefs(`#${ref.attributes.id}`);
       this.#scene.removeDef(ref.attributes.id!);
     });
   }
@@ -275,7 +281,7 @@ export class Gear implements Actor {
   }
 
   flip() {
-    this.#refs.forEach((ref) => this.#scene.remove(`#${ref.attributes.id}`));
+    this.#refs.forEach((ref) => this.#scene.removeRefs(`#${ref.attributes.id}`));
     this.#refs = [this.#refs[1], this.#refs[0]];
     this.#radii = [this.#radii[1], this.#radii[0]];
     this.#types = [this.#types[1], this.#types[0]];

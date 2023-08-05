@@ -21,8 +21,8 @@ export class AppModel extends ViewModel {
     new ThreeModel(),
     new GearBoxModel(),
     new ControlsModel(),
-    new SvgTool(),
-    // new SvgModel(),
+    new SvgModel(),
+    // new SvgTool(),
   ];
 
   #toolBarAlignment = ref(ToolBarAlignment.CENTER);

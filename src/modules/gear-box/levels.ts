@@ -54,7 +54,7 @@ export const levels: LevelData[] = [
       ],
       [
         { type: 'gear', radius: 3, fill: 'fill-0' },
-        { type: 'gear', radius: 2, fill: 'fill-1' },
+        { type: 'gear', radius: 2, fill: 'fill-7' },
       ],
       [
         { type: 'gear', radius: 2, fill: 'fill-6' },

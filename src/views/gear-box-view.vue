@@ -42,7 +42,6 @@ onBeforeUnmount(() => {
 
 .shaft-base {
   fill: #506070;
-  filter: var(--shape-shadow);
 }
 
 .shaft {
@@ -64,11 +63,11 @@ onBeforeUnmount(() => {
 .gear,
 .stub {
   transition: all 0.15s ease-in-out;
-  filter: var(--shape-shadow);
+  stroke: rgb(0 0 0 / 0.5);
 }
 .gear.selected,
 .stub.selected {
-  filter: var(--shape-selected);
+  stroke: white;
 }
 
 .fill-0 {
@@ -88,7 +87,7 @@ onBeforeUnmount(() => {
 }
 
 .fill-4 {
-  fill: #0050f0;
+  fill: #3050d0;
 }
 
 .fill-5 {
@@ -97,5 +96,9 @@ onBeforeUnmount(() => {
 
 .fill-6 {
   fill: #e080b0;
+}
+
+.fill-7 {
+  fill: #a040a0;
 }
 </style>

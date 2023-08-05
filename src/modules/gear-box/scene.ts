@@ -116,26 +116,17 @@ export class Scene {
     }
   }
 
-  remove(href: string) {
-    this.#layers.forEach((layer) => {
-      const items = layer.items.filter((item) => item.attributes.href === href);
-      items.forEach((item) => layer.remove(item));
-    });
-    this.#masks.forEach((mask) => {
-      const items = mask.items[0].items.filter((item) => item.attributes.href === href);
-      items.forEach((item) => mask.items[0].remove(item));
-    });
-    this.#filters.forEach((filter, index) => {
-      if (index > 0) {
-        const items = filter.items[0].items.filter((item) => item.attributes.href === href);
-        items.forEach((item) => filter.items[0].remove(item));
-      }
-    });
+  removeRefs(href: string) {
+    this.#remove(this.root, (item) => item.attributes.href === href);
   }
 
   removeDef(id: string) {
-    const items = this.#defs.items.filter((item) => item.attributes.id === id);
-    items.forEach((item) => this.#defs.remove(item));
+    this.#remove(this.#defs, (item) => item.attributes.id === id);
+  }
+
+  #remove(root: Item, predicate: (item: Item) => boolean) {
+    root.items.filter(predicate).forEach((item) => root.remove(item));
+    root.items.forEach((item) => this.#remove(item, predicate));
   }
 
   #sameRef(item: Item, attributes?: Attributes) {

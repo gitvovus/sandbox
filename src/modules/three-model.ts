@@ -23,7 +23,7 @@ export class ThreeModel extends ViewModel implements std.IDisposable {
 
     this.#camera = new tri.PerspectiveCamera(30, 1, 0.1, 50);
     this.#camera.up.set(0, 0, 1);
-    this.#camera.add(new tri.PointLight(0xa0a0a0));
+    this.#camera.add(new tri.DirectionalLight(0xffffff, 1));
 
     this.#scene = new tri.Scene();
     this.#scene.add(new tri.AmbientLight(0x404040));
@@ -42,7 +42,8 @@ export class ThreeModel extends ViewModel implements std.IDisposable {
   mount(element: HTMLElement, canvas: HTMLCanvasElement) {
     this.#element = element;
 
-    const bg = new tri.Color(0x384048);
+    const bg = new tri.Color(getComputedStyle(this.#element).backgroundColor);
+    bg.multiplyScalar(5 / 4);
     this.#renderer = new tri.WebGLRenderer({ canvas, antialias: true });
     this.#renderer.setClearColor(bg);
     this.#renderer.setPixelRatio(window.devicePixelRatio);
