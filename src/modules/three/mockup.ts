@@ -79,7 +79,7 @@ export class Mockup extends std.Disposable {
       lookAt: new tri.Vector3(0, 0, 0.25),
     });
 
-    this.addDisposers(
+    this.add(
       watch(
         () => this.#model.selectedItem,
         (item) => this.#select(this.#objects, item && (item as models.Object3D).root),
@@ -102,7 +102,7 @@ export class Mockup extends std.Disposable {
 
   mount(element: HTMLElement) {
     this.#element = element;
-    this.#mounted.addDisposers(
+    this.#mounted.add(
       () => (this.#element = undefined),
       std.onElementEvent(element, 'pointerdown', this.#pick),
       std.onElementEvent(element, 'pointermove', this.#drag),
@@ -140,7 +140,10 @@ export class Mockup extends std.Disposable {
     this.#child.rotateX(0.2);
     this.#root.add(this.#child);
 
-    const oxChild = new tri.Mesh(geo.sphere(0.02, 3), new tri.MeshPhongMaterial({ color: 0xff0000 }));
+    const oxChild = new tri.Mesh(
+      geo.sphere(0.02, 3),
+      new tri.MeshPhongMaterial({ color: 0xff0000 }),
+    );
     oxChild.position.set(1, 0, 0);
     this.#child.add(oxChild);
   }
@@ -152,22 +155,34 @@ export class Mockup extends std.Disposable {
     const b2 = new models.Object3D({ label: 'Object B2' });
     b.items.push(b1, b2);
 
-    a.root = new tri.Mesh(geo.cube(0.125, 1), new tri.MeshPhongMaterial({ color: 0x50a0f0, transparent: true, opacity: 0.75 }));
+    a.root = new tri.Mesh(
+      geo.cube(0.125, 1),
+      new tri.MeshPhongMaterial({ color: 0x50a0f0, transparent: true, opacity: 0.75 }),
+    );
     a.root.renderOrder = 1;
     a.root.position.set(-0.6, 0.2, 0.125);
 
-    b.root = new tri.Mesh(geo.cube(0.125, 1), new tri.MeshPhongMaterial({ color: 0x50a0f0, transparent: true, opacity: 0.75 }));
+    b.root = new tri.Mesh(
+      geo.cube(0.125, 1),
+      new tri.MeshPhongMaterial({ color: 0x50a0f0, transparent: true, opacity: 0.75 }),
+    );
     b.root.renderOrder = 1;
     b.root.position.set(0.6, -0.4, 0.25);
     b.root.rotateZ(2);
     b.root.rotateY(0.5);
     b.root.rotateX(-0.2);
 
-    b1.root = new tri.Mesh(geo.cube(0.05, 1), new tri.MeshPhongMaterial({ color: 0x00d0f0, transparent: true, opacity: 0.75 }));
+    b1.root = new tri.Mesh(
+      geo.cube(0.05, 1),
+      new tri.MeshPhongMaterial({ color: 0x00d0f0, transparent: true, opacity: 0.75 }),
+    );
     b1.root.renderOrder = 1;
     b1.root.position.set(-0.4, 0.1, -0.1);
 
-    b2.root = new tri.Mesh(geo.cube(0.05, 1), new tri.MeshPhongMaterial({ color: 0x00d0f0, transparent: true, opacity: 0.75 }));
+    b2.root = new tri.Mesh(
+      geo.cube(0.05, 1),
+      new tri.MeshPhongMaterial({ color: 0x00d0f0, transparent: true, opacity: 0.75 }),
+    );
     b2.root.renderOrder = 1;
     b2.root.position.set(-0.1, 0.4, -0.1);
 
@@ -177,11 +192,17 @@ export class Mockup extends std.Disposable {
     const c = new models.Object3D({ label: 'Object C' });
     const d = new models.Object3D({ label: 'Object D' });
 
-    c.root = new tri.Mesh(geo.cube(0.125, 1), new tri.MeshPhongMaterial({ color: 0x50a0f0, transparent: true, opacity: 0.75 }));
+    c.root = new tri.Mesh(
+      geo.cube(0.125, 1),
+      new tri.MeshPhongMaterial({ color: 0x50a0f0, transparent: true, opacity: 0.75 }),
+    );
     c.root.renderOrder = 1;
     c.root.position.set(-0.6, 0.2, 0.125);
 
-    d.root = new tri.Mesh(geo.cube(0.125, 1), new tri.MeshPhongMaterial({ color: 0x50a0f0, transparent: true, opacity: 0.75 }));
+    d.root = new tri.Mesh(
+      geo.cube(0.125, 1),
+      new tri.MeshPhongMaterial({ color: 0x50a0f0, transparent: true, opacity: 0.75 }),
+    );
     d.root.renderOrder = 1;
     d.root.position.set(0.6, -0.4, 0.25);
     d.root.rotateZ(2);
@@ -189,7 +210,10 @@ export class Mockup extends std.Disposable {
     d.root.rotateX(-0.2);
 
     const r = new models.Object3D({ label: 'Object R' });
-    r.root = new tri.Mesh(geo.cube(0.1, 1), new tri.MeshPhongMaterial({ color: 0xf06000, transparent: true, opacity: 0.75 }));
+    r.root = new tri.Mesh(
+      geo.cube(0.1, 1),
+      new tri.MeshPhongMaterial({ color: 0xf06000, transparent: true, opacity: 0.75 }),
+    );
     r.root.renderOrder = 1;
     r.root.position.set(-0.3, -0.3, -0.05);
     this.#coneTarget = r.root;
@@ -242,7 +266,10 @@ export class Mockup extends std.Disposable {
 
   #xyFromEvent(e: PointerEvent) {
     const { x, y } = std.elementOffset(this.#element!, e);
-    return new tri.Vector2((x / this.#element!.clientWidth) * 2 - 1, (y / this.#element!.clientHeight) * -2 + 1);
+    return new tri.Vector2(
+      (x / this.#element!.clientWidth) * 2 - 1,
+      (y / this.#element!.clientHeight) * -2 + 1,
+    );
   }
 
   #pick = (e: PointerEvent) => {

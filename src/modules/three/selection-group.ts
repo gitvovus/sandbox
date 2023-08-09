@@ -27,7 +27,9 @@ export class SelectionGroup {
     if (this.#hoveredObject) {
       geo.setColor(
         this.#hoveredObject,
-        this.#hoveredObject === this.#selectedObject ? this.#selectedColor : this.#hoveredSavedColor,
+        this.#hoveredObject === this.#selectedObject
+          ? this.#selectedColor
+          : this.#hoveredSavedColor,
       );
     }
 
@@ -53,14 +55,18 @@ export class SelectionGroup {
     if (this.#selectedObject) {
       geo.setColor(
         this.#selectedObject,
-        this.#selectedObject === this.#hoveredObject ? this.#hoveredColor : this.#selectedSavedColor,
+        this.#selectedObject === this.#hoveredObject
+          ? this.#hoveredColor
+          : this.#selectedSavedColor,
       );
     }
 
     this.#selectedObject = value;
     if (this.#selectedObject) {
       this.#selectedSavedColor =
-        this.#selectedObject === this.#hoveredObject ? this.#hoveredSavedColor : geo.getColor(this.#selectedObject);
+        this.#selectedObject === this.#hoveredObject
+          ? this.#hoveredSavedColor
+          : geo.getColor(this.#selectedObject);
       geo.setColor(
         this.#selectedObject,
         this.#selectedObject === this.#hoveredObject ? this.#combinedColor : this.#selectedColor,

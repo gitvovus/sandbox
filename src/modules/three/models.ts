@@ -23,8 +23,11 @@ export class Item extends Disposable {
   constructor(attributes?: Attributes) {
     super();
     // const {template, label, icon} = merge({ template: 'item-template', label: 'Item', icon: 'icon-home' }, attributes);
-    Object.assign(this, merge({ template: 'item-template', label: 'Item', icon: 'icon-home' }, attributes));
-    this.addDisposers(() => {
+    Object.assign(
+      this,
+      merge({ template: 'item-template', label: 'Item', icon: 'icon-home' }, attributes),
+    );
+    this.add(() => {
       this.items.forEach((item) => item.dispose());
       this.items.length = 0;
     });
@@ -60,7 +63,7 @@ export class Object3D extends Item {
 
   constructor(attributes?: Attributes) {
     super(merge({ template: 'object-3d', label: 'Object3D', icon: 'icon-view3d' }, attributes));
-    this.addDisposers(() => {
+    this.add(() => {
       if (this.root.parent) {
         this.root.parent.remove(this.root);
       }

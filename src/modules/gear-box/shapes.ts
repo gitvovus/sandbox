@@ -35,7 +35,10 @@ function useT(item: Item, attributes?: Attributes) {
   return new Transformable('use', { href: `#${item.attributes.id}`, ...attributes });
 }
 
-function changeClasses(classes: string, { add = [], remove = [] }: { add?: string[]; remove?: string[] }) {
+function changeClasses(
+  classes: string,
+  { add = [], remove = [] }: { add?: string[]; remove?: string[] },
+) {
   const updated = classes.split(' ').filter((c) => !add.includes(c) && !remove.includes(c));
   updated.push(...add);
   return updated.join(' ');
@@ -179,7 +182,16 @@ export class Gear implements Actor {
   #types: [ShapeType, ShapeType];
   #rotor?: Rotor;
 
-  constructor(scene: Scene, lower: Shape, upper: Shape, lowerFill: string, upperFill: string, index: number) {
+  defaultPosition = new bi.Vec();
+
+  constructor(
+    scene: Scene,
+    lower: Shape,
+    upper: Shape,
+    lowerFill: string,
+    upperFill: string,
+    index: number,
+  ) {
     this.#scene = scene;
 
     this.#refs = [

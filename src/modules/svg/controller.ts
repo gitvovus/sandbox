@@ -50,8 +50,8 @@ export class Controller implements std.IDisposable {
 
   #gesture = Gesture.NONE;
   #pickedOffset = { x: 0, y: 0 };
-  #pickedPoint = new bi.Vec(0, 0);
-  #pickedPosition = new bi.Vec(0, 0);
+  #pickedPoint = new bi.Vec();
+  #pickedPosition = new bi.Vec();
   #pickedRotation = 0;
   #pickedTransform = new bi.Mat(1, 0, 0, 1, 0, 0);
 
@@ -60,12 +60,12 @@ export class Controller implements std.IDisposable {
   #zoomDuration = 0.25;
   #zoomFrom = 0;
   #zoomTo = 0;
-  #zoomPosition = new bi.Vec(0, 0);
+  #zoomPosition = new bi.Vec();
 
   #resetAnimation = new Animation();
   #resetStart = 0;
   #resetDuration = 0.25;
-  #resetPosition = new bi.Vec(0, 0);
+  #resetPosition = new bi.Vec();
   #resetRotation = 0;
   #resetZoom = 1;
 
@@ -87,13 +87,14 @@ export class Controller implements std.IDisposable {
 
   mount(element: HTMLElement) {
     this.#element = element;
-    this.#disposer.addDisposers(
+    this.#disposer.add(
       () => (this.#element = undefined),
       () => this.#zoomAnimation.stop(),
       () => this.#resetAnimation.stop(),
       std.onElementEvent(element, 'dblclick', () => this.reset()),
       std.onElementEvent(element, 'pointerdown', this.#pick),
       std.onElementEvent(element, 'pointermove', this.#drag),
+      std.onElementEvent(element, 'contextmenu', this.#contextMenu),
       std.onElementEvent(element, 'pointerup', this.#drop),
       std.onElementEvent(element, 'wheel', this.#wheel, { passive: false }),
       std.onAnimationFrame(this.#update, true),
@@ -164,7 +165,10 @@ export class Controller implements std.IDisposable {
       this.#resetAnimation.stop();
       k = 1;
     }
-    this.#camera.position = new bi.Vec(std.mix(this.#resetPosition.x, 0, k), std.mix(this.#resetPosition.y, 0, k));
+    this.#camera.position = new bi.Vec(
+      std.mix(this.#resetPosition.x, 0, k),
+      std.mix(this.#resetPosition.y, 0, k),
+    );
     this.#camera.rotation = std.mix(this.#resetRotation, 0, k);
     const zoom = std.mix(this.#resetZoom, 1, k);
     const scale = this.#defaultCamera.scale;
@@ -226,7 +230,10 @@ export class Controller implements std.IDisposable {
     if (this.#gesture === Gesture.DRAG) {
       const point = this.#pickedTransform.transform(this.toCamera(e));
       const delta = new bi.Vec(point.x - this.#pickedPoint.x, point.y - this.#pickedPoint.y);
-      this.#camera.position = new bi.Vec(this.#pickedPosition.x - delta.x, this.#pickedPosition.y - delta.y);
+      this.#camera.position = new bi.Vec(
+        this.#pickedPosition.x - delta.x,
+        this.#pickedPosition.y - delta.y,
+      );
     } else {
       const offset = std.elementOffset(this.#element!, e);
       const delta = (2 * Math.PI * (offset.x - this.#pickedOffset.x)) / this.#element!.clientWidth;
@@ -238,6 +245,11 @@ export class Controller implements std.IDisposable {
     if (this.#gesture === Gesture.NONE) return;
     (e.currentTarget as HTMLElement).releasePointerCapture(e.pointerId);
     this.#gesture = Gesture.NONE;
+  };
+
+  readonly #contextMenu = (e: Event) => {
+    e.stopPropagation();
+    e.preventDefault();
   };
 
   readonly #wheel = (e: WheelEvent) => {

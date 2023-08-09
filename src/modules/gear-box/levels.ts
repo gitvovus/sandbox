@@ -1,16 +1,22 @@
 import { Vec, length, normalize } from '@/lib/bi';
 import type { ShapeType, RotorType } from '@/modules/gear-box/shapes';
 
-export type GearData = { type: ShapeType; radius: number; fill: string };
+export type GearData = {
+  position: Vec;
+  shapes: [
+    { type: ShapeType; radius: number; fill: string },
+    { type: ShapeType; radius: number; fill: string },
+  ];
+};
 
 export type LevelData = {
-  shafts: [RotorType, number, number][];
-  gears: [GearData, GearData][];
+  shafts: { type: RotorType; position: Vec }[];
+  gears: GearData[];
   connections: { shaft: number; gear: number }[];
 };
 
 class Level {
-  rotors: { type: RotorType; position: Vec }[] = [{ type: 'source', position: new Vec(0, 0) }];
+  rotors: { type: RotorType; position: Vec }[] = [{ type: 'source', position: new Vec() }];
 
   add(position: Vec, type: RotorType = 'mediator') {
     this.rotors.push({ type, position });
@@ -34,38 +40,53 @@ class Level {
   }
 }
 
+const v = (x: number, y: number) => new Vec(x, y);
+
 export const levels: LevelData[] = [
   // level 0
   {
+    // prettier-ignore
     shafts: [
-      ['source', -2, 4],
-      ['mediator', -2, -4],
-      ['destination', 5, -4],
-      ['destination', 5, 4],
+      { type: 'source',      position: v(-3, 9) },
+      { type: 'mediator',    position: v(-3, 1) },
+      { type: 'destination', position: v( 4, 1) },
+      { type: 'destination', position: v( 4, 9) },
     ],
     gears: [
-      [
-        { type: 'gear', radius: 5, fill: 'fill-5' },
-        { type: 'stub', radius: 3, fill: 'fill-3' },
-      ],
-      [
-        { type: 'gear', radius: 3, fill: 'fill-2' },
-        { type: 'gear', radius: 5, fill: 'fill-4' },
-      ],
-      [
-        { type: 'gear', radius: 3, fill: 'fill-0' },
-        { type: 'gear', radius: 2, fill: 'fill-7' },
-      ],
-      [
-        { type: 'gear', radius: 2, fill: 'fill-6' },
-        { type: 'gear', radius: 4, fill: 'fill-1' },
-      ],
+      {
+        position: v(-12, -6),
+        shapes: [
+          { type: 'gear', radius: 5, fill: 'fill-5' },
+          { type: 'stub', radius: 3, fill: 'fill-3' },
+        ],
+      },
+      {
+        position: v(4, -10),
+        shapes: [
+          { type: 'gear', radius: 5, fill: 'fill-4' },
+          { type: 'gear', radius: 3, fill: 'fill-2' },
+        ],
+      },
+      {
+        position: v(-5, -12),
+        shapes: [
+          { type: 'gear', radius: 3, fill: 'fill-0' },
+          { type: 'gear', radius: 2, fill: 'fill-7' },
+        ],
+      },
+      {
+        position: v(13, -6),
+        shapes: [
+          { type: 'gear', radius: 4, fill: 'fill-1' },
+          { type: 'gear', radius: 2, fill: 'fill-6' },
+        ],
+      },
     ],
     connections: [
-      { shaft: 0, gear: 0 },
-      { shaft: 1, gear: 1 },
-      { shaft: 2, gear: 2 },
-      { shaft: 3, gear: 3 },
+      // { shaft: 0, gear: 0 },
+      // { shaft: 1, gear: 1 },
+      // { shaft: 2, gear: 2 },
+      // { shaft: 3, gear: 3 },
     ],
   },
 ];

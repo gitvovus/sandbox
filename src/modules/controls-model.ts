@@ -4,8 +4,8 @@ import { LoremModel } from '@/modules/lorem-model';
 import { ViewModel } from '@/modules/view-model';
 
 export class ControlsModel extends ViewModel {
-  readonly lorem = new LoremModel(4);
-  readonly paragraphs = [1, 2, 4, 8];
+  readonly lorem = new LoremModel(2);
+  readonly paragraphs = [1, 2, 3, 4];
 
   // buttons
   readonly #buttons = ref(false);

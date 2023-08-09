@@ -55,7 +55,7 @@ export class Bicubic extends std.Disposable {
       lookAt: new tri.Vector3(0, 0, 0),
     });
 
-    this.addDisposers(() => {
+    this.add(() => {
       this.#controller.dispose();
       this.#scene.remove(this.#root);
       geo.dispose(this.#root);
@@ -66,7 +66,7 @@ export class Bicubic extends std.Disposable {
 
   mount(element: HTMLElement) {
     this.#element = element;
-    this.#mounted.addDisposers(
+    this.#mounted.add(
       () => (this.#element = undefined),
       std.onElementEvent(element, 'pointerdown', this.#pick),
       std.onElementEvent(element, 'pointermove', this.#drag),
@@ -126,7 +126,8 @@ export class Bicubic extends std.Disposable {
     this.#root.scale.setScalar(this.#fitSize / size);
 
     const grid = new Float32Array(size * size);
-    const idx = (x: number, y: number) => std.clamp(x, 0, size - 1) + std.clamp(y, 0, size - 1) * size;
+    const idx = (x: number, y: number) =>
+      std.clamp(x, 0, size - 1) + std.clamp(y, 0, size - 1) * size;
     const get = (x: number, y: number) => grid[idx(x, y)];
     const set = (x: number, y: number, value: number) => (grid[idx(x, y)] = value);
 
@@ -141,7 +142,10 @@ export class Bicubic extends std.Disposable {
       this.#meshes = [];
       for (let y = 0; y < size; ++y) {
         for (let x = 0; x < size; ++x) {
-          const sphere = new tri.Mesh(geo.sphere(1, 4), new tri.MeshPhongMaterial({ color: this.#meshColor }));
+          const sphere = new tri.Mesh(
+            geo.sphere(1, 4),
+            new tri.MeshPhongMaterial({ color: this.#meshColor }),
+          );
           sphere.scale.setScalar(0.07);
           sphere.position.set(x + 0.5, y + 0.5, this.#getZ(x, y));
           this.#meshes.push(sphere);
@@ -171,7 +175,11 @@ export class Bicubic extends std.Disposable {
       this.#root.remove(this.#loRes);
       geo.dispose(this.#loRes);
     }
-    const g = geo.grid(size + 3, size + 3, (x, y) => new tri.Vector3(x - 1.5, y - 1.5, get(x - 2, y - 2)));
+    const g = geo.grid(
+      size + 3,
+      size + 3,
+      (x, y) => new tri.Vector3(x - 1.5, y - 1.5, get(x - 2, y - 2)),
+    );
     this.#loRes = new tri.LineSegments(g, new tri.LineBasicMaterial({ color: this.#loResColor }));
     this.#loRes.visible = visible;
     this.#root.add(this.#loRes);
@@ -230,7 +238,10 @@ export class Bicubic extends std.Disposable {
 
   #xyFromEvent(e: PointerEvent) {
     const { x, y } = std.elementOffset(this.#element!, e);
-    return new tri.Vector2((x / this.#element!.clientWidth) * 2 - 1, (y / this.#element!.clientHeight) * -2 + 1);
+    return new tri.Vector2(
+      (x / this.#element!.clientWidth) * 2 - 1,
+      (y / this.#element!.clientHeight) * -2 + 1,
+    );
   }
 
   #pick = (e: PointerEvent) => {

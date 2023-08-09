@@ -5,7 +5,13 @@ import { type Actor, type Rotor, type ShapeType } from '@/modules/gear-box/shape
 
 const eps = 1e-3;
 
-export type FailureType = 'bad data' | 'no source' | 'no destination' | 'collision' | 'block' | 'not finished';
+export type FailureType =
+  | 'bad data'
+  | 'no source'
+  | 'no destination'
+  | 'collision'
+  | 'block'
+  | 'not finished';
 
 type Failure = {
   type: FailureType;
@@ -80,7 +86,11 @@ export class Solver {
         // relative speeds at contact points
         const speeds = [0, 0];
         contactDistances.forEach((distance, index) => {
-          if (Math.abs(distance - abDistance) < eps && at[index] === 'gear' && bt[index] === 'gear') {
+          if (
+            Math.abs(distance - abDistance) < eps &&
+            at[index] === 'gear' &&
+            bt[index] === 'gear'
+          ) {
             speeds[index] = -ar[index] / br[index];
           }
         });
@@ -102,7 +112,9 @@ export class Solver {
     }
 
     source.speed = 1;
-    const data = new Map<Rotor, SolverData>([[source, { speed: source.speed, rotation: source.rotation }]]);
+    const data = new Map<Rotor, SolverData>([
+      [source, { speed: source.speed, rotation: source.rotation }],
+    ]);
     let current: Set<Rotor>;
     let next = new Set<Rotor>([source]);
 
@@ -135,7 +147,11 @@ export class Solver {
           // absolute speeds at contact points
           const speeds = [0, 0];
           contactDistances.forEach((distance, index) => {
-            if (Math.abs(distance - abDistance) < eps && at[index] === 'gear' && bt[index] === 'gear') {
+            if (
+              Math.abs(distance - abDistance) < eps &&
+              at[index] === 'gear' &&
+              bt[index] === 'gear'
+            ) {
               speeds[index] = (-aData.speed * ar[index]) / br[index];
             }
           });

@@ -200,7 +200,13 @@ export function draw(type: ShapeType, options: DrawingOptions) {
   }
 }
 
-export function grid(width: number, height: number, step: number, strokeWidth: number, stroke: string) {
+export function grid(
+  width: number,
+  height: number,
+  step: number,
+  strokeWidth: number,
+  stroke: string,
+) {
   const grid = new Item('g', { stroke, 'stroke-width': strokeWidth });
   const x = -width / 2;
   const y = -height / 2;
@@ -208,17 +214,27 @@ export function grid(width: number, height: number, step: number, strokeWidth: n
   const ny = Math.floor(height / step / 2);
 
   for (let i = -nx; i <= nx; ++i) {
-    grid.add(new Item('path', { d: `M${i * step} ${y}v${height}`, 'vector-effect': 'non-scaling-stroke' }));
+    grid.add(
+      new Item('path', { d: `M${i * step} ${y}v${height}`, 'vector-effect': 'non-scaling-stroke' }),
+    );
   }
 
   for (let i = -ny; i <= ny; ++i) {
-    grid.add(new Item('path', { d: `M${x} ${i * step}h${width}`, 'vector-effect': 'non-scaling-stroke' }));
+    grid.add(
+      new Item('path', { d: `M${x} ${i * step}h${width}`, 'vector-effect': 'non-scaling-stroke' }),
+    );
   }
 
   return grid;
 }
 
-export function prettyGrid(r1: number, r2: number, step: number, strokeWidth: number, stroke: string) {
+export function prettyGrid(
+  r1: number,
+  r2: number,
+  step: number,
+  strokeWidth: number,
+  stroke: string,
+) {
   const grid = new Item('g', { stroke, 'stroke-width': strokeWidth });
   const n = Math.floor(r1 / step);
   const c = r1 - r2;

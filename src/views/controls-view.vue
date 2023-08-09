@@ -7,12 +7,15 @@ defineProps<{ model: ControlsModel }>();
   <div class="view controls-view">
     <!-- popup -->
     <div>
-      <ui-button class="button" :disabled="model.popup" toggle v-model="model.popup">Popup</ui-button>
+      <ui-button class="button" :disabled="model.popup" toggle v-model="model.popup"
+        >Popup</ui-button
+      >
       <div class="popup-anchor">
         <ui-popup class="popup-content" v-model="model.popup">
           <p>
-            Popup is persistent until it loses focus. If you want popup to be closed when some element inside is clicked, add
-            'action' class to this element, like it is done for these buttons:
+            Popup is persistent until it loses focus. If you want popup to be closed when some
+            element inside is clicked, add 'action' class to this element, like it is done for these
+            buttons:
           </p>
           <div>
             <ui-button class="button action round" @click="model.click('ok')">Ok</ui-button>
@@ -49,7 +52,9 @@ defineProps<{ model: ControlsModel }>();
         <div class="m-1">
           <input type="text" value="text" style="width: 100px" />
           <ui-button class="button" @click="model.click('focusable')">focusable</ui-button>
-          <ui-button class="button" @click="model.click('non-focusable')" no-focus tabindex="-1">non-focusable</ui-button>
+          <ui-button class="button" @click="model.click('non-focusable')" no-focus tabindex="-1"
+            >non-focusable</ui-button
+          >
           <ui-button class="button" @click="model.click('focusable')">focusable</ui-button>
         </div>
         <div class="m-1">
@@ -65,7 +70,10 @@ defineProps<{ model: ControlsModel }>();
           </ui-button>
         </div>
         <div class="m-1">
-          <div>Radio (object): { name: {{ model.selectedItem.name }}, value: {{ model.selectedItem.value }} }</div>
+          <div>
+            Radio (object): { name: {{ model.selectedItem.name }}, value:
+            {{ model.selectedItem.value }} }
+          </div>
           <ui-button
             v-for="(item, i) in model.items"
             :key="`object[${i}]`"
@@ -78,7 +86,9 @@ defineProps<{ model: ControlsModel }>();
         </div>
         <div class="m-1">
           <div>
-            Checkbox: [&nbsp;<span v-for="(item, i) in model.group" :key="i + 300">{{ item }}&nbsp;</span>]
+            Checkbox: [&nbsp;<span v-for="(item, i) in model.group" :key="i + 300"
+              >{{ item }}&nbsp;</span
+            >]
           </div>
           <ui-button
             v-for="(item, i) in model.group"
@@ -96,7 +106,9 @@ defineProps<{ model: ControlsModel }>();
           <ui-button class="button" @click="model.click('ok')">Ok</ui-button>
           <ui-button class="button" @click="model.click('cancel')">Cancel</ui-button>
           <ui-button class="button" @click="model.click('disabled')" disabled>Disabled</ui-button>
-          <ui-button class="button" :toggle="[model.items[0]]" v-model="model.selectedItem" disabled>Disabled</ui-button>
+          <ui-button class="button" :toggle="[model.items[0]]" v-model="model.selectedItem" disabled
+            >Disabled</ui-button
+          >
         </div>
       </ui-accordion>
     </div>
@@ -128,7 +140,11 @@ defineProps<{ model: ControlsModel }>();
         <div class="expand-header">
           <div>Expand (radio #{{ i }}):</div>
           <div class="flex-right">
-            <ui-button class="button round iconic" :toggle="[i, undefined]" v-model="model.expandedGroup">
+            <ui-button
+              class="button round iconic"
+              :toggle="[i, undefined]"
+              v-model="model.expandedGroup"
+            >
               <ui-icon :class="['icon-gt', model.expandedGroup === i ? 'r90' : '']" />
             </ui-button>
           </div>

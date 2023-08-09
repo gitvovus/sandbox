@@ -6,7 +6,7 @@ export class Vec {
   x: number;
   y: number;
 
-  constructor(x: number, y: number) {
+  constructor(x: number = 0, y: number = 0) {
     this.x = x;
     this.y = y;
   }
@@ -34,7 +34,14 @@ export class Mat {
   static inverse(matrix: Mat) {
     const m = matrix.elements;
     const k = 1 / (m[0] * m[3] - m[1] * m[2]);
-    return new Mat(m[3] * k, -m[1] * k, -m[2] * k, m[0] * k, (m[2] * m[5] - m[3] * m[4]) * k, (m[1] * m[4] - m[0] * m[5]) * k);
+    return new Mat(
+      m[3] * k,
+      -m[1] * k,
+      -m[2] * k,
+      m[0] * k,
+      (m[2] * m[5] - m[3] * m[4]) * k,
+      (m[1] * m[4] - m[0] * m[5]) * k,
+    );
   }
 
   readonly elements: MatElements;

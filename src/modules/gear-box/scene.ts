@@ -23,7 +23,14 @@ export class Scene {
 
   readonly #shadowFill = '#00000030';
 
-  constructor(id: string, width: number, height: number, layers: number, offset: number, shadows: boolean = true) {
+  constructor(
+    id: string,
+    width: number,
+    height: number,
+    layers: number,
+    offset: number,
+    shadows: boolean = true,
+  ) {
     this.id = id;
     this.#width = width;
     this.#height = height;
@@ -112,7 +119,9 @@ export class Scene {
     }
 
     for (let i = 0; i < index; ++i) {
-      this.#masks[i].items[0].add(this.#sameRef(item, { x: this.#dx * (index - i), y: this.#dy * (index - i) }));
+      this.#masks[i].items[0].add(
+        this.#sameRef(item, { x: this.#dx * (index - i), y: this.#dy * (index - i) }),
+      );
     }
   }
 

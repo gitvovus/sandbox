@@ -1,9 +1,13 @@
 import * as tri from 'three';
 
+import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+
 import * as std from '@/lib/std';
 import { Bicubic } from '@/modules/three/bicubic';
 import { Mockup } from '@/modules/three/mockup';
 import { ViewModel } from '@/modules/view-model';
+
+import url from '@/assets/3d/cube.glb?url';
 
 export class ThreeModel extends ViewModel implements std.IDisposable {
   readonly #disposer = new std.Disposable();
@@ -29,9 +33,25 @@ export class ThreeModel extends ViewModel implements std.IDisposable {
     this.#scene.add(new tri.AmbientLight(0x404040));
     this.#scene.add(this.#camera);
 
+    // console.log('loading', url);
+    // const loader = new GLTFLoader();
+    // loader
+    //   .loadAsync(url)
+    //   .then((value) => {
+    //     //
+    //     const scene = value.scene;
+    //     scene.scale.setScalar(0.5);
+    //     this.#scene.add(scene);
+    //     console.log('succeeded');
+    //   })
+    //   .catch((reason) => {
+    //     //
+    //     console.log('failed');
+    //   });
+
     this.#demo = new Bicubic(this.#scene, this.#camera);
 
-    this.#disposer.addDisposers(() => this.#demo.dispose());
+    this.#disposer.add(() => this.#demo.dispose());
   }
 
   dispose() {
@@ -41,6 +61,8 @@ export class ThreeModel extends ViewModel implements std.IDisposable {
 
   mount(element: HTMLElement, canvas: HTMLCanvasElement) {
     this.#element = element;
+    this.#width = 0;
+    this.#height = 0;
 
     const bg = new tri.Color(getComputedStyle(this.#element).backgroundColor);
     bg.multiplyScalar(5 / 4);
@@ -49,12 +71,10 @@ export class ThreeModel extends ViewModel implements std.IDisposable {
     this.#renderer.setPixelRatio(window.devicePixelRatio);
     this.#demo.mount(element);
 
-    this.#mounted.addDisposers(std.onAnimationFrame(this.#render), () => {
+    this.#mounted.add(std.onAnimationFrame(this.#render), () => {
       this.#demo.unmount();
-      this.#element = undefined;
-      this.#width = 0;
-      this.#height = 0;
       this.#renderer.dispose();
+      this.#element = undefined;
     });
   }
 
@@ -69,8 +89,8 @@ export class ThreeModel extends ViewModel implements std.IDisposable {
   };
 
   #resize() {
-    const width = this.#element!.clientWidth;
-    const height = this.#element!.clientHeight;
+    const width = this.#element!.clientWidth + 1;
+    const height = this.#element!.clientHeight + 1;
 
     if (width !== this.#width || height !== this.#height) {
       this.#width = width;

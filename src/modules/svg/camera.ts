@@ -6,7 +6,7 @@ const scale = bi.Mat.scale;
 const translation = bi.Mat.translation;
 
 export class Camera {
-  readonly #position = ref(new bi.Vec(0, 0));
+  readonly #position = ref(new bi.Vec());
   readonly #rotation = ref(0);
   readonly #scale = ref(new bi.Vec(1, 1));
 

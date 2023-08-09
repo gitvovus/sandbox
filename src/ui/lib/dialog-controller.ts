@@ -137,11 +137,19 @@ export class Controller {
       drop: this.#seDrop,
     };
 
-    this.#mounted.addDisposers(onElementEvent(this.#cc.element, 'dblclick', this.#dblClick));
+    this.#mounted.add(onElementEvent(this.#cc.element, 'dblclick', this.#dblClick));
 
-    [this.#nw, this.#nn, this.#ne, this.#ww, this.#cc, this.#ee, this.#sw, this.#ss, this.#se].forEach((item) =>
-      this.#mounted.addDisposers(onElementEvent(item.element, 'pointerdown', item.pick)),
-    );
+    [
+      this.#nw,
+      this.#nn,
+      this.#ne,
+      this.#ww,
+      this.#cc,
+      this.#ee,
+      this.#sw,
+      this.#ss,
+      this.#se,
+    ].forEach((item) => this.#mounted.add(onElementEvent(item.element, 'pointerdown', item.pick)));
 
     this.center();
   }

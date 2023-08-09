@@ -46,7 +46,6 @@ export class Application {
   }
 
   run() {
-    document.addEventListener('contextmenu', (e) => e.preventDefault());
     this.#app.mount('body');
   }
 }

@@ -64,8 +64,19 @@
 }
 
 body {
-  font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans',
-    'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family:
+    Inter,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    'Fira Sans',
+    'Droid Sans',
+    'Helvetica Neue',
+    sans-serif;
   color: var(--tx);
   background-image: url(@/assets/bg.png);
 }
@@ -95,20 +106,12 @@ p {
   top: 0;
   right: 0;
   bottom: 0;
+  overflow: hidden;
 }
 
 .app {
   background: var(--bg-over);
   box-shadow: 0 0 25vw rgb(0 0 0) inset;
-}
-
-.app,
-.view {
-  overflow: hidden;
-}
-
-.overlay {
-  overflow: visible;
 }
 
 .view {
@@ -182,32 +185,52 @@ p {
 }
 
 .cursor-default {
-  cursor: url('@/assets/cursors/default.svg') 0 0, default;
+  cursor:
+    url('@/assets/cursors/default.svg') 0 0,
+    default;
 }
 .cursor-move {
-  cursor: url('@/assets/cursors/move.svg') 13 13, move;
+  cursor:
+    url('@/assets/cursors/move.svg') 13 13,
+    move;
 }
 .cursor-not-allowed {
-  cursor: url('@/assets/cursors/not-allowed.svg') 11 11, not-allowed;
+  cursor:
+    url('@/assets/cursors/not-allowed.svg') 11 11,
+    not-allowed;
 }
 .cursor-horizontal {
-  cursor: url('@/assets/cursors/horizontal.svg') 13 13, ew-resize;
+  cursor:
+    url('@/assets/cursors/horizontal.svg') 13 13,
+    ew-resize;
 }
 .cursor-vertical {
-  cursor: url('@/assets/cursors/vertical.svg') 13 13, ns-resize;
+  cursor:
+    url('@/assets/cursors/vertical.svg') 13 13,
+    ns-resize;
 }
 .cursor-cross {
-  cursor: url('@/assets/cursors/cross.svg') 13 13, crosshair;
+  cursor:
+    url('@/assets/cursors/cross.svg') 13 13,
+    crosshair;
 }
 .cursor-rotate-2d {
-  cursor: url('@/assets/cursors/rotate-2d.svg') 13 10, ew-resize;
+  cursor:
+    url('@/assets/cursors/rotate-2d.svg') 13 10,
+    ew-resize;
 }
 .cursor-rotate-3d {
-  cursor: url('@/assets/cursors/rotate-3d.svg') 12 10, ew-resize;
+  cursor:
+    url('@/assets/cursors/rotate-3d.svg') 12 10,
+    ew-resize;
 }
 .cursor-zoom-in {
-  cursor: url('@/assets/cursors/zoom-in.svg') 9 9, move;
+  cursor:
+    url('@/assets/cursors/zoom-in.svg') 9 9,
+    move;
 }
 .cursor-zoom-out {
-  cursor: url('@/assets/cursors/zoom-out.svg') 9 9, move;
+  cursor:
+    url('@/assets/cursors/zoom-out.svg') 9 9,
+    move;
 }

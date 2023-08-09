@@ -16,7 +16,13 @@ export class Item {
   readonly items = shallowReactive<Item[]>([]);
 
   readonly #text = ref<string | undefined>();
-  readonly #events = new Map<keyof HTMLElementEventMap, ((this: HTMLElement, e: any) => void)[]>();
+  readonly #events = new Map<
+    keyof HTMLElementEventMap,
+    {
+      listener: (this: HTMLElement, e: any) => void;
+      options?: boolean | AddEventListenerOptions;
+    }[]
+  >();
 
   #element?: HTMLElement;
   #parent?: Item;
@@ -65,6 +71,9 @@ export class Item {
 
   add(...items: Item[]) {
     items.forEach((item) => {
+      if (item.parent) {
+        item.parent.remove(item);
+      }
       item.#parent = this;
       this.items.push(item);
     });
@@ -105,7 +114,10 @@ export class Item {
   }
 
   findByClass(name: string): Item | undefined {
-    if (this.attributes.class !== undefined && (this.attributes.class as string).split(' ').includes(name)) {
+    if (
+      this.attributes.class !== undefined &&
+      (this.attributes.class as string).split(' ').includes(name)
+    ) {
       return this;
     }
     for (const item of this.items) {
@@ -117,21 +129,23 @@ export class Item {
     return undefined;
   }
 
-  // TODO: add event listener options
   on<EventType extends keyof HTMLElementEventMap>(
-    event: EventType,
+    type: EventType,
     listener: (this: HTMLElement, e: HTMLElementEventMap[EventType]) => void,
+    options?: boolean | AddEventListenerOptions,
   ) {
-    if (!this.#events.has(event)) {
-      this.#events.set(event, []);
+    if (!this.#events.has(type)) {
+      this.#events.set(type, []);
     }
-    const listeners = this.#events.get(event)!;
-    if (listeners.includes(listener)) {
+
+    const listeners = this.#events.get(type)!;
+    if (listeners.find((item) => item.listener === listener)) {
       return;
     }
-    listeners.push(listener);
+
+    listeners.push({ listener, options });
     if (this.#element) {
-      this.#element.addEventListener(event, listener, { passive: false });
+      this.#element.addEventListener(type, listener, options);
     }
   }
 
@@ -142,23 +156,25 @@ export class Item {
     if (!event) {
       if (this.#element) {
         this.#events.forEach((listeners, event) =>
-          listeners.forEach((listener) => this.#element!.removeEventListener(event, listener)),
+          listeners.forEach((item) => this.#element!.removeEventListener(event, item.listener)),
         );
       }
       this.#events.clear();
       return;
     }
+
     if (!this.#events.has(event)) {
       return;
     }
+
     const listeners = this.#events.get(event)!;
     if (!listener) {
       if (this.#element) {
-        listeners.forEach((listener) => this.#element!.removeEventListener(event, listener));
+        listeners.forEach((item) => this.#element!.removeEventListener(event, item.listener));
       }
       this.#events.delete(event);
     } else {
-      const index = listeners.indexOf(listener);
+      const index = listeners.findIndex((item) => item.listener === listener);
       if (index !== -1) {
         if (this.#element) {
           this.#element.removeEventListener(event, listener);
@@ -173,7 +189,9 @@ export class Item {
     this.#element = element;
     if (this.#element) {
       this.#events.forEach((listeners, event) =>
-        listeners.forEach((listener) => this.#element!.addEventListener(event, listener, { passive: false })),
+        listeners.forEach((item) =>
+          this.#element!.addEventListener(event, item.listener, item.options),
+        ),
       );
     }
   }
@@ -181,7 +199,7 @@ export class Item {
   unmount() {
     if (this.#element) {
       this.#events.forEach((listeners, event) =>
-        listeners.forEach((listener) => this.#element!.removeEventListener(event, listener)),
+        listeners.forEach((item) => this.#element!.removeEventListener(event, item.listener)),
       );
       this.#element = undefined;
     }

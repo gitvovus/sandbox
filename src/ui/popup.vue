@@ -47,7 +47,13 @@ function focusout(e: FocusEvent) {
 </script>
 
 <template>
-  <div ref="root" :class="['popup', { show: modelValue }]" @click="click" @focusout="focusout" tabindex="-1">
+  <div
+    ref="root"
+    :class="['popup', { show: modelValue }]"
+    @click="click"
+    @focusout="focusout"
+    tabindex="-1"
+  >
     <slot />
   </div>
 </template>

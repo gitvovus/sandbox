@@ -6,7 +6,7 @@ defineProps<{ model: LogoModel }>();
 
 <template>
   <div class="logo-wrapper">
-    <svg class="logo" viewPort="0 0 64 64" viewBox="0 0 64 64" preserveAspectRatio="xMinYMin meet">
+    <svg class="logo" viewBox="0 0 64 64">
       <defs>
         <path id="logo-yellow" d="M 24,12 32,52 56,36" />
         <path id="logo-blue" d="M 8,8 16,48 40,32" />
@@ -51,8 +51,10 @@ defineProps<{ model: LogoModel }>();
 <style>
 .logo-wrapper {
   position: absolute;
-  width: 100%;
-  height: 100%;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
   display: flex;
   flex-direction: column;
   justify-content: center;

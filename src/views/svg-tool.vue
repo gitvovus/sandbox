@@ -37,13 +37,23 @@ const cursor = computed(() => cursors[index.value]);
     </div>
     <div class="cursors-preview">
       <div class="backgrounds">
-        <div v-for="color in ['white', 'grey', 'black']" :class="['case', color]" :key="color"></div>
+        <div
+          v-for="color in ['white', 'grey', 'black']"
+          :class="['case', color]"
+          :key="color"
+        ></div>
       </div>
-      <div v-for="item in cursors.slice(1)" :class="['case', `cursor-${item.id}`]" :key="item.id">{{ item.id }}</div>
+      <div v-for="item in cursors.slice(1)" :class="['case', `cursor-${item.id}`]" :key="item.id">
+        {{ item.id }}
+      </div>
     </div>
     <div :class="['preview', `cursor-${cursor.id}`]">
       <template v-for="size in [64, 32]">
-        <div v-for="color in ['white', 'grey', 'black']" :class="['case', color]" :key="`${color}-${size}`">
+        <div
+          v-for="color in ['white', 'grey', 'black']"
+          :class="['case', color]"
+          :key="`${color}-${size}`"
+        >
           <svg :width="size" :height="size" :viewBox="`${x} ${y} ${w} ${h}`">
             <use :href="`#${cursor.id}`" />
           </svg>
@@ -56,14 +66,18 @@ const cursor = computed(() => cursors[index.value]);
           <g id="current" class="tmp-cursor" opacity="1">
             <path
               d="
-                M 1 1 L 2 1 24 23 22 25 15.5 25 19.6 33.2 C 20.7 35.4 14.7 38.4 13.7 36.4 L 9.25 27 L 3.25 33 L 1 33 z
+                M 1 1 L 2 1 24 23 22 25 15.5 25 19.6 33.2
+                C 20.7 35.4 14.7 38.4 13.7 36.4 L 9.25 27 L 3.25 33 L 1 33 z
               "
             />
           </g>
           <path
             id="default"
             class="svg-cursor"
-            d="M 1 1 L 25 25 L 23 27 22.5 27 L 15.5 27 L 19.6 35.2 C 20.7 37.4 14.7 40.4 13.7 38.4 L 9.25 29 L 3.25 35 L 1 35 z"
+            d="
+                M 1 1 L 25 25 L 23 27 22.5 27 L 15.5 27 L 19.6 35.2
+                C 20.7 37.4 14.7 40.4 13.7 38.4 L 9.25 29 L 3.25 35 L 1 35 z
+              "
           />
           <path
             id="move"
@@ -108,15 +122,20 @@ const cursor = computed(() => cursors[index.value]);
             id="rotate-2d"
             class="svg-cursor"
             d="
-                M 19 21 L 19 22 L 10 34 L 1 22  L 1  21 L 7  21 A 20 20 0 0 1 39 5  L 35.4 9.8  A 14 14 0 0 0 13 21 z
-                M 35 21 L 35 20 L 44 8  L 53 20 L 53 21 L 47 21 A 20 20 0 0 1 15 37 L 18.6 32.2 A 14 14 0 0 0 41 21 z
+                M 19 21 L 19 22 L 10 34 L 1 22  L 1  21 L 7  21 A 20 20 0 0 1 39 5
+                L 35.4 9.8  A 14 14 0 0 0 13 21 z
+                M 35 21 L 35 20 L 44 8  L 53 20 L 53 21 L 47 21 A 20 20 0 0 1 15 37
+                L 18.6 32.2 A 14 14 0 0 0 41 21 z
               "
           />
           <g id="rotate-3d" class="svg-cursor">
             <path d="M 1 17 A 24 16 0 0 1 49 17 L 49 25 A 24 16 0 0 0 1 25 z" />
             <path d="M 49 25 A 24 16 0 0 1 39.4 37.8 L 39.4 29.8 A 24 16 0 0 0 49 17 z" />
             <path
-              d="M 1 17 A 24 16 0 0 0 10.6 29.8 L 10.6 22.8 A 96 64 0 0 0 29 36 A 96 64 0 0 1 10.6 44.8 L 10.6 37.8 A 24 16 0 0 1 1 25 z"
+              d="
+                  M 1 17 A 24 16 0 0 0 10.6 29.8 L 10.6 22.8 A 96 64 0 0 0 29 36
+                  A 96 64 0 0 1 10.6 44.8 L 10.6 37.8 A 24 16 0 0 1 1 25 z
+                "
             />
           </g>
           <path
@@ -124,7 +143,8 @@ const cursor = computed(() => cursors[index.value]);
             class="svg-cursor"
             fill-rule="evenodd"
             d="
-                M 1 19 A 18 18 0 1 1 33.4 29.8 L 36 31 L 44 39 A 3.5 3.5 0 0 1 39 44 L 31 36 L 29.8 33.4 A 18 18 0 0 1 1 19 z
+                M 1 19 A 18 18 0 1 1 33.4 29.8 L 36 31 L 44 39 A 3.5 3.5 0 0 1 39 44
+                L 31 36 L 29.8 33.4 A 18 18 0 0 1 1 19 z
                 M 6 19 A 13 13 0 0 0 32 19 A 13 13 0 0 0 6 19 z
                 M 17 17 v -6 h 4 v 6 h 6 v 4 h -6 v 6 h -4 v -6 h -6 v -4 z
               "
@@ -134,7 +154,8 @@ const cursor = computed(() => cursors[index.value]);
             class="svg-cursor"
             fill-rule="evenodd"
             d="
-                M 1 19 A 18 18 0 1 1 33.4 29.8 L 36 31 L 44 39 A 3.5 3.5 0 0 1 39 44 L 31 36 L 29.8 33.4 A 18 18 0 0 1 1 19 z
+                M 1 19 A 18 18 0 1 1 33.4 29.8 L 36 31 L 44 39 A 3.5 3.5 0 0 1 39 44
+                L 31 36 L 29.8 33.4 A 18 18 0 0 1 1 19 z
                 M 6 19 A 13 13 0 0 0 32 19 A 13 13 0 0 0 6 19 z
                 M 11 17 h 16 v 4 h -16 z
               "
@@ -166,7 +187,13 @@ const cursor = computed(() => cursors[index.value]);
             </feMerge>
           </filter>
 
-          <pattern id="svg-grid-fill" viewBox="-1 -1 2 2" width="4" height="4" patternUnits="userSpaceOnUse">
+          <pattern
+            id="svg-grid-fill"
+            viewBox="-1 -1 2 2"
+            width="4"
+            height="4"
+            patternUnits="userSpaceOnUse"
+          >
             <rect x="-1" y="-1" width="1" height="1" fill="#c0c0c0" />
             <rect x="0" y="-1" width="1" height="1" fill="#a0a0a0" />
             <rect x="-1" y="0" width="1" height="1" fill="#a0a0a0" />

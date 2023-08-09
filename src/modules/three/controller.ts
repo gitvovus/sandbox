@@ -60,11 +60,19 @@ export class Controller implements std.IDisposable {
     this.#config.phi += dt * this.#phiRotation * this.#config.rotationSpeed;
     this.#config.theta += dt * this.#thetaRotation * this.#config.rotationSpeed;
 
-    this.#config.radius = std.clamp(this.#config.radius, this.#config.minRadius, this.#config.maxRadius);
+    this.#config.radius = std.clamp(
+      this.#config.radius,
+      this.#config.minRadius,
+      this.#config.maxRadius,
+    );
     this.#config.theta = std.clamp(this.#config.theta, this.#minTheta, this.#maxTheta);
 
-    const x = this.#config.lookAt.x + this.#config.radius * Math.cos(this.#config.phi) * Math.cos(this.#config.theta);
-    const y = this.#config.lookAt.y + this.#config.radius * Math.sin(this.#config.phi) * Math.cos(this.#config.theta);
+    const x =
+      this.#config.lookAt.x +
+      this.#config.radius * Math.cos(this.#config.phi) * Math.cos(this.#config.theta);
+    const y =
+      this.#config.lookAt.y +
+      this.#config.radius * Math.sin(this.#config.phi) * Math.cos(this.#config.theta);
     const z = this.#config.lookAt.z + this.#config.radius * Math.sin(this.#config.theta);
 
     camera.position.set(x, y, z);
@@ -73,11 +81,12 @@ export class Controller implements std.IDisposable {
 
   mount(element: HTMLElement) {
     this.#element = element;
-    this.#disposer.addDisposers(
+    this.#disposer.add(
       () => (this.#element = undefined),
       std.onElementEvent(element, 'pointerdown', this.#pick),
       std.onElementEvent(element, 'pointermove', this.#drag),
       std.onElementEvent(element, 'pointerup', this.#drop),
+      std.onElementEvent(element, 'contextmenu', this.#contextMenu),
       std.onElementEvent(element, 'wheel', this.#wheel, { passive: false }),
       std.onElementEvent(element, 'keydown', this.#keyDown),
       std.onElementEvent(element, 'keyup', this.#keyUp),
@@ -98,7 +107,9 @@ export class Controller implements std.IDisposable {
     const cosTheta = Math.cos(this.#config.theta);
     const sinTheta = Math.sin(this.#config.theta);
     this.#panX.set(-sinPhi, cosPhi, 0).multiplyScalar(this.#config.radius);
-    this.#panY.set(-cosPhi * sinTheta, -sinPhi * sinTheta, cosTheta).multiplyScalar(this.#config.radius);
+    this.#panY
+      .set(-cosPhi * sinTheta, -sinPhi * sinTheta, cosTheta)
+      .multiplyScalar(this.#config.radius);
 
     this.#trackPointer = true;
     this.#pointer = std.elementOffset(this.#element!, e);
@@ -116,8 +127,10 @@ export class Controller implements std.IDisposable {
     this.#pointer = { x, y };
 
     if (e.buttons & std.Buttons.LEFT) {
-      this.#config.phi -= (dx * 2 * Math.PI * this.#config.rotationSpeed) / this.#element!.clientWidth;
-      this.#config.theta += (dy * 2 * Math.PI * this.#config.rotationSpeed) / this.#element!.clientHeight;
+      this.#config.phi -=
+        (dx * 2 * Math.PI * this.#config.rotationSpeed) / this.#element!.clientWidth;
+      this.#config.theta +=
+        (dy * 2 * Math.PI * this.#config.rotationSpeed) / this.#element!.clientHeight;
     } else if (e.buttons & std.Buttons.RIGHT) {
       const delta = this.#panX
         .clone()
@@ -132,6 +145,11 @@ export class Controller implements std.IDisposable {
       this.#element!.releasePointerCapture(e.pointerId);
       this.#trackPointer = false;
     }
+  };
+
+  readonly #contextMenu = (e: Event) => {
+    e.stopPropagation();
+    e.preventDefault();
   };
 
   readonly #wheel = (e: WheelEvent) => {

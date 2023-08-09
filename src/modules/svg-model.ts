@@ -74,7 +74,7 @@ export class SvgModel extends ViewModel {
   mount(element: HTMLElement) {
     this.#controller.mount(element);
 
-    this.#mounted.addDisposers(() => this.#controller.unmount());
+    this.#mounted.add(() => this.#controller.unmount());
   }
 
   unmount() {

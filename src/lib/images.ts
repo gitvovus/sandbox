@@ -72,6 +72,11 @@ export function cubic(x: number, f: (x: number) => number) {
  * @returns calculated value.
  */
 export function bicubic(x: number, y: number, f: (x: number, y: number) => number) {
-  const p = [cubic(x, (x) => f(x, -1)), cubic(x, (x) => f(x, 0)), cubic(x, (x) => f(x, 1)), cubic(x, (x) => f(x, 2))];
+  const p = [
+    cubic(x, (x) => f(x, -1)),
+    cubic(x, (x) => f(x, 0)),
+    cubic(x, (x) => f(x, 1)),
+    cubic(x, (x) => f(x, 2)),
+  ];
   return cubic(y, (x) => p[x + 1]);
 }

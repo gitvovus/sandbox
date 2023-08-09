@@ -10,13 +10,13 @@ const translation = bi.Mat.translation;
 
 export class Transformable extends re.Item implements std.IDisposable {
   readonly #disposer = new std.Disposable();
-  readonly #position = ref(new bi.Vec(0, 0));
+  readonly #position = ref(new bi.Vec());
   readonly #scale = ref(1);
   readonly #rotation = ref(0);
 
   constructor(tag: string, data?: re.Attributes) {
     super(tag, data);
-    this.#disposer.addDisposers(watchEffect(() => (this.attributes.transform = this.transform.toCss())));
+    this.#disposer.add(watchEffect(() => (this.attributes.transform = this.transform.toCss())));
   }
 
   dispose() {

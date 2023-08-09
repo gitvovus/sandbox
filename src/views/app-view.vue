@@ -7,7 +7,11 @@ defineProps<{ model: AppModel }>();
 <template>
   <div class="app">
     <transition>
-      <component v-if="model.activePage !== undefined" :is="model.activePage.component" :model="model.activePage" />
+      <component
+        v-if="model.activePage !== undefined"
+        :is="model.activePage.component"
+        :model="model.activePage"
+      />
     </transition>
     <teleport to="body">
       <ui-dialog class="effect" :show="model.showDialog" :width="600" :height="720">
@@ -23,7 +27,9 @@ defineProps<{ model: AppModel }>();
       </ui-dialog>
     </teleport>
     <div class="app-bar">
-      <div :class="['spacer', { collapsed: model.toolBarAlignment === ToolBarAlignment.LEFT }]"></div>
+      <div
+        :class="['spacer', { collapsed: model.toolBarAlignment === ToolBarAlignment.LEFT }]"
+      ></div>
       <div class="app-buttons">
         <ui-button
           no-focus
@@ -36,7 +42,13 @@ defineProps<{ model: AppModel }>();
         </ui-button>
         <ui-button class="button round" toggle v-model="model.showDialog">D</ui-button>
         <span class="v-separator" />
-        <ui-button class="button round" v-for="(dummy, i) in model.pages" :key="i" v-model="model.pageIndex" :toggle="[i]">
+        <ui-button
+          class="button round"
+          v-for="(dummy, i) in model.pages"
+          :key="i"
+          v-model="model.pageIndex"
+          :toggle="[i]"
+        >
           {{ i }}
         </ui-button>
         <span class="v-separator" />
@@ -50,7 +62,9 @@ defineProps<{ model: AppModel }>();
           <ui-icon class="icon-gt" />
         </ui-button>
       </div>
-      <div :class="['spacer', { collapsed: model.toolBarAlignment === ToolBarAlignment.RIGHT }]"></div>
+      <div
+        :class="['spacer', { collapsed: model.toolBarAlignment === ToolBarAlignment.RIGHT }]"
+      ></div>
     </div>
   </div>
 </template>

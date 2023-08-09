@@ -37,11 +37,20 @@ export function setColor(object: tri.Object3D, value: number) {
  */
 export function axes(): tri.Group {
   const ox = new tri.BufferGeometry();
-  ox.setAttribute('position', new tri.Float32BufferAttribute(new Float32Array([0, 0, 0, 1, 0, 0]), 3));
+  ox.setAttribute(
+    'position',
+    new tri.Float32BufferAttribute(new Float32Array([0, 0, 0, 1, 0, 0]), 3),
+  );
   const oy = new tri.BufferGeometry();
-  oy.setAttribute('position', new tri.Float32BufferAttribute(new Float32Array([0, 0, 0, 0, 1, 0]), 3));
+  oy.setAttribute(
+    'position',
+    new tri.Float32BufferAttribute(new Float32Array([0, 0, 0, 0, 1, 0]), 3),
+  );
   const oz = new tri.BufferGeometry();
-  oz.setAttribute('position', new tri.Float32BufferAttribute(new Float32Array([0, 0, 0, 0, 0, 1]), 3));
+  oz.setAttribute(
+    'position',
+    new tri.Float32BufferAttribute(new Float32Array([0, 0, 0, 0, 0, 1]), 3),
+  );
   const group = new tri.Group();
   group.add(
     new tri.LineSegments(ox, new tri.LineBasicMaterial({ color: 0x800000 })),
@@ -334,7 +343,11 @@ export function sphere(radius: number, segments: number) {
  * @param f generator function, for given (x, y) computes vertex coordinate.
  * @returns Float32Array of vertices.
  */
-export function gridVertices(sizeX: number, sizeY: number, f: (x: number, y: number) => tri.Vector3) {
+export function gridVertices(
+  sizeX: number,
+  sizeY: number,
+  f: (x: number, y: number) => tri.Vector3,
+) {
   const vertices = new Float32Array(3 * (sizeX + 1) * (sizeY + 1));
   let i = 0;
   for (let y = 0; y <= sizeY; ++y) {
@@ -478,7 +491,11 @@ export function terrain(sizeX: number, sizeY: number, f: (x: number, y: number) 
  * @param f generator function, for given (x, y) computes vertex coordinate.
  * @returns geometry.
  */
-export function cylinderGrid(sizeR: number, sizeL: number, f: (x: number, y: number) => tri.Vector3) {
+export function cylinderGrid(
+  sizeR: number,
+  sizeL: number,
+  f: (x: number, y: number) => tri.Vector3,
+) {
   const vertices = gridVertices(sizeR - 1, sizeL, f);
   const indices = cylinderGridIndices(sizeR, sizeL);
   const geometry = new tri.BufferGeometry();

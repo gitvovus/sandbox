@@ -64,7 +64,10 @@ function focus(e: FocusEvent) {
   user-select: none;
   margin: 0.375em;
   padding: 0.5em 0.75em;
-  transition: background-color var(--transition), border-color var(--transition), box-shadow var(--transition),
+  transition:
+    background-color var(--transition),
+    border-color var(--transition),
+    box-shadow var(--transition),
     text-shadow var(--transition);
 }
 

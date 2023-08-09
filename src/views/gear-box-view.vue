@@ -18,6 +18,7 @@ onBeforeUnmount(() => {
   <div class="view" ref="root">
     <ui-item class="overlay" :model="model.root" />
     <div class="anchor top right flex">
+      <ui-button class="button" @click.stop="model.reset()">reset</ui-button>
       <ui-button class="button" @click.stop="model.check()">check</ui-button>
       <ui-button class="button" @click.stop="model.start()">start</ui-button>
       <ui-button class="button" @click.stop="model.stop()">stop</ui-button>
@@ -87,7 +88,7 @@ onBeforeUnmount(() => {
 }
 
 .fill-4 {
-  fill: #3050d0;
+  fill: #0060c0;
 }
 
 .fill-5 {
@@ -99,6 +100,6 @@ onBeforeUnmount(() => {
 }
 
 .fill-7 {
-  fill: #a040a0;
+  fill: #984898;
 }
 </style>

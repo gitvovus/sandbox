@@ -132,7 +132,7 @@ export class Disposable implements IDisposable {
     this.#disposers.length = 0;
   }
 
-  addDisposers(...disposers: Disposer[]) {
+  add(...disposers: Disposer[]) {
     this.#disposers.push(...disposers);
   }
 }

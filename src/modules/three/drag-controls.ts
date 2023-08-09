@@ -131,7 +131,10 @@ export class ConeDragHandler implements DragHandler {
     this.#angle = angle;
 
     const oz = new tri.BufferGeometry();
-    oz.setAttribute('position', new tri.Float32BufferAttribute(new Float32Array([0, 0, 0, 0, 0, 1]), 3));
+    oz.setAttribute(
+      'position',
+      new tri.Float32BufferAttribute(new Float32Array([0, 0, 0, 0, 0, 1]), 3),
+    );
 
     const r = 16;
     const l = 4;
@@ -145,7 +148,10 @@ export class ConeDragHandler implements DragHandler {
     });
 
     this.#handleGroup = new tri.Group();
-    const handleSphere = new tri.Mesh(geometry.sphere(0.1, 3), new tri.MeshPhongMaterial({ color: 0xffff00 }));
+    const handleSphere = new tri.Mesh(
+      geometry.sphere(0.1, 3),
+      new tri.MeshPhongMaterial({ color: 0xffff00 }),
+    );
     handleSphere.position.set(0, 0, 1);
     const handleAxis = new tri.LineSegments(oz, new tri.LineBasicMaterial({ color: 0x008000 }));
     this.#handleGroup.add(handleAxis, handleSphere);
@@ -156,7 +162,10 @@ export class ConeDragHandler implements DragHandler {
 
     this.#rootGroup.add(
       new tri.LineSegments(oz, new tri.LineBasicMaterial({ color: 0x800000 })),
-      new tri.LineSegments(grid, new tri.LineBasicMaterial({ color: 0, transparent: true, opacity: 0.5 })),
+      new tri.LineSegments(
+        grid,
+        new tri.LineBasicMaterial({ color: 0, transparent: true, opacity: 0.5 }),
+      ),
       this.#handleGroup,
     );
 
