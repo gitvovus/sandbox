@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref } from 'vue';
-import type { SvgModel } from '@/modules/svg-model';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
+import type { VoronoiDemo } from '@/modules/voronoi-demo';
 
-const { model } = defineProps<{ model: SvgModel }>();
+const { model } = defineProps<{ model: VoronoiDemo }>();
 const root = ref();
 
 onMounted(() => {

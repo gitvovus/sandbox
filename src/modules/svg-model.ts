@@ -1,10 +1,10 @@
-import { Item } from '@/lib/reactive';
 import { Vec } from '@/lib/bi';
-import { grid, prettyGrid } from '@/modules/gear-box/drawings';
+import { Item } from '@/lib/reactive';
+import { Disposable } from '@/lib/std';
 import { Camera } from '@/modules/svg/camera';
 import { Controller } from '@/modules/svg/controller';
+import { prettyGrid } from '@/modules/svg/utils';
 import { ViewModel } from '@/modules/view-model';
-import { Disposable } from '@/lib/std';
 
 class PathBuilder {
   #d: string[] = [];
@@ -49,18 +49,13 @@ class PathBuilder {
   }
 }
 
-const x = (r: number, a: number) => r * Math.cos(a);
-const y = (r: number, a: number) => r * Math.sin(a);
-const f = (n: number) => n.toFixed(3);
-const v2 = (x: number, y: number) => new Vec(x, y);
-
 export class SvgModel extends ViewModel {
   readonly root = new Item('svg');
 
   readonly #mounted = new Disposable();
   readonly #content = new Item('g');
   readonly #size = 23.8;
-  readonly #camera = new Camera({ scale: v2(1, -1) });
+  readonly #camera = new Camera({ scale: new Vec(1, -1) });
   readonly #controller = new Controller(this.root, this.#content, this.#camera);
 
   constructor() {
@@ -73,7 +68,6 @@ export class SvgModel extends ViewModel {
 
   mount(element: HTMLElement) {
     this.#controller.mount(element);
-
     this.#mounted.add(() => this.#controller.unmount());
   }
 

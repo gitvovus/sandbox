@@ -8,6 +8,7 @@ import { SvgModel } from '@/modules/svg-model';
 import { SvgTool } from '@/modules/svg-tool';
 import { ThreeModel } from '@/modules/three-model';
 import { ViewModel } from '@/modules/view-model';
+import { VoronoiDemo } from '@/modules/voronoi-demo';
 
 export const enum ToolBarAlignment {
   LEFT,
@@ -21,13 +22,14 @@ export class AppModel extends ViewModel {
     new ThreeModel(),
     new GearBoxModel(),
     new ControlsModel(),
+    new VoronoiDemo(),
     // new SvgModel(),
     // new SvgTool(),
   ];
 
   #toolBarAlignment = ref(ToolBarAlignment.CENTER);
   #showDialog = ref(false);
-  #pageIndex = ref(2);
+  #pageIndex = ref(4);
 
   constructor() {
     super('app-view');

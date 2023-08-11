@@ -2,13 +2,14 @@ import { Item } from '@/lib/reactive';
 import { Vec, distance } from '@/lib/bi';
 import { Disposable, Mouse, clamp, onElementEvent, time } from '@/lib/std';
 import { Animation } from '@/lib/animation';
-import { drawBase, drawShaft, prettyGrid } from '@/modules/gear-box/drawings';
+import { drawBase, drawShaft } from '@/modules/gear-box/drawings';
 import { Gear, Shaft, Shape, type RotorType } from '@/modules/gear-box/shapes';
 import { Scene } from '@/modules/gear-box/scene';
 import { Solver } from '@/modules/gear-box/solver';
 import { InfoModel } from '@/modules/info-model';
 import { Camera } from '@/modules/svg/camera';
 import { Controller, Gesture } from '@/modules/svg/controller';
+import { prettyGrid } from '@/modules/svg/utils';
 import { type IViewModel } from '@/modules/view-model';
 import { levels, type LevelData } from '@/modules/gear-box/levels';
 

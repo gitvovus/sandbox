@@ -16,7 +16,7 @@ import LoremView from '@/views/lorem-view.vue';
 import SvgTool from '@/views/svg-tool.vue';
 import SvgView from '@/views/svg-view.vue';
 import ThreeView from '@/views/three-view.vue';
-import ViewContainer from '@/views/view-container.vue';
+import VoronoiView from '@/views/voronoi-view.vue';
 
 import { AppModel } from '@/modules/app-model';
 
@@ -42,7 +42,7 @@ export class Application {
       .component('svg-tool', SvgTool)
       .component('svg-view', SvgView)
       .component('three-view', ThreeView)
-      .component('view-container', ViewContainer);
+      .component('voronoi-view', VoronoiView);
   }
 
   run() {
