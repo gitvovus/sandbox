@@ -18,10 +18,20 @@ onBeforeUnmount(() => {
   <div class="view" ref="root">
     <ui-item class="overlay" :model="model.root" />
     <div class="anchor top right flex">
-      <!-- <ui-button class="button" @click.stop="model.start()">animate</ui-button>
-      <ui-button class="button" @click.stop="model.stop()">stop</ui-button> -->
+      <input type="text" class="mini-input" v-model="model.text" />
+      <ui-button class="button" @click="model.add()">add</ui-button>
+      <ui-button class="button" @click="model.remove()">remove</ui-button>
     </div>
   </div>
 </template>
 
-<style></style>
+<style>
+.node-text {
+  fill: white;
+  font-size: 0.2em;
+}
+.mini-input {
+  align-self: center;
+  width: 5em;
+}
+</style>

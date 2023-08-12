@@ -62,6 +62,10 @@ defineProps<{ model: LogoModel }>();
   user-select: none;
 }
 
+.logo {
+  font-family: Impact, Arial, sans-serif;
+}
+
 .logo-title {
   font-size: 12px;
   text-anchor: middle;

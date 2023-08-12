@@ -9,7 +9,7 @@
   --scroll-track: #1d242b;
   --scroll-thumb: #2a353f;
 
-  --transition: 0.2s;
+  --transition: 0.25s;
   --page-transition: 1s;
 
   --r: 4px;
@@ -89,8 +89,8 @@ input {
   padding: 0.25em;
 }
 
-svg {
-  font-family: Impact, Arial, sans-serif;
+svg text {
+  user-select: none;
 }
 
 p {
@@ -163,6 +163,10 @@ p {
 
 .flex {
   display: flex;
+}
+
+.column {
+  flex-direction: column;
 }
 
 .flex-right {
