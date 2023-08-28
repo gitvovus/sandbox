@@ -97,7 +97,7 @@ export class Controller implements std.IDisposable {
       std.onElementEvent(element, 'contextmenu', this.#contextMenu),
       std.onElementEvent(element, 'pointerup', this.#drop),
       std.onElementEvent(element, 'wheel', this.#wheel, { passive: false }),
-      std.onAnimationFrame(this.#update, true),
+      std.onAnimationFrame(this.#update, true), // TODO: use resize observer
       watchEffect(() => (this.#scene.attributes.transform = this.#camera.inverse.toCss())),
     );
   }
