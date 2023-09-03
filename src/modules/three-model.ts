@@ -1,13 +1,8 @@
 import * as tri from 'three';
 
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-
 import * as std from '@/lib/std';
 import { Bicubic } from '@/modules/three/bicubic';
-import { Mockup } from '@/modules/three/mockup';
 import { ViewModel } from '@/modules/view-model';
-
-import url from '@/assets/3d/cube.glb?url';
 
 export class ThreeModel extends ViewModel implements std.IDisposable {
   readonly #disposer = new std.Disposable();
@@ -32,22 +27,6 @@ export class ThreeModel extends ViewModel implements std.IDisposable {
     this.#scene = new tri.Scene();
     this.#scene.add(new tri.AmbientLight(0x404040));
     this.#scene.add(this.#camera);
-
-    // console.log('loading', url);
-    // const loader = new GLTFLoader();
-    // loader
-    //   .loadAsync(url)
-    //   .then((value) => {
-    //     //
-    //     const scene = value.scene;
-    //     scene.scale.setScalar(0.5);
-    //     this.#scene.add(scene);
-    //     console.log('succeeded');
-    //   })
-    //   .catch((reason) => {
-    //     //
-    //     console.log('failed');
-    //   });
 
     this.#demo = new Bicubic(this.#scene, this.#camera);
 
