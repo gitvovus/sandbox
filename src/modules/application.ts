@@ -15,7 +15,6 @@ import LogoView from '@/views/logo-view.vue';
 import LoremView from '@/views/lorem-view.vue';
 import SvgView from '@/views/svg-view.vue';
 import ThreeView from '@/views/three-view.vue';
-import VoronoiView from '@/views/voronoi-view.vue';
 
 import { AppModel } from '@/modules/app-model';
 
@@ -39,8 +38,7 @@ export class Application {
       .component('logo-view', LogoView)
       .component('lorem-view', LoremView)
       .component('svg-view', SvgView)
-      .component('three-view', ThreeView)
-      .component('voronoi-view', VoronoiView);
+      .component('three-view', ThreeView);
   }
 
   run() {
