@@ -10,7 +10,6 @@ import UiPopup from '@/ui/popup.vue';
 import AppView from '@/views/app-view.vue';
 import ControlsView from '@/views/controls-view.vue';
 import GearBoxView from '@/views/gear-box-view.vue';
-import InfoView from '@/views/info-view.vue';
 import LogoView from '@/views/logo-view.vue';
 import LoremView from '@/views/lorem-view.vue';
 import SvgView from '@/views/svg-view.vue';
@@ -34,7 +33,6 @@ export class Application {
       // views
       .component('controls-view', ControlsView)
       .component('gear-box-view', GearBoxView)
-      .component('info-view', InfoView)
       .component('logo-view', LogoView)
       .component('lorem-view', LoremView)
       .component('svg-view', SvgView)

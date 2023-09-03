@@ -6,7 +6,6 @@ import { drawBase, drawShaft } from '@/modules/gear-box/drawings';
 import { Gear, Shaft, Shape, type RotorType } from '@/modules/gear-box/shapes';
 import { Scene } from '@/modules/gear-box/scene';
 import { Solver } from '@/modules/gear-box/solver';
-import { InfoModel } from '@/modules/info-model';
 import { Camera } from '@/modules/svg/camera';
 import { Controller, Gesture } from '@/modules/svg/controller';
 import { prettyGrid } from '@/modules/svg/utils';
@@ -66,8 +65,6 @@ export class GearBoxModel extends Disposable implements IViewModel {
   #pickedPosition!: Vec;
 
   #selected?: Gear;
-
-  debug = new InfoModel();
 
   constructor() {
     super();
