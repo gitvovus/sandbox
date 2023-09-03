@@ -228,6 +228,7 @@ export class GearBoxModel extends Disposable implements IViewModel {
       gear.position = gear.defaultPosition;
     });
     level.connections.forEach(({ shaft, gear }) => (this.#shafts[shaft].actor = this.#gears[gear]));
+    this.check();
   }
 
   #load(level: LevelData) {

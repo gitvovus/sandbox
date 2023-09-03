@@ -106,6 +106,20 @@ export class VoronoiDemo extends ViewModel {
     this.diagram.sites.forEach((site) => {
       this.#diagramVisual.add(new Item('circle', { cx: site.x, cy: site.y, r: 0.2, fill: 'gray' }));
     });
+    this.diagram.edges.forEach((edge) => {
+      this.#diagramVisual.add(
+        new Item('circle', { cx: edge.points[0].x, cy: edge.points[0].y, r: 0.2, fill: 'navy' }),
+        new Item('circle', { cx: edge.points[1].x, cy: edge.points[1].y, r: 0.2, fill: 'navy' }),
+        new Item('line', {
+          x1: edge.points[0].x,
+          y1: edge.points[0].y,
+          x2: edge.points[1].x,
+          y2: edge.points[1].y,
+          stroke: 'navy',
+          'vector-effect': 'non-scaling-stroke',
+        }),
+      );
+    });
     this.#drawBeach(at);
   }
 

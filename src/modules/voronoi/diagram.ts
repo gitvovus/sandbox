@@ -111,6 +111,11 @@ type SiteEvent = CoreEvent & {
 
 type Event = BaseEvent | SiteEvent;
 
+type Edge = {
+  sites: [Vec, Vec];
+  points: [Vec, Vec];
+};
+
 const v = (x: number = 0, y: number = 0) => new Vec(x, y);
 
 const vectorLess = (a: Vec, b: Vec) => a.y < b.y || (a.y === b.y && a.x < b.x);
@@ -154,6 +159,8 @@ export class Diagram {
 
   readonly points: Vec[] = [];
   readonly sites: Vec[] = [];
+  readonly edges: Edge[] = [];
+
   readonly events = new PriorityQueue<Event>(eventLess);
   readonly baseSet = new Set<Node<Segment>>();
   readonly beach = new Tree(segmentLess);
@@ -196,7 +203,6 @@ export class Diagram {
       await stepCallback(at);
     }
 
-    this.print(this.beach);
     console.log('done');
   }
 
@@ -234,6 +240,13 @@ export class Diagram {
     return x;
   }
 
+  siteY(site: Vec, newSite: Vec, at: number) {
+    const dy = site.y - at;
+    const dx = newSite.x - site.x;
+    const y = at - Math.sqrt(dx * dx + dy * dy);
+    return y;
+  }
+
   recalcLeft(node: Node<Segment>, at: number) {
     const value = node.value;
     const border = value.left;
@@ -241,15 +254,8 @@ export class Diagram {
 
     const prev = value.prev;
     if (!prev) {
-      switch (value.type) {
-        case Seg.BASE:
-          // x doesnt change
-          break;
-        case Seg.SITE:
-          const dx = this.siteDx(value.site, at);
-          border.x = Math.max(this.minX, value.site.x - dx);
-          break;
-      }
+      // left-most segment, x should became = minX
+      border.x = this.minX;
     } else {
       switch (value.type) {
         case Seg.BASE:
@@ -259,8 +265,10 @@ export class Diagram {
         case Seg.SITE:
           switch (prev.value.type) {
             case Seg.BASE:
-              const dx = this.siteDx(value.site, at);
-              border.x = Math.max(this.minX, value.site.x - dx);
+              {
+                const dx = this.siteDx(value.site, at);
+                border.x = Math.max(this.minX, value.site.x - dx);
+              }
               break;
             case Seg.SITE:
               border.x = this.sitesX(prev.value.site, value.site, at);
@@ -279,14 +287,8 @@ export class Diagram {
 
     const next = value.next;
     if (!next) {
-      switch (value.type) {
-        case Seg.BASE:
-          break;
-        case Seg.SITE:
-          const dx = this.siteDx(value.site, at);
-          border.x = Math.min(this.maxX, value.site.x + dx);
-          break;
-      }
+      // right-most segment, x should became = maxX
+      border.x = this.maxX;
     } else {
       switch (value.type) {
         case Seg.BASE:
@@ -296,8 +298,10 @@ export class Diagram {
         case Seg.SITE:
           switch (next.value.type) {
             case Seg.BASE:
-              const dx = this.siteDx(value.site, at);
-              border.x = Math.min(this.maxX, value.site.x + dx);
+              {
+                const dx = this.siteDx(value.site, at);
+                border.x = Math.min(this.maxX, value.site.x + dx);
+              }
               break;
             case Seg.SITE:
               border.x = this.sitesX(value.site, next.value.site, at);
@@ -319,108 +323,144 @@ export class Diagram {
     }
   }
 
-  siteEvent(event: SiteEvent) {
-    console.log(`SITE at ${event.at}`);
-    const at = event.at;
-    const site = event.site;
-    this.sites.push(site);
-    const candidateNode = this.findSegment(site.x);
-    if (!candidateNode) throw 'siteEvent: no candidate found';
-
-    const candidateSegment = candidateNode.value;
-    let hitNode = candidateNode;
-
-    // hitNode = this.beach.root!;
-    // recalc
-    // while (true) {
-    //   break;
-    // }
-    switch (candidateSegment.type) {
-      case Seg.BASE:
-        // Look if there are sites on both ends of the base.
-        // If it is, we need to correct segment borders, because sweep line moved.
-        // After these corrections candidate segment can change to left or right one.
-        if (candidateSegment.prev) {
-          const leftSiteNode = candidateSegment.prev;
-          const leftSiteSegment = <SiteSegment>leftSiteNode.value;
-          const leftSite = leftSiteSegment.site;
-          // recalc
-          const d = event.at - this.minY;
-          const y = leftSite.y - this.minY;
-          const x = leftSite.x + Math.sqrt(d * d - y * y);
-          leftSiteSegment.right = candidateSegment.left = v(x, at);
-
-          if (x >= site.x) {
-            // we hit left site segment
-            hitNode = leftSiteNode;
-          }
-        }
-        // The same should be done for right side.
-        if (candidateSegment.next) {
-          const rightSiteNode = candidateSegment.next;
-          const rightSiteSegment = <SiteSegment>rightSiteNode.value;
-          const rightSite = rightSiteSegment.site;
-          // recalc
-          const d = event.at - this.minY;
-          const y = rightSite.y - this.minY;
-          const x = rightSite.x - Math.sqrt(d * d - y * y);
-          rightSiteSegment.left = candidateSegment.right = v(x, at);
-
-          if (x <= site.x) {
-            hitNode = rightSiteNode;
-          }
-        }
-        break;
-
-      case Seg.SITE:
-        // TODO
-        break;
+  findNode(at: number, x: number) {
+    let node = this.beach.root;
+    while (node) {
+      if (x < node.value.left.x) {
+        node = node.left;
+        continue;
+      }
+      if (x > node.value.right.x) {
+        node = node.right;
+        continue;
+      }
+      break;
     }
 
-    // now we have correct hit node
-    const hitSegment = hitNode.value;
-    switch (hitSegment.type) {
+    if (!node) throw 'findNode: not found';
+
+    let result: Node<Segment> | undefined;
+    this.recalcLeft(node, at);
+    this.recalcRight(node, at);
+    if (node.value.left.x <= x && node.value.right.x >= x) {
+      result = node;
+    }
+    // TODO:
+    while (node.value.prev) {
+      node = node.value.prev;
+      if (node.value.left.x >= node.value.right.x) {
+        this.recalcLeft(node, at);
+        if (!result && node.value.left.x <= x && node.value.right.x >= x) {
+          result = node;
+        }
+      } else {
+        break;
+      }
+    }
+    while (node.value.next) {
+      node = node.value.next;
+      if (node.value.left.x >= node.value.right.x) {
+        this.recalcRight(node, at);
+        if (!result && node.value.left.x <= x && node.value.right.x >= x) {
+          result = node;
+        }
+      } else {
+        break;
+      }
+    }
+
+    if (!result) throw 'findNode: not found after recalc';
+    return result;
+  }
+
+  siteEvent(event: SiteEvent) {
+    const at = event.at;
+    const site = event.site;
+    console.log(`SITE at ${at}: (${site.x}, ${site.y})`);
+    this.sites.push(site);
+
+    const leftNode = this.findNode(at, site.x);
+
+    const leftSegment = leftNode.value;
+    switch (leftSegment.type) {
       case Seg.BASE:
-        // remove base event that was previously associated with base
-        this.events.remove(hitSegment.event);
-        const segment: SiteSegment = {
-          type: Seg.SITE,
-          site,
-          left: v(site.x, at),
-          right: v(site.x, at),
-          prev: hitNode,
-        };
-
-        // split base
-        const rightSegment: BaseSegment = {
-          type: Seg.BASE,
-          left: segment.right,
-          right: hitSegment.right,
-          next: hitSegment.next,
-        };
-        hitSegment.right = segment.left;
-        rightSegment.right.y = at;
-
-        const node = this.beach.insert(segment);
-        const rightNode = this.beach.insert(rightSegment);
-        segment.next = rightNode;
-        hitSegment.next = node;
-        rightSegment.prev = node;
-
-        // add base removal events
-        this.addBaseEvent(<Node<BaseSegment>>hitNode);
-        this.addBaseEvent(<Node<BaseSegment>>rightNode);
-
+        this.splitBase(<Node<BaseSegment>>leftNode, site, at);
         break;
       case Seg.SITE:
-        // TODO
+        this.splitSite(<Node<SiteSegment>>leftNode, site, at);
         break;
     }
   }
 
+  splitSite(siteNode: Node<SiteSegment>, site: Vec, at: number) {
+    const siteSegment = siteNode.value;
+    const oldSite = siteSegment.site;
+    const y = this.siteY(oldSite, site, at);
+    const edge: Edge = { sites: [oldSite, site], points: [v(site.x, y), v(site.x, y)] };
+    this.edges.push(edge);
+    // split
+    const newSegment: SiteSegment = {
+      type: Seg.SITE,
+      site,
+      left: v(site.x, at),
+      right: v(site.x, at),
+      prev: siteNode,
+    };
+
+    const rightSegment: SiteSegment = {
+      type: Seg.SITE,
+      site: oldSite,
+      left: newSegment.right,
+      right: siteSegment.right,
+      next: siteSegment.next,
+    };
+
+    siteSegment.right = newSegment.left;
+    rightSegment.right.y = at; // TODO: remove?
+
+    const newNode = this.beach.insert(newSegment);
+    const rightNode = this.beach.insert(rightSegment);
+    siteSegment.next = rightSegment.prev = newNode;
+    newSegment.next = rightNode;
+
+    // TODO: circle event
+  }
+
+  splitBase(baseNode: Node<BaseSegment>, site: Vec, at: number) {
+    const baseSegment = baseNode.value;
+    this.events.remove(baseSegment.event);
+
+    const siteSegment: SiteSegment = {
+      type: Seg.SITE,
+      site,
+      left: v(site.x, at),
+      right: v(site.x, at),
+      prev: baseNode,
+    };
+
+    const rightSegment: BaseSegment = {
+      type: Seg.BASE,
+      left: siteSegment.right,
+      right: baseSegment.right,
+      next: baseSegment.next,
+    };
+
+    baseSegment.right = siteSegment.left;
+    rightSegment.right.y = at; // TODO: remove?
+
+    const siteNode = this.beach.insert(siteSegment);
+    const rightNode = <Node<BaseSegment>>this.beach.insert(rightSegment);
+    baseSegment.next = rightSegment.prev = siteNode;
+    siteSegment.next = rightNode;
+
+    // add base removal events
+    this.addBaseEvent(baseNode);
+    this.addBaseEvent(rightNode);
+  }
+
   baseEvent(event: BaseEvent) {
-    console.log(`BASE at ${event.at}, x: ${event.node.value.left.x}`);
     const node = <Node<BaseSegment>>event.node;
+    console.log(`BASE at ${event.at}: [ ${node.value.left.x} ${node.value.right.x} ]`);
     this.beach.remove(node);
 
     const leftNode = node.value.prev;
@@ -480,22 +520,6 @@ export class Diagram {
     }
   }
 
-  findSegment(x: number) {
-    let node = this.beach.root;
-    while (node) {
-      if (x < node.value.left.x) {
-        node = node.left;
-        continue;
-      }
-      if (x > node.value.right.x) {
-        node = node.right;
-        continue;
-      }
-      return node;
-    }
-    return undefined;
-  }
-
   print(beach: Beach) {
     const text: string[] = [];
     traverseInorder(beach.root, (node) => {
@@ -510,4 +534,5 @@ export const testDiagram = new Diagram([
   //
   v(-4, -7),
   v(4, -7),
+  v(-6, -5),
 ]);

@@ -1,14 +1,10 @@
 import { ref } from 'vue';
 
-import { performanceTestDuration, testPerformance } from '@/lib/system';
 import { ControlsModel } from '@/modules/controls-model';
 import { GearBoxModel } from '@/modules/gear-box-model';
 import { LogoModel } from '@/modules/logo-model';
-import { SvgModel } from '@/modules/svg-model';
-import { SvgTool } from '@/modules/svg-tool';
 import { ThreeModel } from '@/modules/three-model';
 import { ViewModel } from '@/modules/view-model';
-import { VoronoiDemo } from '@/modules/voronoi-demo';
 
 export const enum ToolBarAlignment {
   LEFT,
@@ -22,19 +18,14 @@ export class AppModel extends ViewModel {
     new ThreeModel(),
     new GearBoxModel(),
     new ControlsModel(),
-    new VoronoiDemo(),
-    // new SvgModel(),
-    // new SvgTool(),
   ];
 
   #toolBarAlignment = ref(ToolBarAlignment.CENTER);
   #showDialog = ref(false);
-  #pageIndex = ref(4);
+  #pageIndex = ref(0);
 
   constructor() {
     super('app-view');
-    // testPerformance();
-    // console.log(`${performanceTestDuration?.toFixed()}ms`);
   }
 
   get toolBarAlignment() {

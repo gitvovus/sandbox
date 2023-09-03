@@ -13,7 +13,6 @@ import GearBoxView from '@/views/gear-box-view.vue';
 import InfoView from '@/views/info-view.vue';
 import LogoView from '@/views/logo-view.vue';
 import LoremView from '@/views/lorem-view.vue';
-import SvgTool from '@/views/svg-tool.vue';
 import SvgView from '@/views/svg-view.vue';
 import ThreeView from '@/views/three-view.vue';
 import VoronoiView from '@/views/voronoi-view.vue';
@@ -39,7 +38,6 @@ export class Application {
       .component('info-view', InfoView)
       .component('logo-view', LogoView)
       .component('lorem-view', LoremView)
-      .component('svg-tool', SvgTool)
       .component('svg-view', SvgView)
       .component('three-view', ThreeView)
       .component('voronoi-view', VoronoiView);
