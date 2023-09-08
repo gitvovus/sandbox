@@ -9,7 +9,7 @@ interface Props {
 
 const prop = defineProps<Props>();
 const emit = defineEmits(['click', 'update:modelValue']);
-const root = ref<HTMLElement | null>(null);
+const root = ref<HTMLElement>();
 
 const checked = computed(() => {
   if (prop.toggle === undefined) {
@@ -41,9 +41,7 @@ function focus(e: FocusEvent) {
   if (prop.noFocus !== undefined) {
     e.preventDefault();
     root.value?.blur();
-    if ((e.relatedTarget as HTMLElement)?.focus) {
-      (e.relatedTarget as HTMLElement).focus();
-    }
+    (e.relatedTarget as HTMLElement)?.focus?.();
   }
 }
 </script>

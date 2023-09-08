@@ -8,7 +8,7 @@ export class ControlsModel extends ViewModel {
   readonly paragraphs = [1, 2, 3, 4];
 
   // buttons
-  readonly #buttons = ref(false);
+  readonly #showButtons = ref(false);
   readonly #index = ref(3);
   readonly items = shallowReactive(
     [...Array(4)].map((item, i) => ({
@@ -28,16 +28,24 @@ export class ControlsModel extends ViewModel {
   readonly #expanded = ref(false);
   readonly #expandedGroup = ref<number | undefined>();
 
+  // range
+  readonly #showRange = ref(true);
+
+  readonly #rangeValue = ref(0);
+  readonly rangeMin = 0;
+  readonly rangeMax = 100;
+  readonly rangeStep = 2;
+
   constructor() {
     super('controls-view');
   }
 
-  get buttons() {
-    return this.#buttons.value;
+  get showButtons() {
+    return this.#showButtons.value;
   }
 
-  set buttons(value) {
-    this.#buttons.value = value;
+  set showButtons(value) {
+    this.#showButtons.value = value;
   }
 
   get index() {
@@ -98,5 +106,21 @@ export class ControlsModel extends ViewModel {
 
   set expandedGroup(value) {
     this.#expandedGroup.value = value;
+  }
+
+  get showRange() {
+    return this.#showRange.value;
+  }
+
+  set showRange(value) {
+    this.#showRange.value = value;
+  }
+
+  get rangeValue() {
+    return this.#rangeValue.value;
+  }
+
+  set rangeValue(value) {
+    this.#rangeValue.value = value;
   }
 }

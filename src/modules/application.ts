@@ -6,6 +6,8 @@ import UiDialog from '@/ui/dialog.vue';
 import UiIcon from '@/ui/icon.vue';
 import UiItem from '@/ui/item.vue';
 import UiPopup from '@/ui/popup.vue';
+import UiRange from '@/ui/range.vue';
+import UiRangeStyled from '@/ui/range-styled.vue';
 
 import AppView from '@/views/app-view.vue';
 import ControlsView from '@/views/controls-view.vue';
@@ -30,6 +32,8 @@ export class Application {
       .component('ui-icon', UiIcon)
       .component('ui-item', UiItem)
       .component('ui-popup', UiPopup)
+      .component('ui-range', UiRange)
+      .component('ui-range-styled', UiRangeStyled)
       // views
       .component('controls-view', ControlsView)
       .component('gear-box-view', GearBoxView)

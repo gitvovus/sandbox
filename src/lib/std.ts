@@ -106,6 +106,7 @@ export function elementOffset(element: Element, e: MouseEvent): { x: number; y: 
  * @returns function that should be called to stop per-frame calls.
  */
 export function onAnimationFrame(callback: () => void, immediate = false) {
+  // TODO: change callback type
   let handle = 0;
   const frameHandler = () => {
     handle = window.requestAnimationFrame(frameHandler);

@@ -34,12 +34,14 @@ const defaultConfig: Config = {
 
 export class Controller implements std.IDisposable {
   #config: Config;
+  #mounted = new std.Disposable();
   #disposer = new std.Disposable();
 
   #cw = 0;
   #ch = 0;
   #vw = 2;
   #vh = 2;
+  #resizer = new ResizeObserver(() => this.#update());
   #viewBox = shallowReactive<ViewBox>({ left: -1, top: -1, width: 2, height: 2 });
 
   #element?: HTMLElement;
@@ -75,6 +77,7 @@ export class Controller implements std.IDisposable {
     this.#scene = scene;
     this.#camera = camera;
     this.#defaultCamera = camera.clone();
+    this.#disposer.add(() => this.#resizer.disconnect());
   }
 
   get viewBox() {
@@ -82,28 +85,32 @@ export class Controller implements std.IDisposable {
   }
 
   dispose(): void {
+    this.#mounted.dispose();
     this.#disposer.dispose();
   }
 
   mount(element: HTMLElement) {
     this.#element = element;
-    this.#disposer.add(
-      () => (this.#element = undefined),
-      () => this.#zoomAnimation.stop(),
-      () => this.#resetAnimation.stop(),
+    this.#resizer.observe(element);
+    this.#mounted.add(
+      () => {
+        this.#resizer.unobserve(this.#element!);
+        this.#element = undefined;
+        this.#zoomAnimation.stop();
+        this.#resetAnimation.stop();
+      },
       std.onElementEvent(element, 'dblclick', () => this.reset()),
       std.onElementEvent(element, 'pointerdown', this.#pick),
       std.onElementEvent(element, 'pointermove', this.#drag),
       std.onElementEvent(element, 'contextmenu', this.#contextMenu),
       std.onElementEvent(element, 'pointerup', this.#drop),
       std.onElementEvent(element, 'wheel', this.#wheel, { passive: false }),
-      std.onAnimationFrame(this.#update, true), // TODO: use resize observer
       watchEffect(() => (this.#scene.attributes.transform = this.#camera.inverse.toCss())),
     );
   }
 
   unmount() {
-    this.dispose();
+    this.#mounted.dispose();
   }
 
   reset() {

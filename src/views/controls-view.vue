@@ -43,12 +43,12 @@ defineProps<{ model: ControlsModel }>();
       <div class="expand-header">
         Buttons:
         <div class="flex-right">
-          <ui-button class="button round iconic" @click="model.buttons = !model.buttons">
-            <ui-icon :class="['icon-gt', model.buttons ? 'r90' : '']" />
+          <ui-button class="button round iconic" toggle v-model="model.showButtons">
+            <ui-icon :class="['icon-gt', model.showButtons ? 'r90' : '']" />
           </ui-button>
         </div>
       </div>
-      <ui-accordion :expanded="model.buttons">
+      <ui-accordion :expanded="model.showButtons">
         <div class="m-1">
           <input type="text" value="text" style="width: 100px" />
           <ui-button class="button" @click="model.click('focusable')">focusable</ui-button>
@@ -128,7 +128,7 @@ defineProps<{ model: ControlsModel }>();
           </ui-button>
         </div>
         <div class="flex-right">
-          <ui-button class="button round iconic" @click="model.expanded = !model.expanded">
+          <ui-button class="button round iconic" toggle v-model="model.expanded">
             <ui-icon :class="['icon-gt', model.expanded ? 'r90' : '']" />
           </ui-button>
         </div>
@@ -155,7 +155,7 @@ defineProps<{ model: ControlsModel }>();
       </template>
     </div>
     <!-- icons -->
-    <div class="icons">
+    <!-- <div class="icons">
       <div v-for="item in ['down', 'gt', 'lt', 'up']" :key="item" class="icon-content">
         <ui-icon :class="`icon-${item}`" />
       </div>
@@ -168,7 +168,38 @@ defineProps<{ model: ControlsModel }>();
       <ui-icon class="inline icon-lt" />
       <ui-icon class="inline icon-up" />
       icons
-    </p>
+    </p> -->
+    <!-- range -->
+    <div>
+      <div class="expand-header">
+        Range:
+        <div class="flex-right">
+          <ui-button class="button round iconic" toggle v-model="model.showRange">
+            <ui-icon :class="['icon-gt', model.showRange ? 'r90' : '']" />
+          </ui-button>
+        </div>
+      </div>
+      <ui-accordion :expanded="model.showRange">
+        <div class="m-1">
+          {{ model.rangeValue }}
+          <br />
+          <ui-range-styled
+            :min="model.rangeMin"
+            :max="model.rangeMax"
+            :step="model.rangeStep"
+            v-model="model.rangeValue"
+          ></ui-range-styled>
+          <br />
+          <input
+            type="range"
+            :min="model.rangeMin"
+            :max="model.rangeMax"
+            :step="2"
+            v-model.number="model.rangeValue"
+          />
+        </div>
+      </ui-accordion>
+    </div>
   </div>
 </template>
 

@@ -23,7 +23,6 @@ onBeforeUnmount(() => {
       <ui-button class="button" @click.stop="model.start()">start</ui-button>
       <ui-button class="button" @click.stop="model.stop()">stop</ui-button>
     </div>
-    <!-- <info-view class="debug anchor bottom left m-05" :model="model.info" /> -->
     <slot />
   </div>
 </template>
