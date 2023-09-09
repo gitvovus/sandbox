@@ -15,8 +15,8 @@ const emit = defineEmits(['update:modelValue']);
     v-bind="{ ...prop, indent: 32 }"
     @update:modelValue="(value: number) => emit('update:modelValue', value)"
   >
-    <template v-slot="{ events }">
-      <div class="range" v-on="events" tabindex="-1">
+    <template v-slot="events">
+      <div class="range" v-on="events" tabindex="0">
         <div class="range-track">
           <div class="range-track-body"></div>
           <div
@@ -44,8 +44,14 @@ const emit = defineEmits(['update:modelValue']);
   width: 400px;
   height: 4em;
   background-color: rgb(0 0 0 / 0.1);
+  border: 1px solid transparent;
   border-radius: 0.5em;
   user-select: none;
+  transition: border-color var(--transition);
+}
+
+.range:focus-within {
+  border-color: rgb(255 255 255 / 0.25);
 }
 
 .range-track {
@@ -72,6 +78,12 @@ const emit = defineEmits(['update:modelValue']);
   top: -0.5em;
   border-radius: 0.5em;
   background-color: rgb(255 0 0 / 0.25);
+  transition: background-color var(--transition);
+}
+
+.range:hover .range-fill,
+.range:focus-within .range-fill {
+  background-color: rgb(255 0 0 / 0.3125);
 }
 
 .range-thumb {

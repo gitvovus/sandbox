@@ -48,7 +48,7 @@ defineProps<{ model: ControlsModel }>();
           </ui-button>
         </div>
       </div>
-      <ui-accordion :expanded="model.showButtons">
+      <ui-collapse :expanded="model.showButtons">
         <div class="m-1">
           <input type="text" value="text" style="width: 100px" />
           <ui-button class="button" @click="model.click('focusable')">focusable</ui-button>
@@ -110,7 +110,7 @@ defineProps<{ model: ControlsModel }>();
             >Disabled</ui-button
           >
         </div>
-      </ui-accordion>
+      </ui-collapse>
     </div>
     <!-- accordions -->
     <div>
@@ -133,9 +133,9 @@ defineProps<{ model: ControlsModel }>();
           </ui-button>
         </div>
       </div>
-      <ui-accordion :expanded="model.expanded">
+      <ui-collapse :expanded="model.expanded">
         <lorem-view :model="model.lorem" class="content" />
-      </ui-accordion>
+      </ui-collapse>
       <template v-for="(item, i) in 3" :key="`lorem[${i}]`">
         <div class="expand-header">
           <div>Expand (radio #{{ i }}):</div>
@@ -149,9 +149,9 @@ defineProps<{ model: ControlsModel }>();
             </ui-button>
           </div>
         </div>
-        <ui-accordion :expanded="model.expandedGroup === i">
+        <ui-collapse :expanded="model.expandedGroup === i">
           <lorem-view :paragraphs="1" class="content" />
-        </ui-accordion>
+        </ui-collapse>
       </template>
     </div>
     <!-- icons -->
@@ -179,7 +179,7 @@ defineProps<{ model: ControlsModel }>();
           </ui-button>
         </div>
       </div>
-      <ui-accordion :expanded="model.showRange">
+      <ui-collapse :expanded="model.showRange">
         <div class="m-1">
           {{ model.rangeValue }}
           <br />
@@ -198,7 +198,7 @@ defineProps<{ model: ControlsModel }>();
             v-model.number="model.rangeValue"
           />
         </div>
-      </ui-accordion>
+      </ui-collapse>
     </div>
   </div>
 </template>

@@ -71,5 +71,5 @@ const events = {
 </script>
 
 <template>
-  <slot :events="events" />
+  <slot v-bind="events" />
 </template>

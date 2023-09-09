@@ -19,7 +19,6 @@ export class GearBoxModel extends Disposable implements IViewModel {
   readonly #scene = new Scene('gb', 36.8, 36.8, 3, 0.25, true);
   readonly #camera = new Camera({ scale: new Vec(1, -1) });
   readonly #controller = new Controller(this.#scene.root, this.#scene.content, this.#camera, {
-    pan: false,
     minZoom: 0.5,
     maxZoom: 2,
   });

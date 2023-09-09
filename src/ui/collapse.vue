@@ -7,11 +7,11 @@ const root = ref<HTMLElement>();
 const content = ref<HTMLElement>();
 
 let disposer: Disposer | undefined;
-let observer: ResizeObserver | undefined;
+let resizer: ResizeObserver | undefined;
 
 onMounted(() => {
   root.value!.classList.add('mounted');
-  observer = new ResizeObserver(() => {
+  resizer = new ResizeObserver(() => {
     root.value!.style.height = content.value!.scrollHeight + 'px';
   });
   disposer = watchEffect(() => apply(props.expanded));
@@ -19,40 +19,40 @@ onMounted(() => {
 
 onBeforeUnmount(() => {
   root.value!.classList.remove('mounted');
-  observer!.disconnect();
-  observer = undefined;
+  resizer!.disconnect();
+  resizer = undefined;
   disposer!();
   disposer = undefined;
 });
 
 function apply(expanded: boolean) {
   if (expanded) {
-    observer!.observe(content.value!);
+    resizer!.observe(content.value!);
   } else {
     root.value!.style.height = '0px';
-    observer!.unobserve(content.value!);
+    resizer!.unobserve(content.value!);
   }
 }
 </script>
 
 <template>
-  <div ref="root" class="accordion">
-    <div ref="content" class="accordion-content">
+  <div ref="root" class="collapse">
+    <div ref="content" class="collapse-content">
       <slot />
     </div>
   </div>
 </template>
 
 <style>
-.accordion {
+.collapse {
   overflow: hidden;
 }
 
-.accordion.mounted {
+.collapse.mounted {
   transition: height var(--transition);
 }
 
-.accordion-content {
+.collapse-content {
   display: flow-root;
 }
 </style>
