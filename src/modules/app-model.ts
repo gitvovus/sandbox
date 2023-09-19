@@ -1,8 +1,10 @@
 import { ref } from 'vue';
 
 import { ControlsModel } from '@/modules/controls-model';
+import { EventsModel } from '@/modules/events-model';
 import { GearBoxModel } from '@/modules/gear-box-model';
 import { LogoModel } from '@/modules/logo-model';
+import { ReactivityModel } from '@/modules/reactivity-model';
 import { ThreeModel } from '@/modules/three-model';
 import { ViewModel } from '@/modules/view-model';
 
@@ -18,11 +20,13 @@ export class AppModel extends ViewModel {
     new ThreeModel(),
     new GearBoxModel(),
     new ControlsModel(),
+    new EventsModel(),
+    // new ReactivityModel(),
   ];
 
   #toolBarAlignment = ref(ToolBarAlignment.CENTER);
   #showDialog = ref(false);
-  #pageIndex = ref(3);
+  #pageIndex = ref(4);
 
   constructor() {
     super('app-view');

@@ -4,7 +4,7 @@ import * as std from '@/lib/std';
 import { Bicubic } from '@/modules/three/bicubic';
 import { ViewModel } from '@/modules/view-model';
 
-export class ThreeModel extends ViewModel implements std.IDisposable {
+export class ThreeModel extends ViewModel {
   readonly #disposer = new std.Disposable();
   readonly #mounted = new std.Disposable();
 

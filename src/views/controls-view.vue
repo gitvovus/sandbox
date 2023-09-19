@@ -194,7 +194,7 @@ defineProps<{ model: ControlsModel }>();
             type="range"
             :min="model.rangeMin"
             :max="model.rangeMax"
-            :step="2"
+            :step="model.rangeStep"
             v-model.number="model.rangeValue"
           />
         </div>

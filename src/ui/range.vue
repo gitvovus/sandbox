@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { clamp, mix, Mouse } from '@/lib/std';
+import { isReactive, onBeforeUnmount, onMounted, watch } from 'vue';
 
 interface Props {
   modelValue: number;
@@ -12,12 +13,12 @@ interface Props {
 const prop = defineProps<Props>();
 const emit = defineEmits(['update:modelValue']);
 
-function getValue(e: PointerEvent) {
+function getValue(e: MouseEvent) {
   const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
   const indent = prop.indent || 0;
   const x = clamp((e.clientX - rect.left - indent) / (rect.width - 2 * indent), 0, 1);
   let value = mix(prop.min, prop.max, x);
-  if (prop.step !== undefined) {
+  if (prop.step) {
     const steps = Math.round((value - prop.min) / prop.step);
     value = clamp(prop.min + steps * prop.step, prop.min, prop.max);
   }
@@ -68,6 +69,33 @@ const events = {
     }
   },
 };
+
+function recalc() {
+  let value = clamp(prop.modelValue, prop.min, prop.max);
+  if (prop.step) {
+    const steps = Math.round((value - prop.min) / prop.step);
+    value = clamp(prop.min + steps * prop.step, prop.min, prop.max);
+  }
+  if (value !== prop.modelValue) {
+    emit('update:modelValue', value);
+  }
+}
+
+let disposer: (() => void) | undefined;
+
+onMounted(() => {
+  const toWatch = [prop.min, prop.max, prop.step, prop.indent].filter(isReactive);
+  if (toWatch.length > 0) {
+    disposer = watch(toWatch, recalc);
+  } else {
+    recalc();
+  }
+});
+
+onBeforeUnmount(() => {
+  disposer?.();
+  disposer = undefined;
+});
 </script>
 
 <template>

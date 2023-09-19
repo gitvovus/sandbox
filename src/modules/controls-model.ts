@@ -30,8 +30,7 @@ export class ControlsModel extends ViewModel {
 
   // range
   readonly #showRange = ref(true);
-
-  readonly #rangeValue = ref(0);
+  readonly #rangeValue = ref(25); // doesn't fit the step, should be recalculated
   readonly rangeMin = 0;
   readonly rangeMax = 100;
   readonly rangeStep = 2;

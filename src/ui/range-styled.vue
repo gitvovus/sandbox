@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from 'vue';
+
 interface Props {
   modelValue: number;
   min: number;
@@ -8,6 +10,8 @@ interface Props {
 
 const prop = defineProps<Props>();
 const emit = defineEmits(['update:modelValue']);
+
+const percents = computed(() => (100 * (prop.modelValue - prop.min)) / (prop.max - prop.min));
 </script>
 
 <template>
@@ -22,13 +26,13 @@ const emit = defineEmits(['update:modelValue']);
           <div
             class="range-fill"
             :style="{
-              width: `calc(${(100 * (modelValue - min)) / (max - min)}% + 1em)`,
+              width: `calc(${percents}% + 1em)`,
             }"
           ></div>
           <div
             class="range-thumb"
             :style="{
-              left: `${(100 * (modelValue - min)) / (max - min)}%`,
+              left: `${percents}%`,
             }"
           ></div>
         </div>
