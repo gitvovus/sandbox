@@ -66,7 +66,7 @@ export class Controller implements std.IDisposable {
 
   #resetAnimation = new Animation();
   #resetStart = 0;
-  #resetDuration = 0.25;
+  #resetDuration = 1.25;
   #resetPosition = new bi.Vec();
   #resetRotation = 0;
   #resetZoom = 1;

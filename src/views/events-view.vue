@@ -35,7 +35,7 @@ onBeforeUnmount(() => model.unmount());
   height: 200px;
   padding: 50px 100px;
   border-radius: 1em;
-  background-color: rgb(0 0 0 /0.25);
+  background-color: rgb(0 0 0 / 0.25);
   user-select: none;
 }
 
@@ -71,7 +71,7 @@ onBeforeUnmount(() => model.unmount());
   height: 150px;
   border-radius: 100vh;
   border: 5px solid orange;
-  filter: drop-shadow(0 0 5px rgb(0 0 0 /0.5));
+  filter: drop-shadow(0 0 5px rgb(0 0 0 / 0.5));
   transform: translate(-50%, -50%);
 }
 

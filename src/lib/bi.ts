@@ -54,6 +54,45 @@ export class Mat {
     return new Mat(...this.elements);
   }
 
+  decompose() {
+    // source: https://drafts.csswg.org/css-transforms/#matrix-interpolation
+    let x0 = this.elements[0];
+    let y0 = this.elements[1];
+    let x1 = this.elements[2];
+    let y1 = this.elements[3];
+
+    const translation = new Vec(this.elements[4], this.elements[5]);
+    const scale = new Vec(Math.hypot(x0, y0), Math.hypot(x1, y1));
+
+    // If determinant is negative, one axis was flipped.
+    const determinant = x0 * y1 - y0 * x1;
+    if (determinant < 0) {
+      if (x0 < y1) scale.x = -scale.x;
+      else scale.y = -scale.y;
+    }
+
+    // Renormalize matrix to remove scale.
+    if (scale.x) {
+      const k = 1 / scale.x;
+      x0 *= k;
+      y0 *= k;
+    }
+    if (scale.y) {
+      const k = 1 / scale.y;
+      x1 *= k;
+      y1 *= k;
+    }
+
+    let rotation = Math.atan2(y0, x0);
+    if (rotation < 0) rotation += 2 * Math.PI;
+
+    return {
+      translation,
+      rotation,
+      scale,
+    };
+  }
+
   multiply(m: Mat) {
     const a = this.elements;
     const b = m.elements;

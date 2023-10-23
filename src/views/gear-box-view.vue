@@ -18,6 +18,7 @@ onBeforeUnmount(() => {
   <div class="view" ref="root">
     <ui-item class="overlay" :model="model.root" />
     <div class="anchor top right flex">
+      <ui-button class="button" @click.stop="model.test()">test</ui-button>
       <ui-button class="button" @click.stop="model.reset()">reset</ui-button>
       <ui-button class="button" @click.stop="model.check()">check</ui-button>
       <ui-button class="button" @click.stop="model.start()">start</ui-button>

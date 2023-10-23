@@ -9,15 +9,15 @@ export class ControlsModel extends ViewModel {
 
   // buttons
   readonly #showButtons = ref(false);
-  readonly #index = ref(3);
-  readonly items = shallowReactive(
+  readonly #selectedIndex = ref(3);
+  readonly radioItems = shallowReactive(
     [...Array(4)].map((item, i) => ({
       name: `item #${i}`,
       value: i,
     })),
   );
-  readonly #selectedItem = shallowRef(this.items[2]);
-  readonly group = shallowReactive([false, true, false, false]);
+  readonly #selectedRadio = shallowRef(this.radioItems[2]);
+  readonly checkboxes = shallowReactive([false, true, false, false]);
   readonly #message = ref('nothing');
 
   // popup
@@ -47,20 +47,20 @@ export class ControlsModel extends ViewModel {
     this.#showButtons.value = value;
   }
 
-  get index() {
-    return this.#index.value;
+  get selectedIndex() {
+    return this.#selectedIndex.value;
   }
 
-  set index(value) {
-    this.#index.value = value;
+  set selectedIndex(value) {
+    this.#selectedIndex.value = value;
   }
 
-  get selectedItem() {
-    return this.#selectedItem.value;
+  get selectedRadio() {
+    return this.#selectedRadio.value;
   }
 
-  set selectedItem(value) {
-    this.#selectedItem.value = value;
+  set selectedRadio(value) {
+    this.#selectedRadio.value = value;
   }
 
   get message() {

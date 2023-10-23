@@ -1,5 +1,5 @@
 import { Item } from '@/lib/reactive';
-import { Vec, distance } from '@/lib/bi';
+import { Mat, Vec, distance } from '@/lib/bi';
 import { Disposable, Mouse, clamp, onElementEvent, time } from '@/lib/std';
 import { Animation } from '@/lib/animation';
 import { drawBase, drawShaft } from '@/modules/gear-box/drawings';
@@ -11,6 +11,7 @@ import { Controller, Gesture } from '@/modules/svg/controller';
 import { prettyGrid } from '@/modules/svg/utils';
 import { type IViewModel } from '@/modules/view-model';
 import { levels, type LevelData } from '@/modules/gear-box/levels';
+import { v2 } from '@/lib/helpers';
 
 export class GearBoxModel extends Disposable implements IViewModel {
   readonly component = 'gear-box-view';
@@ -92,6 +93,13 @@ export class GearBoxModel extends Disposable implements IViewModel {
 
   unmount() {
     this.dispose();
+  }
+
+  test() {
+    const c = this.#camera;
+    const d = c.transform.decompose();
+    console.log(`original:\np: ${v2(c.position)}, r: ${c.rotation}, s: ${v2(c.scale)}`);
+    console.log(`decomposed:\np: ${v2(d.translation)}, r: ${d.rotation}, s: ${v2(d.scale)}`);
   }
 
   reset() {

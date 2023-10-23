@@ -58,44 +58,44 @@ defineProps<{ model: ControlsModel }>();
           <ui-button class="button" @click="model.click('focusable')">focusable</ui-button>
         </div>
         <div class="m-1">
-          <div>Radio (index): {{ model.index }}</div>
+          <div>Radio (index): {{ model.selectedIndex }}</div>
           <ui-button
-            v-for="(item, i) in model.group"
+            v-for="(item, i) in model.checkboxes"
             :key="`index[${i}]`"
             class="button round"
             :toggle="[i]"
-            v-model="model.index"
+            v-model="model.selectedIndex"
           >
             {{ `#${i}` }}
           </ui-button>
         </div>
         <div class="m-1">
           <div>
-            Radio (object): { name: {{ model.selectedItem.name }}, value:
-            {{ model.selectedItem.value }} }
+            Radio (object): { name: {{ model.selectedRadio.name }}, value:
+            {{ model.selectedRadio.value }} }
           </div>
           <ui-button
-            v-for="(item, i) in model.items"
+            v-for="(item, i) in model.radioItems"
             :key="`object[${i}]`"
             class="button round"
-            :toggle="[model.items[i]]"
-            v-model="model.selectedItem"
+            :toggle="[model.radioItems[i]]"
+            v-model="model.selectedRadio"
           >
             {{ `#${i}` }}
           </ui-button>
         </div>
         <div class="m-1">
           <div>
-            Checkbox: [&nbsp;<span v-for="(item, i) in model.group" :key="i + 300"
+            Checkbox: [&nbsp;<span v-for="(item, i) in model.checkboxes" :key="i + 300"
               >{{ item }}&nbsp;</span
             >]
           </div>
           <ui-button
-            v-for="(item, i) in model.group"
+            v-for="(item, i) in model.checkboxes"
             :key="`checkbox[${i}]`"
             class="button round"
             toggle
-            v-model="model.group[i]"
+            v-model="model.checkboxes[i]"
           >
             {{ `#${i}` }}
           </ui-button>
@@ -106,9 +106,14 @@ defineProps<{ model: ControlsModel }>();
           <ui-button class="button" @click="model.click('ok')">Ok</ui-button>
           <ui-button class="button" @click="model.click('cancel')">Cancel</ui-button>
           <ui-button class="button" @click="model.click('disabled')" disabled>Disabled</ui-button>
-          <ui-button class="button" :toggle="[model.items[0]]" v-model="model.selectedItem" disabled
-            >Disabled</ui-button
+          <ui-button
+            class="button"
+            :toggle="[model.radioItems[0]]"
+            v-model="model.selectedRadio"
+            disabled
           >
+            Disabled
+          </ui-button>
         </div>
       </ui-collapse>
     </div>

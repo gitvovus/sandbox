@@ -6,49 +6,6 @@ import { Controller } from '@/modules/svg/controller';
 import { prettyGrid } from '@/modules/svg/utils';
 import { ViewModel } from '@/modules/view-model';
 
-class PathBuilder {
-  #d: string[] = [];
-  #f: (x: number) => string;
-  #points = 0;
-
-  constructor(decimalPoint = 3) {
-    this.#f = (x: number) => x.toFixed(decimalPoint);
-  }
-
-  get() {
-    return this.#d.join(' ');
-  }
-
-  reset() {
-    this.#d = [];
-    this.#points = 0;
-    return this;
-  }
-
-  M(...numbers: number[]) {
-    this.#d.push('M', ...numbers.map(this.#f));
-    this.#points += numbers.length / 2;
-    return this;
-  }
-
-  m(...numbers: number[]) {
-    this.#d.push('m', ...numbers.map(this.#f));
-    this.#points += numbers.length / 2;
-    return this;
-  }
-
-  C(...numbers: number[]) {
-    this.#d.push('C', ...numbers.map(this.#f));
-    this.#points += numbers.length / 6; // TODO
-    return this;
-  }
-
-  z() {
-    this.#d.push('z');
-    return this;
-  }
-}
-
 export class SvgModel extends ViewModel {
   readonly root = new Item('svg');
 
