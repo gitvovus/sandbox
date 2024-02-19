@@ -26,10 +26,54 @@ onBeforeUnmount(() => model.unmount());
       x: {{ model.preX.toFixed(2) }}<br>
       y: {{ model.preY.toFixed(2) }}<br>
     </pre>
+    <div class="root">
+      <div class="path">
+        <div :class="['ani', ['init', 'move'][model.transitionState]]"></div>
+      </div>
+    </div>
+    <ui-button class="button" @click="model.transitionState = 0">start</ui-button>
+    <ui-button class="button" @click="model.transitionState = 1">end</ui-button>
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+.root {
+  position: relative;
+  width: 100%;
+  height: 200px;
+  border-radius: 1em;
+  background-color: rgb(black, 0.25);
+}
+
+.path {
+  position: absolute;
+  left: 100px;
+  top: 50%;
+  right: 100px;
+}
+
+.ani {
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  border-radius: 1em;
+  background-color: rgb(red, 0.25);
+  left: 0;
+  transform: translate(-50%, -50%) rotate(0) scale(1);
+  transition:
+    left 1s,
+    transform 1s;
+
+  &.init {
+    left: 0;
+  }
+
+  &.move {
+    left: 100%;
+    transform: translate(-50%, -50%) rotate(400deg) scale(2);
+  }
+}
+
 .outer {
   width: 500px;
   height: 200px;

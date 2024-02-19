@@ -10,6 +10,8 @@ export class EventsModel extends ViewModel {
   #x = ref(0);
   #y = ref(0);
 
+  #transitionState = ref(0);
+
   constructor() {
     super('events-view');
   }
@@ -42,6 +44,14 @@ export class EventsModel extends ViewModel {
 
   get y() {
     return this.#y.value;
+  }
+
+  get transitionState() {
+    return this.#transitionState.value;
+  }
+
+  set transitionState(value) {
+    this.#transitionState.value = value;
   }
 
   #update(e: MouseEvent) {
