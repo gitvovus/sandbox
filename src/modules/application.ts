@@ -15,6 +15,7 @@ import AppView from '@/views/app-view.vue';
 import ControlsView from '@/views/controls-view.vue';
 import EventsView from '@/views/events-view.vue';
 import GearBoxView from '@/views/gear-box-view.vue';
+import ImagesView from '@/views/images-view.vue';
 import LogoView from '@/views/logo-view.vue';
 import LoremView from '@/views/lorem-view.vue';
 import SvgView from '@/views/svg-view.vue';
@@ -43,6 +44,7 @@ export class Application {
       .component('controls-view', ControlsView)
       .component('events-view', EventsView)
       .component('gear-box-view', GearBoxView)
+      .component('images-view', ImagesView)
       .component('logo-view', LogoView)
       .component('lorem-view', LoremView)
       .component('svg-view', SvgView)

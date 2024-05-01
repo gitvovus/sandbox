@@ -61,9 +61,16 @@ const events = {
       case 'ArrowUp':
         value = Math.min(prop.max, prop.modelValue + step);
         break;
+      case 'Home':
+        value = prop.min;
+        break;
+      case 'End':
+        value = prop.max;
+        break;
       default:
         return;
     }
+    e.stopPropagation();
     if (value !== prop.modelValue) {
       emit('update:modelValue', value);
     }

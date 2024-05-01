@@ -6,6 +6,7 @@ import { GearBoxModel } from '@/modules/gear-box-model';
 import { LogoModel } from '@/modules/logo-model';
 import { ThreeModel } from '@/modules/three-model';
 import { ViewModel } from '@/modules/view-model';
+import { ImagesModel } from '@/modules/images-model';
 
 export const enum ToolBarAlignment {
   LEFT,
@@ -20,11 +21,12 @@ export class AppModel extends ViewModel {
     new GearBoxModel(),
     new ControlsModel(),
     new EventsModel(),
+    new ImagesModel(),
   ];
 
   #toolBarAlignment = ref(ToolBarAlignment.CENTER);
   #showDialog = ref(false);
-  #pageIndex = ref(4);
+  #pageIndex = ref(5);
 
   constructor() {
     super('app-view');
