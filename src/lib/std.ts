@@ -105,15 +105,14 @@ export function elementOffset(element: Element, e: MouseEvent): { x: number; y: 
  * @param immediate if true then additionally immediately calls callback.
  * @returns function that should be called to stop per-frame calls.
  */
-export function onAnimationFrame(callback: () => void, immediate = false) {
-  // TODO: change callback type
+export function onAnimationFrame(callback: FrameRequestCallback, immediate = false) {
   let handle = 0;
-  const frameHandler = () => {
+  const frameHandler = (time: DOMHighResTimeStamp) => {
     handle = window.requestAnimationFrame(frameHandler);
-    callback();
+    callback(time);
   };
   if (immediate) {
-    callback();
+    callback(performance.now());
   }
   handle = window.requestAnimationFrame(frameHandler);
   return () => window.cancelAnimationFrame(handle);

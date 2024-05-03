@@ -1,6 +1,6 @@
-import { ref } from 'vue';
-import { Disposable, Mouse, clamp, elementOffset, onElementEvent } from '@/lib/std';
+import { Disposable, Mouse, clamp, onElementEvent } from '@/lib/std';
 import { ViewModel } from '@/modules/view-model';
+import { ref } from 'vue';
 
 export class EventsModel extends ViewModel {
   #mounted = new Disposable();

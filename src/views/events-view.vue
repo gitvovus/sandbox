@@ -31,12 +31,14 @@ onBeforeUnmount(() => model.unmount());
         <div :class="['ani', ['init', 'move'][model.transitionState]]"></div>
       </div>
     </div>
-    <ui-button class="button" @click="model.transitionState = 0">start</ui-button>
-    <ui-button class="button" @click="model.transitionState = 1">end</ui-button>
+    <ui-button class="btn" @click="model.transitionState = 0">start</ui-button>
+    <ui-button class="btn" @click="model.transitionState = 1">end</ui-button>
   </div>
 </template>
 
 <style scoped lang="scss">
+$dt: 1s;
+
 .root {
   position: relative;
   width: 100%;
@@ -61,8 +63,8 @@ onBeforeUnmount(() => model.unmount());
   left: 0;
   transform: translate(-50%, -50%) rotate(0) scale(1);
   transition:
-    left 1s,
-    transform 1s;
+    left $dt,
+    transform $dt;
 
   &.init {
     left: 0;

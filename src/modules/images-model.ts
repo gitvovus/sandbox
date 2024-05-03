@@ -71,8 +71,8 @@ export class ImagesModel extends Disposable implements ViewModel {
     this.#contrastFilter = this.root.find('image-contrast')!;
 
     this.grayscale = 0;
-    this.brightness = 50;
-    this.contrast = 50;
+    this.brightness = 100;
+    this.contrast = 100;
 
     const image = this.root.find('image')!;
     this.add(
@@ -130,12 +130,9 @@ export class ImagesModel extends Disposable implements ViewModel {
 
   set brightness(value) {
     this.#brightness.value = value;
-    const v = 0.01 * value;
-    // TODO: adjust
-    const a = 5;
-    const f = a ** (2 * v - 1);
+    const s = 0.01 * value;
     for (const channel of this.#brightnessFilter.items) {
-      channel.attributes.slope = f;
+      channel.attributes.slope = s;
     }
   }
 
@@ -145,13 +142,11 @@ export class ImagesModel extends Disposable implements ViewModel {
 
   set contrast(value) {
     this.#contrast.value = value;
-    const v = 0.01 * value;
-    // TODO: adjust
-    const a = 5;
-    const f = a ** (2 * v - 1);
+    const s = 0.01 * value;
+    const i = 0.5 * (1 - s);
     for (const channel of this.#contrastFilter.items) {
-      channel.attributes.slope = f;
-      channel.attributes.intercept = 0.5 * (1 - f);
+      channel.attributes.slope = s;
+      channel.attributes.intercept = i;
     }
   }
 

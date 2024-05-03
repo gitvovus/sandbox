@@ -7,9 +7,7 @@ defineProps<{ model: ControlsModel }>();
   <div class="view controls-view">
     <!-- popup -->
     <div>
-      <ui-button class="button" :disabled="model.popup" toggle v-model="model.popup"
-        >Popup</ui-button
-      >
+      <ui-button class="btn" :disabled="model.popup" toggle v-model="model.popup">Popup</ui-button>
       <div class="popup-anchor">
         <ui-popup class="popup-content" v-model="model.popup">
           <p>
@@ -18,8 +16,8 @@ defineProps<{ model: ControlsModel }>();
             buttons:
           </p>
           <div>
-            <ui-button class="button action round" @click="model.click('ok')">Ok</ui-button>
-            <ui-button class="button action round" @click="model.click('cancel')">Cancel</ui-button>
+            <ui-button class="btn action round" @click="model.click('ok')">Ok</ui-button>
+            <ui-button class="btn action round" @click="model.click('cancel')">Cancel</ui-button>
           </div>
           <div class="h-separator"></div>
           <div class="expand-header">
@@ -27,7 +25,7 @@ defineProps<{ model: ControlsModel }>();
             <ui-button
               v-for="(item, i) in model.paragraphs"
               :key="i"
-              class="button round"
+              class="btn round"
               :toggle="[item]"
               v-model="model.lorem.paragraphs"
             >
@@ -43,7 +41,7 @@ defineProps<{ model: ControlsModel }>();
       <div class="expand-header">
         Buttons:
         <div class="flex-right">
-          <ui-button class="button round iconic" toggle v-model="model.showButtons">
+          <ui-button class="btn round iconic" toggle v-model="model.showButtons">
             <ui-icon :class="['icon-gt', model.showButtons ? 'r90' : '']" />
           </ui-button>
         </div>
@@ -51,18 +49,18 @@ defineProps<{ model: ControlsModel }>();
       <ui-collapse :expanded="model.showButtons">
         <div class="m-1">
           <input type="text" value="text" style="width: 100px" />
-          <ui-button class="button" @click="model.click('focusable')">focusable</ui-button>
-          <ui-button class="button" @click="model.click('non-focusable')" no-focus tabindex="-1"
+          <ui-button class="btn" @click="model.click('focusable')">focusable</ui-button>
+          <ui-button class="btn" @click="model.click('non-focusable')" no-focus tabindex="-1"
             >non-focusable</ui-button
           >
-          <ui-button class="button" @click="model.click('focusable')">focusable</ui-button>
+          <ui-button class="btn" @click="model.click('focusable')">focusable</ui-button>
         </div>
         <div class="m-1">
           <div>Radio (index): {{ model.selectedIndex }}</div>
           <ui-button
             v-for="(item, i) in model.checkboxes"
             :key="`index[${i}]`"
-            class="button round"
+            class="btn round"
             :toggle="[i]"
             v-model="model.selectedIndex"
           >
@@ -77,7 +75,7 @@ defineProps<{ model: ControlsModel }>();
           <ui-button
             v-for="(item, i) in model.radioItems"
             :key="`object[${i}]`"
-            class="button round"
+            class="btn round"
             :toggle="[model.radioItems[i]]"
             v-model="model.selectedRadio"
           >
@@ -93,7 +91,7 @@ defineProps<{ model: ControlsModel }>();
           <ui-button
             v-for="(item, i) in model.checkboxes"
             :key="`checkbox[${i}]`"
-            class="button round"
+            class="btn round"
             toggle
             v-model="model.checkboxes[i]"
           >
@@ -103,11 +101,11 @@ defineProps<{ model: ControlsModel }>();
         <div class="m-1">
           <div>Push: {{ model.message }}</div>
           <ui-button @click="model.click('unstyled')">Unstyled</ui-button>
-          <ui-button class="button" @click="model.click('ok')">Ok</ui-button>
-          <ui-button class="button" @click="model.click('cancel')">Cancel</ui-button>
-          <ui-button class="button" @click="model.click('disabled')" disabled>Disabled</ui-button>
+          <ui-button class="btn" @click="model.click('ok')">Ok</ui-button>
+          <ui-button class="btn" @click="model.click('cancel')">Cancel</ui-button>
+          <ui-button class="btn" @click="model.click('disabled')" disabled>Disabled</ui-button>
           <ui-button
-            class="button"
+            class="btn"
             :toggle="[model.radioItems[0]]"
             v-model="model.selectedRadio"
             disabled
@@ -125,7 +123,7 @@ defineProps<{ model: ControlsModel }>();
           <ui-button
             v-for="(item, i) in model.paragraphs"
             :key="i"
-            class="button round"
+            class="btn round"
             :toggle="[item]"
             v-model="model.lorem.paragraphs"
           >
@@ -133,7 +131,7 @@ defineProps<{ model: ControlsModel }>();
           </ui-button>
         </div>
         <div class="flex-right">
-          <ui-button class="button round iconic" toggle v-model="model.expanded">
+          <ui-button class="btn round iconic" toggle v-model="model.expanded">
             <ui-icon :class="['icon-gt', model.expanded ? 'r90' : '']" />
           </ui-button>
         </div>
@@ -146,7 +144,7 @@ defineProps<{ model: ControlsModel }>();
           <div>Expand (radio #{{ i }}):</div>
           <div class="flex-right">
             <ui-button
-              class="button round iconic"
+              class="btn round iconic"
               :toggle="[i, undefined]"
               v-model="model.expandedGroup"
             >
@@ -179,7 +177,7 @@ defineProps<{ model: ControlsModel }>();
       <div class="expand-header">
         Range:
         <div class="flex-right">
-          <ui-button class="button round iconic" toggle v-model="model.showRange">
+          <ui-button class="btn round iconic" toggle v-model="model.showRange">
             <ui-icon :class="['icon-gt', model.showRange ? 'r90' : '']" />
           </ui-button>
         </div>

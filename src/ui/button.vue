@@ -53,7 +53,7 @@ function focus(e: FocusEvent) {
 </template>
 
 <style>
-.button {
+.btn {
   background: rgb(255 255 255 / 0.0625);
   border: 1px solid transparent;
   border-radius: 0.25em;
@@ -69,36 +69,36 @@ function focus(e: FocusEvent) {
     text-shadow var(--transition);
 }
 
-.button[disabled] {
+.btn[disabled] {
   opacity: 0.5;
   pointer-events: none;
 }
 
-.button:focus {
+.btn:focus {
   border-color: rgb(255 255 255 / 0.25);
 }
 
-.button[checked] {
+.btn[checked] {
   background-color: rgb(255 255 255 / 0.125);
 }
 
-.button:hover:not([checked]) {
+.btn:hover:not([checked]) {
   background-color: rgb(255 255 255 / 0.125);
 }
 
-.button:hover[checked] {
+.btn:hover[checked] {
   background-color: rgb(255 255 255 / 0.375);
 }
 
-.button:active:hover {
+.btn:active:hover {
   background-color: rgb(255 255 255 / 0.625);
 }
 
-.button.round {
+.btn.round {
   border-radius: 50vh;
 }
 
-.button.iconic {
+.btn.iconic {
   width: 24px;
   height: 24px;
   margin: 2px;
@@ -106,12 +106,12 @@ function focus(e: FocusEvent) {
   font-size: 16px;
 }
 
-.button.iconic:hover {
+.btn.iconic:hover {
   padding: 1px;
   font-size: 20px;
 }
 
-.button.iconic:active:hover {
+.btn.iconic:active:hover {
   padding: 2px;
   font-size: 18px;
 }

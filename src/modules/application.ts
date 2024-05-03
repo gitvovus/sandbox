@@ -10,6 +10,7 @@ import UiMenuItem from '@/ui/menu-item.vue';
 import UiPopup from '@/ui/popup.vue';
 import UiRange from '@/ui/range.vue';
 import UiRangeStyled from '@/ui/range-styled.vue';
+import UiTestItem from '@/ui/test-item.vue';
 
 import AppView from '@/views/app-view.vue';
 import ControlsView from '@/views/controls-view.vue';
@@ -19,6 +20,7 @@ import ImagesView from '@/views/images-view.vue';
 import LogoView from '@/views/logo-view.vue';
 import LoremView from '@/views/lorem-view.vue';
 import SvgView from '@/views/svg-view.vue';
+import TestView from '@/views/test-view.vue';
 import ThreeView from '@/views/three-view.vue';
 
 import { AppModel } from '@/modules/app-model';
@@ -40,6 +42,7 @@ export class Application {
       .component('ui-popup', UiPopup)
       .component('ui-range', UiRange)
       .component('ui-range-styled', UiRangeStyled)
+      .component('ui-test-item', UiTestItem)
       // views
       .component('controls-view', ControlsView)
       .component('events-view', EventsView)
@@ -48,6 +51,7 @@ export class Application {
       .component('logo-view', LogoView)
       .component('lorem-view', LoremView)
       .component('svg-view', SvgView)
+      .component('test-view', TestView)
       .component('three-view', ThreeView);
   }
 

@@ -21,7 +21,7 @@ defineProps<{ model: AppModel }>();
             <lorem-view />
           </div>
           <div class="dlg-footer">
-            <ui-button class="button mouse" @click="model.showDialog = false">Close</ui-button>
+            <ui-button class="btn mouse" @click="model.showDialog = false">Close</ui-button>
           </div>
         </div>
       </ui-dialog>
@@ -34,16 +34,16 @@ defineProps<{ model: AppModel }>();
         <ui-button
           no-focus
           tabindex="-1"
-          class="button round iconic"
+          class="btn round iconic"
           v-model="model.toolBarAlignment"
           :toggle="[ToolBarAlignment.LEFT, ToolBarAlignment.CENTER]"
         >
           <ui-icon class="icon-lt" />
         </ui-button>
-        <ui-button class="button round" toggle v-model="model.showDialog">D</ui-button>
+        <ui-button class="btn round" toggle v-model="model.showDialog">D</ui-button>
         <span class="v-separator" />
         <ui-button
-          class="button round"
+          class="btn round"
           v-for="(dummy, i) in model.pages"
           :key="i"
           v-model="model.pageIndex"
@@ -55,7 +55,7 @@ defineProps<{ model: AppModel }>();
         <ui-button
           no-focus
           tabindex="-1"
-          class="button round iconic"
+          class="btn round iconic"
           v-model="model.toolBarAlignment"
           :toggle="[ToolBarAlignment.RIGHT, ToolBarAlignment.CENTER]"
         >
@@ -90,7 +90,7 @@ defineProps<{ model: AppModel }>();
   gap: 0.5em;
 }
 
-.app-buttons .button {
+.app-buttons .btn {
   margin: 0;
 }
 
