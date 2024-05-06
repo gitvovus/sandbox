@@ -21,63 +21,63 @@ onMounted(() => {
   );
 });
 
-onBeforeUnmount(() => {
-  unmount.dispose();
-});
+onBeforeUnmount(() => unmount.dispose());
 </script>
 
 <template>
   <div class="view test-view">
-    <div class="outer" ref="outer">
-      <div class="inner" ref="inner">
-        <div class="value" :style="{ left: `${model.x * 100}%`, top: `${model.y * 100}%` }"></div>
+    <div class="test-view-outer" ref="outer">
+      <div class="test-view-inner" ref="inner">
+        <div
+          class="test-view-value"
+          :style="{ left: `${model.x * 100}%`, top: `${model.y * 100}%` }"
+        ></div>
       </div>
     </div>
     <div>
       <ui-button class="btn" @click="model.toggle()">toggle</ui-button>
     </div>
-    <div class="flex darker m-1" :class="model.hor ? 'row-' : 'col-'">
-      <ui-test-item></ui-test-item>
-      <ui-test-item></ui-test-item>
-      <ui-test-item></ui-test-item>
-      <ui-test-item></ui-test-item>
+    <div class="test-view-ranges">
+      <div
+        v-for="i in 2"
+        :key="i"
+        class="test-view-range"
+        :class="model.hor ? 'test-view-row' : 'test-view-col'"
+      >
+        <ui-test-item :model="model" :data-test="i"></ui-test-item>
+      </div>
     </div>
   </div>
 </template>
 
-<style scoped lang="scss">
+<style lang="scss">
 .view.test-view {
   overflow: auto;
   border-radius: 0;
 }
 
-$s: 18em;
-$m: 3em;
+$w: 20em;
+$h: 4em;
 
-.outer {
-  position: relative;
+.test-view-outer {
+  display: flex;
   background-color: rgba(0 0 0 / 0.2);
   margin: 1em;
-  width: $s;
-  height: $s;
+  padding: 1em;
+  width: $w;
+  height: $w;
 }
 
-.inner {
-  position: absolute;
+.test-view-inner {
+  position: relative;
   background-color: rgba(0 0 0 / 0.2);
-  left: $m;
-  top: $m;
-  right: $m;
-  bottom: $m;
-
-  &:hover {
-    background-color: rgba(0 0 0 / 0.3);
-  }
+  width: 100%;
+  height: 100%;
 }
 
 $d: 1em;
 
-.value {
+.test-view-value {
   position: absolute;
   width: $d;
   height: $d;
@@ -86,16 +86,25 @@ $d: 1em;
   transform: translate(-50%, -50%);
 }
 
-.darker {
-  background-color: rgba(0 0 0 / 0.2);
+.test-view-ranges {
+  display: flex;
+  gap: 0.5em;
+  margin: 1em auto 1em 1em;
 }
 
-.row- {
-  height: 2em;
+.test-view-range {
+  transition:
+    width 1s,
+    height 1s;
 }
 
-.col- {
-  width: 8em;
-  height: 8em;
+.test-view-row {
+  width: $w;
+  height: $h;
+}
+
+.test-view-col {
+  width: $h;
+  height: $w;
 }
 </style>

@@ -55,11 +55,6 @@ export function useClamp(outer: Ref<HTMLElement | undefined>, inner: Ref<HTMLEle
     preY.value = clamp((e.clientY - rect.top) / rect.height, 0, 1);
   };
 
-  const click = (e: MouseEvent) => {
-    update(e);
-    sync();
-  };
-
   const down = (e: PointerEvent) => {
     if (e.button !== Mouse.LEFT) return;
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
@@ -68,7 +63,7 @@ export function useClamp(outer: Ref<HTMLElement | undefined>, inner: Ref<HTMLEle
 
   const move = (e: PointerEvent) => {
     update(e);
-    if ((e.currentTarget as HTMLElement).hasPointerCapture(e.pointerId)) {
+    if ((e.currentTarget as HTMLElement)?.hasPointerCapture(e.pointerId)) {
       sync();
     }
   };
@@ -78,7 +73,6 @@ export function useClamp(outer: Ref<HTMLElement | undefined>, inner: Ref<HTMLEle
   onMounted(() => {
     if (outer.value && inner.value) {
       unmount.add(
-        onElementEvent(outer.value, 'click', click),
         onElementEvent(outer.value, 'pointerdown', down),
         onElementEvent(outer.value, 'pointermove', move),
       );
@@ -97,15 +91,16 @@ export function useResizer(
   const unmount = new Disposable();
 
   const resize = (entries: ResizeObserverEntry[]) => {
-    const rect = entries[0].contentRect;
-    callback(rect.width, rect.height);
+    const { width, height } = entries[0].contentRect;
+    callback(width, height);
   };
   const resizer = new ResizeObserver(resize);
 
   onMounted(() => {
     if (el.value) {
-      resizer.observe(el.value);
-      unmount.add(() => resizer.unobserve(el.value!));
+      const value = el.value;
+      resizer.observe(value);
+      unmount.add(() => resizer.unobserve(value));
     }
   });
 
@@ -117,15 +112,16 @@ export function useHorizontal(el: Ref<HTMLElement | undefined>) {
   const unmount = new Disposable();
 
   const resize = (entries: ResizeObserverEntry[]) => {
-    const rect = entries[0].contentRect;
-    horizontal.value = rect.width >= rect.height;
+    const { width, height } = entries[0].contentRect;
+    horizontal.value = width >= height;
   };
   const resizer = new ResizeObserver(resize);
 
   onMounted(() => {
     if (el.value) {
-      resizer.observe(el.value);
-      unmount.add(() => resizer.unobserve(el.value!));
+      const value = el.value;
+      resizer.observe(value);
+      unmount.add(() => resizer.unobserve(value));
     }
   });
 

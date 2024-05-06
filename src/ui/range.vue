@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { clamp, mix, Mouse } from '@/lib/std';
+import { clamp, Disposable, mix, Mouse } from '@/lib/std';
 import { isReactive, onBeforeUnmount, onMounted, watch } from 'vue';
 
 interface Props {
@@ -88,21 +88,18 @@ function recalc() {
   }
 }
 
-let disposer: (() => void) | undefined;
+const unmount = new Disposable();
 
 onMounted(() => {
   const toWatch = [prop.min, prop.max, prop.step, prop.indent].filter(isReactive);
   if (toWatch.length > 0) {
-    disposer = watch(toWatch, recalc);
+    unmount.add(watch(toWatch, recalc));
   } else {
     recalc();
   }
 });
 
-onBeforeUnmount(() => {
-  disposer?.();
-  disposer = undefined;
-});
+onBeforeUnmount(() => unmount.dispose());
 </script>
 
 <template>
