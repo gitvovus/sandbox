@@ -16,7 +16,7 @@ onMounted(() => {
   unmount.add(
     watch([x, y], () => {
       model.x = x.value;
-      model.y = y.value;
+      model.y = 1 - y.value;
     }),
   );
 });
@@ -30,7 +30,7 @@ onBeforeUnmount(() => unmount.dispose());
       <div class="test-view-inner" ref="inner">
         <div
           class="test-view-value"
-          :style="{ left: `${model.x * 100}%`, top: `${model.y * 100}%` }"
+          :style="{ left: `${model.x * 100}%`, top: `${(1 - model.y) * 100}%` }"
         ></div>
       </div>
     </div>
@@ -44,7 +44,7 @@ onBeforeUnmount(() => unmount.dispose());
         class="test-view-range"
         :class="model.hor ? 'test-view-row' : 'test-view-col'"
       >
-        <ui-test-item :model="model" :data-test="i"></ui-test-item>
+        <ui-test-item :model="model"></ui-test-item>
       </div>
     </div>
   </div>
