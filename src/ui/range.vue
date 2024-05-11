@@ -10,8 +10,15 @@ interface Props {
   indent?: number;
 }
 
-const prop = defineProps<Props>();
-const emit = defineEmits(['update:modelValue']);
+const prop = defineProps<{
+  modelValue: number;
+  min: number;
+  max: number;
+  step?: number;
+  indent?: number;
+}>();
+
+const emit = defineEmits<{ 'update:modelValue': [value: number] }>();
 
 function getValue(e: MouseEvent) {
   const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
@@ -88,18 +95,18 @@ function recalc() {
   }
 }
 
-const unmount = new Disposable();
+const mounted = new Disposable();
 
 onMounted(() => {
   const toWatch = [prop.min, prop.max, prop.step, prop.indent].filter(isReactive);
   if (toWatch.length > 0) {
-    unmount.add(watch(toWatch, recalc));
+    mounted.add(watch(toWatch, recalc));
   } else {
     recalc();
   }
 });
 
-onBeforeUnmount(() => unmount.dispose());
+onBeforeUnmount(() => mounted.dispose());
 </script>
 
 <template>

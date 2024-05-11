@@ -1,37 +1,26 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
-import { useClamp, useHorizontal } from '@/modules/test-model';
-import { Disposable } from '@/lib/std';
+import { computed, ref } from 'vue';
 
-const { model } = defineProps<{ model: { x: number; y: number } }>();
+import { useRange } from '@/lib/use';
+
+const prop = defineProps<{
+  modelValue: number;
+  min: number;
+  max: number;
+  step?: number;
+}>();
+const emit = defineEmits<{ 'update:modelValue': [value: number] }>();
 
 const outer = ref();
 const inner = ref();
 
-const horizontal = useHorizontal(outer);
-const { x, y } = useClamp(outer, inner);
-
-const unmount = new Disposable();
-
+const { horizontal } = useRange(outer, inner, prop, emit);
 const orientation = computed(() => (horizontal.value ? 'horizontal' : 'vertical'));
-
-onMounted(() => {
-  unmount.add(
-    watch([x, y], () => {
-      if (horizontal.value) {
-        model.x = x.value;
-      } else {
-        model.y = 1 - y.value;
-      }
-    }),
-  );
-});
-
-onBeforeUnmount(() => unmount.dispose());
+const percents = computed(() => (100 * (prop.modelValue - prop.min)) / (prop.max - prop.min));
 </script>
 
 <template>
-  <div :class="['test-range-outer', orientation]" ref="outer">
+  <div :class="['test-range-outer', orientation]" tabindex="0" ref="outer">
     <div class="test-range-inner" ref="inner">
       <div :class="['test-range-strip', orientation]">
         <div :class="['test-range-track', orientation]"></div>
@@ -39,13 +28,13 @@ onBeforeUnmount(() => unmount.dispose());
           :class="['test-range-fill', orientation]"
           :style="
             horizontal
-              ? { width: `calc(${model.x * 100}% + 2 * var(--track-r))` }
-              : { height: `calc(${model.y * 100}% + 2 * var(--track-r))` }
+              ? { width: `calc(${percents}% + 2 * var(--track-r))` }
+              : { height: `calc(${percents}% + 2 * var(--track-r))` }
           "
         ></div>
         <div
           :class="['test-range-value', orientation]"
-          :style="horizontal ? { left: `${model.x * 100}%` } : { bottom: `${model.y * 100}%` }"
+          :style="horizontal ? { left: `${percents}%` } : { bottom: `${percents}%` }"
         ></div>
       </div>
     </div>
@@ -54,7 +43,7 @@ onBeforeUnmount(() => unmount.dispose());
 
 <style lang="scss">
 $p: 1em;
-$v: 1.5em;
+$v: 1.25em;
 $t: 0.25em;
 
 .test-range-outer {
@@ -76,7 +65,6 @@ $t: 0.25em;
 .test-range-inner {
   position: relative;
   flex-grow: 1;
-  background-color: rgba(0 0 0 / 0.2);
 }
 
 .test-range-strip {
@@ -95,26 +83,32 @@ $t: 0.25em;
 
 .test-range-track {
   position: absolute;
-  left: calc(-1 * var(--track-r));
-  top: calc(-1 * var(--track-r));
-  right: calc(-1 * var(--track-r));
-  bottom: calc(-1 * var(--track-r));
-  border-radius: var(--track-r);
-  box-shadow: 0 0 0.4em black inset;
+  left: -$t;
+  top: -$t;
+  right: -$t;
+  bottom: -$t;
+  border-radius: $t;
+  box-shadow: 0 0 $t black inset;
 }
 
 .test-range-fill {
   position: absolute;
-  border-radius: var(--track-r);
-  background-color: rgb(darkred, 0.25);
-  left: calc(-1 * var(--track-r));
-  bottom: calc(-1 * var(--track-r));
+  border-radius: $t;
+  background-color: rgb(red, 0.25);
+  left: -$t;
+  bottom: -$t;
+  transition: background-color var(--transition);
   &.horizontal {
-    top: calc(-1 * var(--track-r));
+    top: -$t;
   }
   &.vertical {
-    right: calc(-1 * var(--track-r));
+    right: -$t;
   }
+}
+
+.test-range-outer:hover .test-range-fill,
+.test-range-outer:focus-within .test-range-fill {
+  background-color: rgb(red, 0.3125);
 }
 
 .test-range-value {
