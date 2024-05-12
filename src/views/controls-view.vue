@@ -183,16 +183,17 @@ defineProps<{ model: ControlsModel }>();
         </div>
       </div>
       <ui-collapse :expanded="model.showRange">
-        <div class="m-1">
-          {{ model.rangeValue }}
-          <br />
-          <ui-range-styled
+        <div class="ranges">
+          <span style="width: 2em">
+            {{ model.rangeValue }}
+          </span>
+          <ui-range
+            class="inline-range"
             :min="model.rangeMin"
             :max="model.rangeMax"
             :step="model.rangeStep"
             v-model="model.rangeValue"
-          ></ui-range-styled>
-          <br />
+          />
           <input
             type="range"
             :min="model.rangeMin"
@@ -207,6 +208,17 @@ defineProps<{ model: ControlsModel }>();
 </template>
 
 <style>
+.ranges {
+  display: flex;
+  margin: 1em;
+  gap: 1em;
+  height: 2em;
+}
+.inline-range {
+  width: 12em;
+  height: 2em;
+}
+
 .inline-icons {
   font-size: 4em;
   background-color: darkslategrey;

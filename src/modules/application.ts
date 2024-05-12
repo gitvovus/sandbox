@@ -5,11 +5,8 @@ import UiCollapse from '@/ui/collapse.vue';
 import UiDialog from '@/ui/dialog.vue';
 import UiIcon from '@/ui/icon.vue';
 import UiItem from '@/ui/item.vue';
-import UiMenu from '@/ui/menu.vue';
-import UiMenuItem from '@/ui/menu-item.vue';
 import UiPopup from '@/ui/popup.vue';
 import UiRange from '@/ui/range.vue';
-import UiRangeStyled from '@/ui/range-styled.vue';
 import UiTestItem from '@/ui/test-item.vue';
 
 import AppView from '@/views/app-view.vue';
@@ -37,11 +34,8 @@ export class Application {
       .component('ui-dialog', UiDialog)
       .component('ui-icon', UiIcon)
       .component('ui-item', UiItem)
-      .component('ui-menu', UiMenu)
-      .component('ui-menu-item', UiMenuItem)
       .component('ui-popup', UiPopup)
       .component('ui-range', UiRange)
-      .component('ui-range-styled', UiRangeStyled)
       .component('ui-test-item', UiTestItem)
       // views
       .component('controls-view', ControlsView)
