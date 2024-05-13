@@ -1,3 +1,21 @@
+@use 'colors' as *;
+
+@mixin expand-map($map) {
+  @each $name, $value in $map {
+    --#{$name}: #{$value};
+  }
+}
+
+:root {
+  @include expand-map($theme-light);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    @include expand-map($theme-dark);
+  }
+}
+
 :root {
   --bg: #202830;
   --tx: #d0d0d0;
@@ -64,19 +82,7 @@
 }
 
 body {
-  font-family:
-    Inter,
-    -apple-system,
-    BlinkMacSystemFont,
-    'Segoe UI',
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    'Fira Sans',
-    'Droid Sans',
-    'Helvetica Neue',
-    sans-serif;
+  font-family: 'Segoe UI', Arial, sans-serif;
   color: var(--tx);
   background-image: url(@/assets/bg.png);
 }
