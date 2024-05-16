@@ -103,7 +103,6 @@ export function useRange(
 ) {
   const { x, y } = useClamp(outer, inner);
   const horizontal = useHorizontal(outer);
-  const value = ref(prop.modelValue);
 
   function toRange(normalized: number) {
     let value = mix(prop.min, prop.max, normalized);

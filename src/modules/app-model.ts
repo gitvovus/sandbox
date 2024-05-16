@@ -1,11 +1,11 @@
 import { ref } from 'vue';
 
 import { ControlsModel } from '@/modules/controls-model';
-import { EventsModel } from '@/modules/events-model';
+// import { EventsModel } from '@/modules/events-model';
 import { GearBoxModel } from '@/modules/gear-box-model';
 // import { ImagesModel } from '@/modules/images-model';
 import { LogoModel } from '@/modules/logo-model';
-import { SvgModel } from '@/modules/svg-model';
+// import { SvgModel } from '@/modules/svg-model';
 import { TestModel } from '@/modules/test-model';
 import { ThreeModel } from '@/modules/three-model';
 import { ViewModel } from '@/modules/view-model';
@@ -22,15 +22,15 @@ export class AppModel extends ViewModel {
     new ThreeModel(),
     new GearBoxModel(),
     new ControlsModel(),
-    new EventsModel(),
+    // new EventsModel(),
     // new ImagesModel(),
-    new SvgModel(),
+    // new SvgModel(),
     new TestModel(),
   ];
 
   readonly #toolBarAlignment = ref(ToolBarAlignment.CENTER);
   readonly #showDialog = ref(false);
-  readonly #pageIndex = ref(6);
+  readonly #pageIndex = ref(this.pages.length - 1);
 
   constructor() {
     super('app-view');

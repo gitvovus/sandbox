@@ -231,7 +231,6 @@ defineProps<{ model: ControlsModel }>();
 
 .view.controls-view {
   overflow: auto;
-  border-radius: 0;
 }
 
 .expand-header {

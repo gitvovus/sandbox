@@ -22,6 +22,8 @@ import ThreeView from '@/views/three-view.vue';
 
 import { AppModel } from '@/modules/app-model';
 
+import { TestContainer, TestHeader, TestItem } from '@/modules/test-model';
+
 export class Application {
   readonly #app: App;
 
@@ -46,7 +48,11 @@ export class Application {
       .component('lorem-view', LoremView)
       .component('svg-view', SvgView)
       .component('test-view', TestView)
-      .component('three-view', ThreeView);
+      .component('three-view', ThreeView)
+      // test
+      .component('test-container', TestContainer)
+      .component('test-header', TestHeader)
+      .component('test-item', TestItem);
   }
 
   run() {

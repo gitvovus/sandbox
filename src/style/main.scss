@@ -30,7 +30,6 @@
   --transition: 0.25s;
   --page-transition: 1s;
 
-  --r: 4px;
   --shadow: 0 0 5px rgb(0 0 0 / 0.5);
 
   --dlg-margin: 16px;
@@ -121,9 +120,8 @@ p {
 }
 
 .view {
-  margin: 7vh 7vw 9vh 7vw;
+  margin: 7vh 7vw 9vh;
   background-color: var(--view-bg);
-  border: 1px solid var(--view-border);
   border-radius: 0.5em;
   box-shadow: var(--view-shadow);
 }
