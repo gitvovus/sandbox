@@ -1,11 +1,10 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref, watchEffect } from 'vue';
-import { Controller } from '@/ui/lib/dialog-controller';
+import { Controller, Model, State } from './model';
 import { Disposable } from '@/lib/std';
-import { DialogModel, DialogState } from '@/modules/app-model';
 
 type Props = {
-  model: DialogModel;
+  model: Model;
   left?: number;
   top?: number;
   width?: number;
@@ -33,7 +32,7 @@ onMounted(() => {
   }
   mounted.add(
     controller.mount(),
-    watchEffect(() => props.model.state !== DialogState.HIDDEN && controller.fit()),
+    watchEffect(() => props.model.state !== State.HIDDEN && controller.fit()),
     watchEffect(() => {
       switch (props.model.state) {
         case 0:
@@ -56,7 +55,7 @@ onBeforeUnmount(() => mounted.dispose());
 <template>
   <dialog
     ref="root"
-    :class="['dialog', { show: model.state !== DialogState.HIDDEN }]"
+    :class="['dialog', { show: model.state !== State.HIDDEN }]"
     :style="{
       left: `${controller.left}px`,
       top: `${controller.top}px`,

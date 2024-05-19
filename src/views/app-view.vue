@@ -15,7 +15,7 @@ defineProps<{ model: AppModel }>();
     </transition>
 
     <teleport to="body">
-      <ui-dialog class="effect" :model="model.dialog" :width="600" :height="720">
+      <dialog-view class="effect" :model="model.dialog" :width="600" :height="720">
         <div class="dlg-panel">
           <div class="dlg-header">Draggable/resizable</div>
           <div class="dlg-content">
@@ -25,7 +25,7 @@ defineProps<{ model: AppModel }>();
             <ui-button class="btn mouse" @click="model.dialog.state = 0">Close</ui-button>
           </div>
         </div>
-      </ui-dialog>
+      </dialog-view>
     </teleport>
 
     <div class="app-bar">

@@ -2,7 +2,6 @@ import { createApp, type App } from 'vue';
 
 import UiButton from '@/ui/button.vue';
 import UiCollapse from '@/ui/collapse.vue';
-import UiDialog from '@/ui/dialog.vue';
 import UiIcon from '@/ui/icon.vue';
 import UiItem from '@/ui/item.vue';
 import UiPopup from '@/ui/popup.vue';
@@ -11,6 +10,7 @@ import UiTestItem from '@/ui/test-item.vue';
 
 import AppView from '@/views/app-view.vue';
 import ControlsView from '@/views/controls-view.vue';
+import DialogView from '@/modules/dialog/view.vue';
 import EventsView from '@/views/events-view.vue';
 import GearBoxView from '@/views/gear-box-view.vue';
 import ImagesView from '@/views/images-view.vue';
@@ -33,7 +33,6 @@ export class Application {
       // ui
       .component('ui-button', UiButton)
       .component('ui-collapse', UiCollapse)
-      .component('ui-dialog', UiDialog)
       .component('ui-icon', UiIcon)
       .component('ui-item', UiItem)
       .component('ui-popup', UiPopup)
@@ -41,6 +40,7 @@ export class Application {
       .component('ui-test-item', UiTestItem)
       // views
       .component('controls-view', ControlsView)
+      .component('dialog-view', DialogView)
       .component('events-view', EventsView)
       .component('gear-box-view', GearBoxView)
       .component('images-view', ImagesView)

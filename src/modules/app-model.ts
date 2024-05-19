@@ -1,6 +1,7 @@
 import { ref } from 'vue';
 
 import { ControlsModel } from '@/modules/controls-model';
+import { Model as DialogModel } from '@/modules/dialog/model';
 // import { EventsModel } from '@/modules/events-model';
 import { GearBoxModel } from '@/modules/gear-box-model';
 // import { ImagesModel } from '@/modules/images-model';
@@ -14,39 +15,6 @@ export const enum ToolBarAlignment {
   LEFT,
   CENTER,
   RIGHT,
-}
-
-export const enum DialogState {
-  HIDDEN,
-  HIDDEN_TRANSITION,
-  NON_MODAL,
-  NON_MODAL_TRANSITION,
-  MODAL,
-  MODAL_TRANSITION,
-}
-
-export class DialogModel {
-  readonly #state = ref(DialogState.HIDDEN);
-
-  get state() {
-    return this.#state.value;
-  }
-
-  set state(value) {
-    this.#state.value = value;
-  }
-
-  close() {
-    this.#state.value = 0;
-  }
-
-  show() {
-    this.#state.value = 1;
-  }
-
-  showModal() {
-    this.#state.value = 2;
-  }
 }
 
 export class AppModel extends ViewModel {

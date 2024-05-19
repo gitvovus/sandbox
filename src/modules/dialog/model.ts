@@ -428,3 +428,36 @@ export class Controller {
     }
   };
 }
+
+export const enum State {
+  HIDDEN,
+  HIDDEN_TRANSITION,
+  NON_MODAL,
+  NON_MODAL_TRANSITION,
+  MODAL,
+  MODAL_TRANSITION,
+}
+
+export class Model {
+  readonly #state = ref(State.HIDDEN);
+
+  get state() {
+    return this.#state.value;
+  }
+
+  set state(value) {
+    this.#state.value = value;
+  }
+
+  close() {
+    this.#state.value = 0;
+  }
+
+  show() {
+    this.#state.value = 1;
+  }
+
+  showModal() {
+    this.#state.value = 2;
+  }
+}
