@@ -13,19 +13,21 @@ defineProps<{ model: AppModel }>();
         :model="model.activePage"
       />
     </transition>
+
     <teleport to="body">
-      <ui-dialog class="effect" :show="model.showDialog" :width="600" :height="720">
+      <ui-dialog class="effect" :model="model.dialog" :width="600" :height="720">
         <div class="dlg-panel">
           <div class="dlg-header">Draggable/resizable</div>
           <div class="dlg-content">
             <lorem-view />
           </div>
           <div class="dlg-footer">
-            <ui-button class="btn mouse" @click="model.showDialog = false">Close</ui-button>
+            <ui-button class="btn mouse" @click="model.dialog.state = 0">Close</ui-button>
           </div>
         </div>
       </ui-dialog>
     </teleport>
+
     <div class="app-bar">
       <div
         :class="['spacer', { collapsed: model.toolBarAlignment === ToolBarAlignment.LEFT }]"
@@ -40,7 +42,8 @@ defineProps<{ model: AppModel }>();
         >
           <ui-icon class="icon-lt" />
         </ui-button>
-        <ui-button class="btn round" toggle v-model="model.showDialog">D</ui-button>
+        <ui-button class="btn round" :toggle="[0, 1]" v-model="model.dialog.state">S</ui-button>
+        <ui-button class="btn round" :toggle="[0, 2]" v-model="model.dialog.state">M</ui-button>
         <span class="v-separator" />
         <ui-button
           class="btn round"
@@ -100,7 +103,8 @@ defineProps<{ model: AppModel }>();
   display: flex;
   flex-direction: column;
   pointer-events: none;
-  background-color: var(--bg);
+  background-color: var(--view-bg);
+  border: 1px solid var(--view-border);
 }
 
 .dlg-header,

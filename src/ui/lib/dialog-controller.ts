@@ -1,4 +1,4 @@
-import { ref } from 'vue';
+import { onBeforeUnmount, onMounted, ref, type Ref } from 'vue';
 
 import { Disposable, onElementEvent } from '@/lib/std';
 
@@ -11,6 +11,8 @@ interface Handler {
 
 export class Controller {
   #mounted = new Disposable();
+
+  #root: Ref<HTMLDialogElement | undefined>;
 
   #l = ref(0);
   #t = ref(0);
@@ -30,6 +32,24 @@ export class Controller {
   #se!: Handler;
   #captured = { x: 0, y: 0 };
 
+  constructor(root: Ref<HTMLDialogElement | undefined>) {
+    this.#root = root;
+    // onMounted(() => this.mount);
+    // onBeforeUnmount(() => this.unmount);
+  }
+
+  // -----------------------------------------------------------
+  close() {
+    this.#root.value!.close();
+  }
+
+  show() {
+    this.#root.value!.show();
+  }
+
+  showModal() {
+    this.#root.value!.showModal();
+  }
   // -----------------------------------------------------------
   get left() {
     return this.#l.value;
@@ -80,8 +100,8 @@ export class Controller {
   }
 
   // -----------------------------------------------------------
-  mount(element: HTMLElement) {
-    const grid = element.firstChild as HTMLElement;
+  mount() {
+    const grid = this.#root.value!.firstChild as HTMLElement;
     this.#cc = {
       element: grid.children[4] as HTMLElement,
       pick: this.#ccPick,
@@ -151,7 +171,18 @@ export class Controller {
       this.#se,
     ].forEach((item) => this.#mounted.add(onElementEvent(item.element, 'pointerdown', item.pick)));
 
+    this.#mounted.add(
+      onElementEvent(this.#root.value!, 'keydown', (e) => {
+        if (e.code === 'Escape') {
+          e.preventDefault();
+          this.close();
+        }
+      }),
+    );
+
     this.center();
+
+    return () => this.unmount();
   }
 
   unmount() {
@@ -191,6 +222,12 @@ export class Controller {
   #dblClick = (e: Event) => {
     if (e.target === this.#cc.element) {
       this.center();
+    }
+  };
+
+  #keyDown = (e: KeyboardEvent) => {
+    if (e.code === 'Ecsape') {
+      //
     }
   };
 

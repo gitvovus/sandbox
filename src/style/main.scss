@@ -41,6 +41,7 @@
   --z-dlg: 10;
 
   --view-shadow: 0 0 50px rgb(0 0 0 / 0.5);
+  --view-border-radius: 0.5em;
   --popup-shadow: 0 0 10px rgb(0 0 0 / 0.5);
 
   --shaft-shadow: drop-shadow(0 0 0.1px black);
@@ -82,8 +83,12 @@
 
 body {
   font-family: 'Segoe UI', Arial, sans-serif;
-  color: var(--tx);
   background-image: url(@/assets/bg.png);
+}
+
+body,
+dialog {
+  color: var(--tx);
 }
 
 input {
@@ -122,7 +127,7 @@ p {
 .view {
   margin: 7vh 7vw 9vh;
   background-color: var(--view-bg);
-  border-radius: 0.5em;
+  border-radius: var(--view-border-radius);
   box-shadow: var(--view-shadow);
 }
 

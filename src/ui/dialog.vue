@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref, watch } from 'vue';
+import { onMounted, onBeforeUnmount, ref, watchEffect } from 'vue';
 import { Controller } from '@/ui/lib/dialog-controller';
+import { Disposable } from '@/lib/std';
+import { DialogModel, DialogState } from '@/modules/app-model';
 
 type Props = {
-  show: boolean;
+  model: DialogModel;
   left?: number;
   top?: number;
   width?: number;
@@ -12,9 +14,9 @@ type Props = {
 
 const props = defineProps<Props>();
 
-const root = ref();
-const controller = new Controller();
-let unmount: () => void;
+const root = ref<HTMLDialogElement>();
+const controller = new Controller(root);
+const mounted = new Disposable();
 
 onMounted(() => {
   if (props.left !== undefined) {
@@ -29,25 +31,32 @@ onMounted(() => {
   if (props.height !== undefined) {
     controller.height = props.height;
   }
-  controller.mount(root.value);
-  unmount = watch(
-    () => props.show,
-    (show) => {
-      if (show) controller.fit();
-    },
+  mounted.add(
+    controller.mount(),
+    watchEffect(() => props.model.state !== DialogState.HIDDEN && controller.fit()),
+    watchEffect(() => {
+      switch (props.model.state) {
+        case 0:
+          root.value?.close();
+          break;
+        case 1:
+          root.value?.show();
+          break;
+        case 2:
+          root.value?.showModal();
+          break;
+      }
+    }),
   );
 });
 
-onBeforeUnmount(() => {
-  unmount();
-  controller.unmount();
-});
+onBeforeUnmount(() => mounted.dispose());
 </script>
 
 <template>
-  <div
+  <dialog
     ref="root"
-    :class="['dialog', { show }]"
+    :class="['dialog', { show: model.state !== DialogState.HIDDEN }]"
     :style="{
       left: `${controller.left}px`,
       top: `${controller.top}px`,
@@ -68,19 +77,21 @@ onBeforeUnmount(() => {
       <div class="ss-resize"></div>
       <div class="se-resize"></div>
     </div>
-  </div>
+  </dialog>
 </template>
 
-<style>
+<style lang="scss">
 .dialog {
   border-radius: var(--dlg-radius);
   position: fixed;
-  visibility: hidden;
+  border: 1px solid darkred;
+  background: transparent;
   z-index: var(--z-dlg);
-}
+  overflow: visible;
 
-.dialog.show {
-  visibility: visible;
+  &::backdrop {
+    background-color: rgb(0 0 0 / 0.25);
+  }
 }
 
 .dialog-layout {
@@ -90,7 +101,7 @@ onBeforeUnmount(() => {
   top: 0;
   right: 0;
   bottom: 0;
-  margin: calc(-var(--dlg-resize));
+  margin: calc(-1 * var(--dlg-resize));
   grid-template-columns: calc(var(--dlg-resize) * 2) auto calc(var(--dlg-resize) * 2);
   grid-template-rows: calc(var(--dlg-resize) * 2) auto calc(var(--dlg-resize) * 2);
 }
