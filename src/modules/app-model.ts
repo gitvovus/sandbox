@@ -11,7 +11,7 @@ import { TestModel } from '@/modules/test-model';
 import { ThreeModel } from '@/modules/three-model';
 import { ViewModel } from '@/modules/view-model';
 
-export const enum ToolBarAlignment {
+export const enum Align {
   LEFT,
   CENTER,
   RIGHT,
@@ -29,7 +29,7 @@ export class AppModel extends ViewModel {
     new TestModel(),
   ];
 
-  readonly #toolBarAlignment = ref(ToolBarAlignment.CENTER);
+  readonly #toolBarAlign = ref(Align.CENTER);
   readonly #pageIndex = ref(this.pages.length - 1);
 
   readonly dialog = new DialogModel({ resizable: true });
@@ -38,12 +38,12 @@ export class AppModel extends ViewModel {
     super('app-view');
   }
 
-  get toolBarAlignment() {
-    return this.#toolBarAlignment.value;
+  get toolBarAlign() {
+    return this.#toolBarAlign.value;
   }
 
-  set toolBarAlignment(value) {
-    this.#toolBarAlignment.value = value;
+  set toolBarAlign(value) {
+    this.#toolBarAlign.value = value;
   }
 
   get pageIndex() {

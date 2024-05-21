@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type AppModel, ToolBarAlignment } from '@/modules/app-model';
+import { type AppModel, Align } from '@/modules/app-model';
 
 defineProps<{ model: AppModel }>();
 </script>
@@ -22,23 +22,23 @@ defineProps<{ model: AppModel }>();
             <lorem-view />
           </div>
           <div class="dlg-footer">
-            <ui-button class="btn mouse" autofocus @click="model.dialog.close()">Close</ui-button>
+            <ui-button class="btn mouse" autofocus @click="model.dialog.closeAsync('transform')">
+              Close
+            </ui-button>
           </div>
         </div>
       </dialog-view>
     </teleport>
 
     <div class="app-bar">
-      <div
-        :class="['spacer', { collapsed: model.toolBarAlignment === ToolBarAlignment.LEFT }]"
-      ></div>
+      <div :class="['spacer', { collapsed: model.toolBarAlign === Align.LEFT }]"></div>
       <div class="app-buttons">
         <ui-button
           no-focus
           tabindex="-1"
           class="btn round iconic"
-          v-model="model.toolBarAlignment"
-          :toggle="[ToolBarAlignment.LEFT, ToolBarAlignment.CENTER]"
+          v-model="model.toolBarAlign"
+          :toggle="[Align.LEFT, Align.CENTER]"
         >
           <ui-icon class="icon-lt" />
         </ui-button>
@@ -59,15 +59,13 @@ defineProps<{ model: AppModel }>();
           no-focus
           tabindex="-1"
           class="btn round iconic"
-          v-model="model.toolBarAlignment"
-          :toggle="[ToolBarAlignment.RIGHT, ToolBarAlignment.CENTER]"
+          v-model="model.toolBarAlign"
+          :toggle="[Align.RIGHT, Align.CENTER]"
         >
           <ui-icon class="icon-gt" />
         </ui-button>
       </div>
-      <div
-        :class="['spacer', { collapsed: model.toolBarAlignment === ToolBarAlignment.RIGHT }]"
-      ></div>
+      <div :class="['spacer', { collapsed: model.toolBarAlign === Align.RIGHT }]"></div>
     </div>
   </div>
 </template>

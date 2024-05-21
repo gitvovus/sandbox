@@ -136,3 +136,14 @@ export class Disposable implements IDisposable {
     this.#disposers.push(...disposers);
   }
 }
+
+export function promiseWithResolvers<T>() {
+  let resolve!: (value: T | PromiseLike<T>) => void;
+  let reject!: (reason: any) => void;
+  const promise = new Promise<T>((resolveFunc, rejectFunc) => {
+    resolve = resolveFunc;
+    reject = rejectFunc;
+  });
+
+  return { promise, resolve, reject };
+}

@@ -3,14 +3,12 @@ import {
   defineComponent,
   h,
   inject,
-  isReactive,
   onBeforeUnmount,
   onMounted,
   provide,
   ref,
   shallowReactive,
   shallowRef,
-  watch,
   watchEffect,
   type InjectionKey,
   type PropType,
@@ -19,8 +17,29 @@ import {
   type SlotsType,
 } from 'vue';
 
-import { ViewModel } from '@/modules/view-model';
 import { Disposable } from '@/lib/std';
+import { ViewModel } from '@/modules/view-model';
+import { ExplicitPromise } from '@/lib/async';
+
+function wait(ms: number) {
+  let t: number;
+  return new ExplicitPromise<number>(
+    (resolve) => {
+      t = setTimeout(() => {
+        resolve(42);
+        console.log('timeout');
+      }, ms);
+    },
+    (resolve, value) => {
+      clearTimeout(t);
+      resolve(value);
+    },
+    (reject, reason) => {
+      clearTimeout(t);
+      reject(reason);
+    },
+  );
+}
 
 export class SingleSelection<T> {
   readonly #data: T[];
@@ -81,6 +100,27 @@ export class TestModel extends ViewModel {
 
   test() {
     this.single.selectedItem = undefined;
+  }
+
+  #promise?: ExplicitPromise<number>;
+
+  async startTest() {
+    try {
+      this.#promise = wait(3000);
+      console.log('started');
+      const result = await this.#promise;
+      console.log('done:', result);
+    } catch (error) {
+      console.log('error:', error);
+    }
+  }
+
+  resolveTest() {
+    this.#promise?.resolve(69);
+  }
+
+  rejectTest() {
+    this.#promise?.reject('because fuck you');
   }
 }
 

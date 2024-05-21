@@ -56,6 +56,11 @@ onBeforeUnmount(() => model.unmount());
   z-index: var(--z-dlg);
 
   &::backdrop {
+    background-color: rgb(0 0 0 / 0);
+    transition: background-color var(--transition);
+  }
+
+  &.show::backdrop {
     background-color: rgb(0 0 0 / 0.25);
   }
 }
@@ -80,7 +85,7 @@ onBeforeUnmount(() => model.unmount());
   cursor: auto;
 }
 
-.effect .dialog-content {
+.effect {
   transform: scale(0.5);
   opacity: 0;
   transition:
@@ -88,7 +93,7 @@ onBeforeUnmount(() => model.unmount());
     opacity var(--transition);
 }
 
-.show.effect .dialog-content {
+.show.effect {
   transform: scale(1);
   opacity: 1;
 }

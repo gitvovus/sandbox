@@ -1,6 +1,6 @@
 import { ref, watch } from 'vue';
 
-import { Buttons, Disposable, onElementEvent } from '@/lib/std';
+import { Buttons, Disposable, onElementEvent, promiseWithResolvers } from '@/lib/std';
 
 type Handler = {
   element?: HTMLElement;
@@ -20,6 +20,21 @@ export type Options = {
   draggable?: boolean;
   resizable?: boolean;
 };
+
+async function transitionEnd(target: HTMLElement, propertyName: string) {
+  const { promise, resolve } = promiseWithResolvers<void>();
+
+  const eventHandler = (e: TransitionEvent) => {
+    if (e.target === target || e.propertyName === propertyName) {
+      target.removeEventListener('transitionend', eventHandler);
+      resolve();
+    }
+  };
+
+  target.addEventListener('transitionend', eventHandler);
+
+  return promise;
+}
 
 export class Model {
   readonly #state = ref(State.CLOSED);
@@ -53,14 +68,21 @@ export class Model {
   }
 
   close() {
-    if (!this.#root) {
-      this.#state.value = State.CLOSED;
+    if (!this.#continueClose()) {
       return;
     }
-    if ([State.CLOSED, State.CLOSING_TRANSITION].includes(this.state)) {
+    this.#root!.close();
+    this.#state.value = State.CLOSED;
+  }
+
+  async closeAsync(transitionPropertyName: string) {
+    if (!this.#continueClose()) {
       return;
     }
     this.#state.value = State.CLOSING_TRANSITION;
+    await transitionEnd(this.#root!, transitionPropertyName);
+    this.#root!.close();
+    this.#state.value = State.CLOSED;
   }
 
   show() {
@@ -71,8 +93,8 @@ export class Model {
     if (this.#state.value !== State.CLOSED) {
       return;
     }
+    this.#root.show();
     this.#state.value = State.NON_MODAL;
-    this.#root?.show();
   }
 
   showModal() {
@@ -83,15 +105,14 @@ export class Model {
     if (this.#state.value !== State.CLOSED) {
       return;
     }
+    this.#root.showModal();
     this.#state.value = State.MODAL;
-    this.#root?.showModal();
   }
 
   // -----------------------------------------------------------
   get left() {
     return this.#l.value;
   }
-
   set left(value) {
     this.#l.value = value;
   }
@@ -99,7 +120,6 @@ export class Model {
   get top() {
     return this.#t.value;
   }
-
   set top(value) {
     this.#t.value = value;
   }
@@ -107,7 +127,6 @@ export class Model {
   get width() {
     return this.#w.value;
   }
-
   set width(value) {
     this.#w.value = value;
   }
@@ -115,7 +134,6 @@ export class Model {
   get height() {
     return this.#h.value;
   }
-
   set height(value) {
     this.#h.value = value;
   }
@@ -123,7 +141,6 @@ export class Model {
   get minWidth() {
     return this.#mw.value;
   }
-
   set minWidth(value) {
     this.#mw.value = value;
   }
@@ -131,7 +148,6 @@ export class Model {
   get minHeight() {
     return this.#mh.value;
   }
-
   set minHeight(value) {
     this.#mh.value = value;
   }
@@ -166,14 +182,12 @@ export class Model {
       );
     }
 
-    this.center();
-
     this.#mounted.add(
       watch(
         () => this.state,
         () => [State.NON_MODAL, State.MODAL].includes(this.state) && this.fit(),
+        { immediate: true },
       ),
-      onElementEvent(grid[4], 'transitionend', this.#transitionEnd),
       () => {
         this.#root = undefined;
         if (this.state === State.CLOSING_TRANSITION) {
@@ -181,6 +195,8 @@ export class Model {
         }
       },
     );
+
+    this.center();
 
     switch (this.state) {
       case State.NON_MODAL:
@@ -204,7 +220,6 @@ export class Model {
   }
 
   fit() {
-    console.log('fit');
     const w = window.innerWidth;
     const h = window.innerHeight;
     if (this.width > w) this.width = w;
@@ -216,18 +231,26 @@ export class Model {
   }
 
   // -----------------------------------------------------------
-  #transitionEnd = (e: TransitionEvent) => {
-    if (
-      this.state !== State.CLOSING_TRANSITION ||
-      !this.#root ||
-      !(e.target === this.#cc.element) ||
-      e.propertyName !== 'transform'
-    ) {
-      return;
+  #continueClose() {
+    if (!this.#root) {
+      this.#state.value = State.CLOSED;
+      return false;
     }
-    this.#state.value = State.CLOSED;
-    this.#root.close();
-  };
+    return ![State.CLOSED, State.CLOSING_TRANSITION].includes(this.state);
+  }
+
+  // #transitionEnd = (e: TransitionEvent) => {
+  //   if (
+  //     this.state !== State.CLOSING_TRANSITION ||
+  //     this.#root === undefined ||
+  //     e.target !== this.#root ||
+  //     e.propertyName !== 'transform'
+  //   ) {
+  //     return;
+  //   }
+  //   this.#state.value = State.CLOSED;
+  //   this.#root.close();
+  // };
 
   #capture(h: Handler, e: PointerEvent) {
     h.element!.addEventListener('pointermove', h.drag);
@@ -250,7 +273,7 @@ export class Model {
   #keyDown = (e: KeyboardEvent) => {
     if (e.code === 'Escape') {
       e.preventDefault();
-      this.close();
+      this.closeAsync('transform');
     }
   };
 

@@ -32,6 +32,9 @@ const { model } = defineProps<{ model: TestModel }>();
       </div>
     </div>
     <ui-button class="btn" @click="model.test()">test</ui-button>
+    <ui-button class="btn" @click="model.startTest()">start</ui-button>
+    <ui-button class="btn" @click="model.resolveTest()">resolve</ui-button>
+    <ui-button class="btn" @click="model.rejectTest()">reject</ui-button>
   </div>
 </template>
 
