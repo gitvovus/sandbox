@@ -32,7 +32,7 @@ export class AppModel extends ViewModel {
   readonly #toolBarAlignment = ref(ToolBarAlignment.CENTER);
   readonly #pageIndex = ref(this.pages.length - 1);
 
-  readonly dialog = new DialogModel();
+  readonly dialog = new DialogModel({ resizable: true });
 
   constructor() {
     super('app-view');

@@ -15,14 +15,14 @@ defineProps<{ model: AppModel }>();
     </transition>
 
     <teleport to="body">
-      <dialog-view class="effect" :model="model.dialog" :width="600" :height="720">
+      <dialog-view class="effect" :model="model.dialog">
         <div class="dlg-panel">
           <div class="dlg-header">Draggable/resizable</div>
           <div class="dlg-content">
             <lorem-view />
           </div>
           <div class="dlg-footer">
-            <ui-button class="btn mouse" @click="model.dialog.state = 0">Close</ui-button>
+            <ui-button class="btn mouse" autofocus @click="model.dialog.close()">Close</ui-button>
           </div>
         </div>
       </dialog-view>
@@ -42,8 +42,8 @@ defineProps<{ model: AppModel }>();
         >
           <ui-icon class="icon-lt" />
         </ui-button>
-        <ui-button class="btn round" :toggle="[0, 1]" v-model="model.dialog.state">S</ui-button>
-        <ui-button class="btn round" :toggle="[0, 2]" v-model="model.dialog.state">M</ui-button>
+        <ui-button class="btn round" @click="model.dialog.show()">S</ui-button>
+        <ui-button class="btn round" @click="model.dialog.showModal()">M</ui-button>
         <span class="v-separator" />
         <ui-button
           class="btn round"

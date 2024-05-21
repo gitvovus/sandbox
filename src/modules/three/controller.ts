@@ -36,7 +36,7 @@ export class Controller implements std.IDisposable {
   #thetaRotation = 0;
 
   #initializer: Config;
-  #lastUpdate = Date.now() * 0.001;
+  #lastUpdate = std.time();
   #trackPointer = false;
   #pointer = { x: 0, y: 0 };
   #panX = new tri.Vector3();

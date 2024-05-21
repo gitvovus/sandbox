@@ -1,92 +1,59 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref, watchEffect } from 'vue';
-import { Controller, Model, State } from './model';
-import { Disposable } from '@/lib/std';
+import { onMounted, onBeforeUnmount, ref } from 'vue';
+import { Model, State } from './model';
 
-type Props = {
-  model: Model;
-  left?: number;
-  top?: number;
-  width?: number;
-  height?: number;
-};
-
-const props = defineProps<Props>();
+const { model } = defineProps<{ model: Model }>();
 
 const root = ref<HTMLDialogElement>();
-const controller = new Controller(root);
-const mounted = new Disposable();
 
-onMounted(() => {
-  if (props.left !== undefined) {
-    controller.left = props.left;
-  }
-  if (props.top !== undefined) {
-    controller.top = props.top;
-  }
-  if (props.width !== undefined) {
-    controller.width = props.width;
-  }
-  if (props.height !== undefined) {
-    controller.height = props.height;
-  }
-  mounted.add(
-    controller.mount(),
-    watchEffect(() => props.model.state !== State.HIDDEN && controller.fit()),
-    watchEffect(() => {
-      switch (props.model.state) {
-        case 0:
-          root.value?.close();
-          break;
-        case 1:
-          root.value?.show();
-          break;
-        case 2:
-          root.value?.showModal();
-          break;
-      }
-    }),
-  );
-});
-
-onBeforeUnmount(() => mounted.dispose());
+onMounted(() => model.mount(root.value!));
+onBeforeUnmount(() => model.unmount());
 </script>
 
 <template>
   <dialog
     ref="root"
-    :class="['dialog', { show: model.state !== State.HIDDEN }]"
-    :style="{
-      left: `${controller.left}px`,
-      top: `${controller.top}px`,
-      width: `${controller.width}px`,
-      height: `${controller.height}px`,
-    }"
+    :class="['dialog', { show: [State.NON_MODAL, State.MODAL].includes(model.state) }]"
+    :style="[
+      model.draggable
+        ? {
+            left: `${model.left}px`,
+            top: `${model.top}px`,
+          }
+        : {},
+      model.resizable
+        ? {
+            width: `${model.width}px`,
+            height: `${model.height}px`,
+          }
+        : {},
+    ]"
   >
     <div class="dialog-layout">
-      <div class="nw-resize"></div>
-      <div class="nn-resize"></div>
-      <div class="ne-resize"></div>
-      <div class="ww-resize"></div>
+      <div :class="{ 'nw-resize': model.resizable }"></div>
+      <div :class="{ 'nn-resize': model.resizable }"></div>
+      <div :class="{ 'ne-resize': model.resizable }"></div>
+      <div :class="{ 'ww-resize': model.resizable }"></div>
       <div class="dialog-content">
         <slot />
       </div>
-      <div class="ee-resize"></div>
-      <div class="sw-resize"></div>
-      <div class="ss-resize"></div>
-      <div class="se-resize"></div>
+      <div :class="{ 'ee-resize': model.resizable }"></div>
+      <div :class="{ 'sw-resize': model.resizable }"></div>
+      <div :class="{ 'ss-resize': model.resizable }"></div>
+      <div :class="{ 'se-resize': model.resizable }"></div>
     </div>
   </dialog>
 </template>
 
 <style lang="scss">
 .dialog {
-  border-radius: var(--dlg-radius);
   position: fixed;
-  border: 1px solid darkred;
-  background: transparent;
+  inset: unset;
+  border: unset;
+  background: unset;
+  overflow: unset;
+  border-radius: var(--dlg-radius);
   z-index: var(--z-dlg);
-  overflow: visible;
 
   &::backdrop {
     background-color: rgb(0 0 0 / 0.25);
@@ -107,7 +74,7 @@ onBeforeUnmount(() => mounted.dispose());
 .dialog-content {
   box-shadow: var(--dlg-shadow);
   z-index: 1;
-  margin: calc(-var(--dlg-resize));
+  margin: calc(-1 * var(--dlg-resize));
   border-radius: var(--dlg-radius);
   overflow: auto;
   cursor: auto;
@@ -116,7 +83,9 @@ onBeforeUnmount(() => mounted.dispose());
 .effect .dialog-content {
   transform: scale(0.5);
   opacity: 0;
-  transition: all var(--transition);
+  transition:
+    transform var(--transition),
+    opacity var(--transition);
 }
 
 .show.effect .dialog-content {

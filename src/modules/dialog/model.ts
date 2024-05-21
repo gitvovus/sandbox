@@ -1,55 +1,92 @@
-import { onBeforeUnmount, onMounted, ref, type Ref } from 'vue';
+import { ref, watch } from 'vue';
 
-import { Disposable, onElementEvent } from '@/lib/std';
+import { Buttons, Disposable, onElementEvent } from '@/lib/std';
 
-interface Handler {
-  element: HTMLElement;
+type Handler = {
+  element?: HTMLElement;
   pick: (e: PointerEvent) => void;
   drag: (e: PointerEvent) => void;
   drop: (e: PointerEvent) => void;
+};
+
+export const enum State {
+  CLOSED,
+  NON_MODAL,
+  MODAL,
+  CLOSING_TRANSITION,
 }
 
-export class Controller {
-  #mounted = new Disposable();
+export type Options = {
+  draggable?: boolean;
+  resizable?: boolean;
+};
 
-  #root: Ref<HTMLDialogElement | undefined>;
+export class Model {
+  readonly #state = ref(State.CLOSED);
+  readonly #options: Options;
+  readonly #mounted = new Disposable();
+  readonly #l = ref(0);
+  readonly #t = ref(0);
+  readonly #w = ref(480);
+  readonly #h = ref(720);
+  readonly #mw = ref(0);
+  readonly #mh = ref(0);
+  readonly #captured = { x: 0, y: 0 };
 
-  #l = ref(0);
-  #t = ref(0);
-  #w = ref(800);
-  #h = ref(500);
-  #mw = ref(400);
-  #mh = ref(250);
+  #root?: HTMLDialogElement;
 
-  #cc!: Handler;
-  #nw!: Handler;
-  #nn!: Handler;
-  #ne!: Handler;
-  #ww!: Handler;
-  #ee!: Handler;
-  #sw!: Handler;
-  #ss!: Handler;
-  #se!: Handler;
-  #captured = { x: 0, y: 0 };
-
-  constructor(root: Ref<HTMLDialogElement | undefined>) {
-    this.#root = root;
-    // onMounted(() => this.mount);
-    // onBeforeUnmount(() => this.unmount);
+  constructor(options?: Options) {
+    this.#options = Object.assign({ draggable: false, resizable: false }, options);
+    this.#options.draggable ||= this.#options.resizable;
   }
 
-  // -----------------------------------------------------------
+  get draggable() {
+    return this.#options.draggable;
+  }
+
+  get resizable() {
+    return this.#options.resizable;
+  }
+
+  get state() {
+    return this.#state.value;
+  }
+
   close() {
-    this.#root.value!.close();
+    if (!this.#root) {
+      this.#state.value = State.CLOSED;
+      return;
+    }
+    if ([State.CLOSED, State.CLOSING_TRANSITION].includes(this.state)) {
+      return;
+    }
+    this.#state.value = State.CLOSING_TRANSITION;
   }
 
   show() {
-    this.#root.value!.show();
+    if (!this.#root) {
+      this.#state.value = State.NON_MODAL;
+      return;
+    }
+    if (this.#state.value !== State.CLOSED) {
+      return;
+    }
+    this.#state.value = State.NON_MODAL;
+    this.#root?.show();
   }
 
   showModal() {
-    this.#root.value!.showModal();
+    if (!this.#root) {
+      this.#state.value = State.MODAL;
+      return;
+    }
+    if (this.#state.value !== State.CLOSED) {
+      return;
+    }
+    this.#state.value = State.MODAL;
+    this.#root?.showModal();
   }
+
   // -----------------------------------------------------------
   get left() {
     return this.#l.value;
@@ -100,89 +137,59 @@ export class Controller {
   }
 
   // -----------------------------------------------------------
-  mount() {
-    const grid = this.#root.value!.firstChild as HTMLElement;
-    this.#cc = {
-      element: grid.children[4] as HTMLElement,
-      pick: this.#ccPick,
-      drag: this.#ccDrag,
-      drop: this.#ccDrop,
-    };
-    this.#nw = {
-      element: grid.children[0] as HTMLElement,
-      pick: this.#nwPick,
-      drag: this.#nwDrag,
-      drop: this.#nwDrop,
-    };
-    this.#nn = {
-      element: grid.children[1] as HTMLElement,
-      pick: this.#nnPick,
-      drag: this.#nnDrag,
-      drop: this.#nnDrop,
-    };
-    this.#ne = {
-      element: grid.children[2] as HTMLElement,
-      pick: this.#nePick,
-      drag: this.#neDrag,
-      drop: this.#neDrop,
-    };
-    this.#ww = {
-      element: grid.children[3] as HTMLElement,
-      pick: this.#wwPick,
-      drag: this.#wwDrag,
-      drop: this.#wwDrop,
-    };
-    this.#ee = {
-      element: grid.children[5] as HTMLElement,
-      pick: this.#eePick,
-      drag: this.#eeDrag,
-      drop: this.#eeDrop,
-    };
-    this.#sw = {
-      element: grid.children[6] as HTMLElement,
-      pick: this.#swPick,
-      drag: this.#swDrag,
-      drop: this.#swDrop,
-    };
-    this.#ss = {
-      element: grid.children[7] as HTMLElement,
-      pick: this.#ssPick,
-      drag: this.#ssDrag,
-      drop: this.#ssDrop,
-    };
-    this.#se = {
-      element: grid.children[8] as HTMLElement,
-      pick: this.#sePick,
-      drag: this.#seDrag,
-      drop: this.#seDrop,
-    };
+  mount(root: HTMLDialogElement) {
+    this.#root = root;
+    this.#mounted.add(onElementEvent(root, 'keydown', this.#keyDown));
 
-    this.#mounted.add(onElementEvent(this.#cc.element, 'dblclick', this.#dblClick));
+    const grid = (root.firstChild as HTMLElement).children as unknown as HTMLElement[];
 
-    [
-      this.#nw,
-      this.#nn,
-      this.#ne,
-      this.#ww,
-      this.#cc,
-      this.#ee,
-      this.#sw,
-      this.#ss,
-      this.#se,
-    ].forEach((item) => this.#mounted.add(onElementEvent(item.element, 'pointerdown', item.pick)));
+    if (this.#options.draggable) {
+      this.#cc.element = grid[4];
+      this.#mounted.add(
+        onElementEvent(this.#cc.element, 'dblclick', this.#dblClick),
+        onElementEvent(this.#cc.element, 'pointerdown', this.#cc.pick),
+      );
+    }
 
-    this.#mounted.add(
-      onElementEvent(this.#root.value!, 'keydown', (e) => {
-        if (e.code === 'Escape') {
-          e.preventDefault();
-          this.close();
-        }
-      }),
-    );
+    if (this.#options.resizable) {
+      this.#nw.element = grid[0];
+      this.#nn.element = grid[1];
+      this.#ne.element = grid[2];
+      this.#ww.element = grid[3];
+      this.#ee.element = grid[5];
+      this.#sw.element = grid[6];
+      this.#ss.element = grid[7];
+      this.#se.element = grid[8];
+
+      [this.#nw, this.#nn, this.#ne, this.#ww, this.#ee, this.#sw, this.#ss, this.#se].forEach(
+        (item) => this.#mounted.add(onElementEvent(item.element!, 'pointerdown', item.pick)),
+      );
+    }
 
     this.center();
 
-    return () => this.unmount();
+    this.#mounted.add(
+      watch(
+        () => this.state,
+        () => [State.NON_MODAL, State.MODAL].includes(this.state) && this.fit(),
+      ),
+      onElementEvent(grid[4], 'transitionend', this.#transitionEnd),
+      () => {
+        this.#root = undefined;
+        if (this.state === State.CLOSING_TRANSITION) {
+          this.#state.value = State.CLOSED;
+        }
+      },
+    );
+
+    switch (this.state) {
+      case State.NON_MODAL:
+        root.show();
+        break;
+      case State.MODAL:
+        root.showModal();
+        break;
+    }
   }
 
   unmount() {
@@ -197,6 +204,7 @@ export class Controller {
   }
 
   fit() {
+    console.log('fit');
     const w = window.innerWidth;
     const h = window.innerHeight;
     if (this.width > w) this.width = w;
@@ -207,16 +215,30 @@ export class Controller {
     if (this.top + this.height > h) this.top = (h - this.height) / 2;
   }
 
+  // -----------------------------------------------------------
+  #transitionEnd = (e: TransitionEvent) => {
+    if (
+      this.state !== State.CLOSING_TRANSITION ||
+      !this.#root ||
+      !(e.target === this.#cc.element) ||
+      e.propertyName !== 'transform'
+    ) {
+      return;
+    }
+    this.#state.value = State.CLOSED;
+    this.#root.close();
+  };
+
   #capture(h: Handler, e: PointerEvent) {
-    h.element.addEventListener('pointermove', h.drag);
-    h.element.addEventListener('pointerup', h.drop);
-    h.element.setPointerCapture(e.pointerId);
+    h.element!.addEventListener('pointermove', h.drag);
+    h.element!.addEventListener('pointerup', h.drop);
+    h.element!.setPointerCapture(e.pointerId);
   }
 
   #release(h: Handler, e: PointerEvent) {
-    h.element.removeEventListener('pointermove', h.drag);
-    h.element.removeEventListener('pointerup', h.drop);
-    h.element.releasePointerCapture(e.pointerId);
+    h.element!.removeEventListener('pointermove', h.drag);
+    h.element!.removeEventListener('pointerup', h.drop);
+    h.element!.releasePointerCapture(e.pointerId);
   }
 
   #dblClick = (e: Event) => {
@@ -226,14 +248,15 @@ export class Controller {
   };
 
   #keyDown = (e: KeyboardEvent) => {
-    if (e.code === 'Ecsape') {
-      //
+    if (e.code === 'Escape') {
+      e.preventDefault();
+      this.close();
     }
   };
 
   // -----------------------------------------------------------
   #ccPick = (e: PointerEvent) => {
-    if (e.target === this.#cc.element && e.buttons & 1) {
+    if (e.target === this.#cc.element && e.buttons & Buttons.LEFT) {
       this.#captured.x = e.screenX - this.left;
       this.#captured.y = e.screenY - this.top;
       this.#capture(this.#cc, e);
@@ -248,14 +271,14 @@ export class Controller {
   };
 
   #ccDrop = (e: PointerEvent) => {
-    if (!(e.buttons & 1)) {
+    if (!(e.buttons & Buttons.LEFT)) {
       this.#release(this.#cc, e);
     }
   };
 
   // -----------------------------------------------------------
   #nwPick = (e: PointerEvent) => {
-    if (e.buttons & 1) {
+    if (e.buttons & Buttons.LEFT) {
       this.#captured.x = e.screenX - this.left;
       this.#captured.y = e.screenY - this.top;
       this.#capture(this.#nw, e);
@@ -275,14 +298,14 @@ export class Controller {
   };
 
   #nwDrop = (e: PointerEvent) => {
-    if (!(e.buttons & 1)) {
+    if (!(e.buttons & Buttons.LEFT)) {
       this.#release(this.#nw, e);
     }
   };
 
   // -----------------------------------------------------------
   #nnPick = (e: PointerEvent) => {
-    if (e.buttons & 1) {
+    if (e.buttons & Buttons.LEFT) {
       this.#captured.y = e.screenY - this.top;
       this.#capture(this.#nn, e);
     }
@@ -297,14 +320,14 @@ export class Controller {
   };
 
   #nnDrop = (e: PointerEvent) => {
-    if (!(e.buttons & 1)) {
+    if (!(e.buttons & Buttons.LEFT)) {
       this.#release(this.#nn, e);
     }
   };
 
   // -----------------------------------------------------------
   #nePick = (e: PointerEvent) => {
-    if (e.buttons & 1) {
+    if (e.buttons & Buttons.LEFT) {
       this.#captured.x = e.screenX - this.width;
       this.#captured.y = e.screenY - this.top;
       this.#capture(this.#ne, e);
@@ -321,14 +344,14 @@ export class Controller {
   };
 
   #neDrop = (e: PointerEvent) => {
-    if (!(e.buttons & 1)) {
+    if (!(e.buttons & Buttons.LEFT)) {
       this.#release(this.#ne, e);
     }
   };
 
   // -----------------------------------------------------------
   #wwPick = (e: PointerEvent) => {
-    if (e.buttons & 1) {
+    if (e.buttons & Buttons.LEFT) {
       this.#captured.x = e.screenX - this.left;
       this.#capture(this.#ww, e);
     }
@@ -343,14 +366,14 @@ export class Controller {
   };
 
   #wwDrop = (e: PointerEvent) => {
-    if (!(e.buttons & 1)) {
+    if (!(e.buttons & Buttons.LEFT)) {
       this.#release(this.#ww, e);
     }
   };
 
   // -----------------------------------------------------------
   #eePick = (e: PointerEvent) => {
-    if (e.buttons & 1) {
+    if (e.buttons & Buttons.LEFT) {
       this.#captured.x = e.screenX - this.width;
       this.#capture(this.#ee, e);
     }
@@ -361,14 +384,14 @@ export class Controller {
   };
 
   #eeDrop = (e: PointerEvent) => {
-    if (!(e.buttons & 1)) {
+    if (!(e.buttons & Buttons.LEFT)) {
       this.#release(this.#ee, e);
     }
   };
 
   // -----------------------------------------------------------
   #swPick = (e: PointerEvent) => {
-    if (e.buttons & 1) {
+    if (e.buttons & Buttons.LEFT) {
       this.#captured.x = e.screenX - this.left;
       this.#captured.y = e.screenY - this.height;
       this.#capture(this.#sw, e);
@@ -385,14 +408,14 @@ export class Controller {
   };
 
   #swDrop = (e: PointerEvent) => {
-    if (!(e.buttons & 1)) {
+    if (!(e.buttons & Buttons.LEFT)) {
       this.#release(this.#sw, e);
     }
   };
 
   // -----------------------------------------------------------
   #ssPick = (e: PointerEvent) => {
-    if (e.buttons & 1) {
+    if (e.buttons & Buttons.LEFT) {
       this.#captured.y = e.screenY - this.height;
       this.#capture(this.#ss, e);
     }
@@ -403,14 +426,14 @@ export class Controller {
   };
 
   #ssDrop = (e: PointerEvent) => {
-    if (!(e.buttons & 1)) {
+    if (!(e.buttons & Buttons.LEFT)) {
       this.#release(this.#ss, e);
     }
   };
 
   // -----------------------------------------------------------
   #sePick = (e: PointerEvent) => {
-    if (e.buttons & 1) {
+    if (e.buttons & Buttons.LEFT) {
       this.#captured.x = e.screenX - this.width;
       this.#captured.y = e.screenY - this.height;
       this.#capture(this.#se, e);
@@ -423,41 +446,55 @@ export class Controller {
   };
 
   #seDrop = (e: PointerEvent) => {
-    if (!(e.buttons & 1)) {
+    if (!(e.buttons & Buttons.LEFT)) {
       this.#release(this.#se, e);
     }
   };
-}
 
-export const enum State {
-  HIDDEN,
-  HIDDEN_TRANSITION,
-  NON_MODAL,
-  NON_MODAL_TRANSITION,
-  MODAL,
-  MODAL_TRANSITION,
-}
-
-export class Model {
-  readonly #state = ref(State.HIDDEN);
-
-  get state() {
-    return this.#state.value;
-  }
-
-  set state(value) {
-    this.#state.value = value;
-  }
-
-  close() {
-    this.#state.value = 0;
-  }
-
-  show() {
-    this.#state.value = 1;
-  }
-
-  showModal() {
-    this.#state.value = 2;
-  }
+  // -----------------------------------------------------------
+  readonly #cc: Handler = {
+    pick: this.#ccPick,
+    drag: this.#ccDrag,
+    drop: this.#ccDrop,
+  };
+  readonly #nw: Handler = {
+    pick: this.#nwPick,
+    drag: this.#nwDrag,
+    drop: this.#nwDrop,
+  };
+  readonly #nn: Handler = {
+    pick: this.#nnPick,
+    drag: this.#nnDrag,
+    drop: this.#nnDrop,
+  };
+  readonly #ne: Handler = {
+    pick: this.#nePick,
+    drag: this.#neDrag,
+    drop: this.#neDrop,
+  };
+  readonly #ww: Handler = {
+    pick: this.#wwPick,
+    drag: this.#wwDrag,
+    drop: this.#wwDrop,
+  };
+  readonly #ee: Handler = {
+    pick: this.#eePick,
+    drag: this.#eeDrag,
+    drop: this.#eeDrop,
+  };
+  readonly #sw: Handler = {
+    pick: this.#swPick,
+    drag: this.#swDrag,
+    drop: this.#swDrop,
+  };
+  readonly #ss: Handler = {
+    pick: this.#ssPick,
+    drag: this.#ssDrag,
+    drop: this.#ssDrop,
+  };
+  readonly #se: Handler = {
+    pick: this.#sePick,
+    drag: this.#seDrag,
+    drop: this.#seDrop,
+  };
 }
