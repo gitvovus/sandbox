@@ -63,8 +63,8 @@ export class SelectionGroup {
 
     this.#selectedObject = value;
     if (this.#selectedObject) {
-      this.#selectedSavedColor =
-        this.#selectedObject === this.#hoveredObject
+      this.#selectedSavedColor
+        = this.#selectedObject === this.#hoveredObject
           ? this.#hoveredSavedColor
           : geo.getColor(this.#selectedObject);
       geo.setColor(

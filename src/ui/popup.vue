@@ -50,9 +50,9 @@ function focusout(e: FocusEvent) {
   <div
     ref="root"
     :class="['popup', { show: modelValue }]"
+    tabindex="-1"
     @click="click"
     @focusout="focusout"
-    tabindex="-1"
   >
     <slot />
   </div>

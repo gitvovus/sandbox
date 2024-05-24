@@ -45,7 +45,7 @@ export class Solver {
       return;
     }
 
-    const source = this.rotors.find((rotor) => rotor.type === 'source');
+    const source = this.rotors.find(rotor => rotor.type === 'source');
     if (!source) {
       fail({ type: 'no source' });
       return;
@@ -87,9 +87,9 @@ export class Solver {
         const speeds = [0, 0];
         contactDistances.forEach((distance, index) => {
           if (
-            Math.abs(distance - abDistance) < eps &&
-            at[index] === 'gear' &&
-            bt[index] === 'gear'
+            Math.abs(distance - abDistance) < eps
+            && at[index] === 'gear'
+            && bt[index] === 'gear'
           ) {
             speeds[index] = -ar[index] / br[index];
           }
@@ -148,9 +148,9 @@ export class Solver {
           const speeds = [0, 0];
           contactDistances.forEach((distance, index) => {
             if (
-              Math.abs(distance - abDistance) < eps &&
-              at[index] === 'gear' &&
-              bt[index] === 'gear'
+              Math.abs(distance - abDistance) < eps
+              && at[index] === 'gear'
+              && bt[index] === 'gear'
             ) {
               speeds[index] = (-aData.speed * ar[index]) / br[index];
             }
@@ -179,7 +179,8 @@ export class Solver {
               fail({ type: 'block', rotors: [a, b] });
               return;
             }
-          } else {
+          }
+          else {
             // sync rotation
             const delta = new bi.Vec(b.position.x - a.position.x, b.position.y - a.position.y);
             const angle = std.mod(Math.atan2(delta.y, delta.x), 2 * Math.PI);
@@ -204,11 +205,12 @@ export class Solver {
       });
     }
 
-    const destinations = this.rotors.filter((rotor) => rotor.type === 'destination');
+    const destinations = this.rotors.filter(rotor => rotor.type === 'destination');
     destinations.forEach((rotor) => {
       if (!data.has(rotor)) {
         fail({ type: 'not finished' });
-      } else {
+      }
+      else {
         const rotorData = data.get(rotor)!;
         if (rotorData.speed === 0) {
           fail({ type: 'not finished' });

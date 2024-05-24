@@ -8,21 +8,30 @@ defineProps<{ model: AppModel }>();
   <div class="app">
     <transition>
       <component
-        v-if="model.activePage !== undefined"
         :is="model.activePage.component"
+        v-if="model.activePage !== undefined"
         :model="model.activePage"
       />
     </transition>
 
     <teleport to="body">
-      <dialog-view class="effect" :model="model.dialog">
+      <dialog-view
+        class="effect"
+        :model="model.dialog"
+      >
         <div class="dlg-panel">
-          <div class="dlg-header">Draggable/resizable</div>
+          <div class="dlg-header">
+            Draggable/resizable
+          </div>
           <div class="dlg-content">
             <lorem-view />
           </div>
           <div class="dlg-footer">
-            <ui-button class="btn mouse" autofocus @click="model.dialog.closeAsync('transform')">
+            <ui-button
+              class="btn mouse"
+              autofocus
+              @click="model.dialog.closeAsync('transform')"
+            >
               Close
             </ui-button>
           </div>
@@ -31,41 +40,51 @@ defineProps<{ model: AppModel }>();
     </teleport>
 
     <div class="app-bar">
-      <div :class="['spacer', { collapsed: model.toolBarAlign === Align.LEFT }]"></div>
+      <div :class="['spacer', { collapsed: model.toolBarAlign === Align.LEFT }]" />
       <div class="app-buttons">
         <ui-button
+          v-model="model.toolBarAlign"
           no-focus
           tabindex="-1"
           class="btn round iconic"
-          v-model="model.toolBarAlign"
           :toggle="[Align.LEFT, Align.CENTER]"
         >
           <ui-icon class="icon-lt" />
         </ui-button>
-        <ui-button class="btn round" @click="model.dialog.show()">S</ui-button>
-        <ui-button class="btn round" @click="model.dialog.showModal()">M</ui-button>
-        <span class="v-separator" />
         <ui-button
           class="btn round"
+          @click="model.dialog.show()"
+        >
+          S
+        </ui-button>
+        <ui-button
+          class="btn round"
+          @click="model.dialog.showModal()"
+        >
+          M
+        </ui-button>
+        <span class="v-separator" />
+        <ui-button
           v-for="(dummy, i) in model.pages"
           :key="i"
           v-model="model.pageIndex"
+          class="btn round"
           :toggle="[i]"
         >
           {{ i }}
         </ui-button>
         <span class="v-separator" />
         <ui-button
+          v-model="model.toolBarAlign"
           no-focus
           tabindex="-1"
           class="btn round iconic"
-          v-model="model.toolBarAlign"
           :toggle="[Align.RIGHT, Align.CENTER]"
         >
           <ui-icon class="icon-gt" />
         </ui-button>
       </div>
-      <div :class="['spacer', { collapsed: model.toolBarAlign === Align.RIGHT }]"></div>
+      <div :class="['spacer', { collapsed: model.toolBarAlign === Align.RIGHT }]" />
     </div>
   </div>
 </template>

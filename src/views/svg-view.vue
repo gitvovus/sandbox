@@ -15,8 +15,14 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="view" ref="root">
-    <ui-item class="overlay" :model="model.root" />
+  <div
+    ref="root"
+    class="view"
+  >
+    <ui-item
+      class="overlay"
+      :model="model.root"
+    />
     <div class="anchor top right flex">
       <!-- <ui-button class="btn" @click.stop="model.start()">animate</ui-button>
       <ui-button class="btn" @click.stop="model.stop()">stop</ui-button> -->

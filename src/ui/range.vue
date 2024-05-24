@@ -20,10 +20,17 @@ const percents = computed(() => (100 * (prop.modelValue - prop.min)) / (prop.max
 </script>
 
 <template>
-  <div :class="['range-outer', orientation]" tabindex="0" ref="outer">
-    <div class="range-inner" ref="inner">
+  <div
+    ref="outer"
+    :class="['range-outer', orientation]"
+    tabindex="0"
+  >
+    <div
+      ref="inner"
+      class="range-inner"
+    >
       <div :class="['range-strip', orientation]">
-        <div :class="['range-track', orientation]"></div>
+        <div :class="['range-track', orientation]" />
         <div
           :class="['range-fill', orientation]"
           :style="
@@ -31,11 +38,11 @@ const percents = computed(() => (100 * (prop.modelValue - prop.min)) / (prop.max
               ? { width: `calc(${percents}% + 2 * var(--track-r))` }
               : { height: `calc(${percents}% + 2 * var(--track-r))` }
           "
-        ></div>
+        />
         <div
           :class="['range-value', orientation]"
           :style="horizontal ? { left: `${percents}%` } : { bottom: `${percents}%` }"
-        ></div>
+        />
       </div>
     </div>
   </div>

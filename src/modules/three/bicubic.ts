@@ -114,7 +114,8 @@ export class Bicubic extends std.Disposable {
         }
       }
       this.#interpolate();
-    } else if (this.#group.selected) {
+    }
+    else if (this.#group.selected) {
       const [x, y] = this.#meshXY(this.#group.selected as tri.Mesh);
       this.#setZ(x, y, z(x, y));
       this.#interpolate();
@@ -224,7 +225,7 @@ export class Bicubic extends std.Disposable {
   }
 
   #meshXY(mesh: tri.Mesh): [number, number] {
-    const index = this.#meshes.findIndex((m) => m === mesh);
+    const index = this.#meshes.findIndex(m => m === mesh);
     const x = index % this.#gridSize;
     const y = (index - x) / this.#gridSize;
     return [x, y];
@@ -290,7 +291,7 @@ export class Bicubic extends std.Disposable {
       this.#group.hovered = (rayCast && rayCast.object) || undefined;
       return;
     }
-    const { x, y } = std.elementOffset(this.#element!, e);
+    const { y } = std.elementOffset(this.#element!, e);
     const delta = this.#pointer.y - y;
     const z = std.clamp(this.#dragCenter.z + delta * this.#dragScale, this.#minZ, this.#maxZ);
     this.#reset(() => z);

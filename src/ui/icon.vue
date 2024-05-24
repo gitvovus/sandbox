@@ -1,7 +1,7 @@
 <script setup lang="ts"></script>
 
 <template>
-  <div class="icon"></div>
+  <div class="icon" />
 </template>
 
 <style>

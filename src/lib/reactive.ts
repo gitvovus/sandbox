@@ -32,7 +32,8 @@ export class Item {
     if (data) {
       if (typeof data === 'string') {
         this.text = data;
-      } else {
+      }
+      else {
         Object.assign(this.attributes, data);
       }
     }
@@ -65,7 +66,7 @@ export class Item {
   }
 
   clear() {
-    this.items.forEach((item) => (item.#parent = undefined));
+    this.items.forEach(item => (item.#parent = undefined));
     this.items.length = 0;
   }
 
@@ -115,8 +116,8 @@ export class Item {
 
   findByClass(name: string): Item | undefined {
     if (
-      this.attributes.class !== undefined &&
-      (this.attributes.class as string).split(' ').includes(name)
+      this.attributes.class !== undefined
+      && (this.attributes.class as string).split(' ').includes(name)
     ) {
       return this;
     }
@@ -139,7 +140,7 @@ export class Item {
     }
 
     const listeners = this.#events.get(type)!;
-    if (listeners.find((item) => item.listener === listener)) {
+    if (listeners.find(item => item.listener === listener)) {
       return;
     }
 
@@ -156,7 +157,7 @@ export class Item {
     if (!event) {
       if (this.#element) {
         this.#events.forEach((listeners, event) =>
-          listeners.forEach((item) => this.#element!.removeEventListener(event, item.listener)),
+          listeners.forEach(item => this.#element!.removeEventListener(event, item.listener)),
         );
       }
       this.#events.clear();
@@ -170,11 +171,12 @@ export class Item {
     const listeners = this.#events.get(event)!;
     if (!listener) {
       if (this.#element) {
-        listeners.forEach((item) => this.#element!.removeEventListener(event, item.listener));
+        listeners.forEach(item => this.#element!.removeEventListener(event, item.listener));
       }
       this.#events.delete(event);
-    } else {
-      const index = listeners.findIndex((item) => item.listener === listener);
+    }
+    else {
+      const index = listeners.findIndex(item => item.listener === listener);
       if (index !== -1) {
         if (this.#element) {
           this.#element.removeEventListener(event, listener);
@@ -189,7 +191,7 @@ export class Item {
     this.#element = element;
     if (this.#element) {
       this.#events.forEach((listeners, event) =>
-        listeners.forEach((item) =>
+        listeners.forEach(item =>
           this.#element!.addEventListener(event, item.listener, item.options),
         ),
       );
@@ -199,7 +201,7 @@ export class Item {
   unmount() {
     if (this.#element) {
       this.#events.forEach((listeners, event) =>
-        listeners.forEach((item) => this.#element!.removeEventListener(event, item.listener)),
+        listeners.forEach(item => this.#element!.removeEventListener(event, item.listener)),
       );
       this.#element = undefined;
     }
@@ -210,7 +212,8 @@ export function fromElement(node: Node) {
   if (node.nodeType === node.TEXT_NODE) {
     const text = (node.nodeValue || '').trim();
     return text.length > 0 ? new Item(node.nodeName, text) : undefined;
-  } else if (node instanceof Element) {
+  }
+  else if (node instanceof Element) {
     const attributes: Attributes = {};
     for (const attr of node.attributes) {
       attributes[attr.name] = attr.value;

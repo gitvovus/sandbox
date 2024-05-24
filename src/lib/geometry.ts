@@ -14,7 +14,8 @@ export function dispose(root: tri.Object3D) {
     if (x.material) {
       if (x.material instanceof tri.Material) {
         x.material.dispose();
-      } else {
+      }
+      else {
         for (const material of x.material) {
           material.dispose();
         }
@@ -70,15 +71,20 @@ function index(segments: number, x: number, y: number, z: number) {
 
   if (y === -segments) {
     return sideStart + (x + segments) + (z + segments) * perimeter;
-  } else if (x === segments) {
+  }
+  else if (x === segments) {
     return sideStart + side + (y + segments) + (z + segments) * perimeter;
-  } else if (y === segments) {
+  }
+  else if (y === segments) {
     return sideStart + 2 * side + (segments - x) + (z + segments) * perimeter;
-  } else if (x === -segments) {
+  }
+  else if (x === -segments) {
     return sideStart + 3 * side + (segments - y) + (z + segments) * perimeter;
-  } else if (z === -segments) {
+  }
+  else if (z === -segments) {
     return (y + segments - 1) * capSide + (x + segments - 1);
-  } else {
+  }
+  else {
     // z === segments
     return topStart + (y + segments - 1) * capSide + (x + segments - 1);
   }
@@ -157,14 +163,15 @@ function cubeBase(radius: number, segments: number) {
       const i10 = index(segments, x + 1, y, -segments);
       const i01 = index(segments, x, y + 1, -segments);
       const i11 = index(segments, x + 1, y + 1, -segments);
-      if (x < 0 === y < 0) {
+      if ((x < 0) === (y < 0)) {
         indices[i++] = i00;
         indices[i++] = i01;
         indices[i++] = i11;
         indices[i++] = i00;
         indices[i++] = i11;
         indices[i++] = i10;
-      } else {
+      }
+      else {
         indices[i++] = i10;
         indices[i++] = i00;
         indices[i++] = i01;
@@ -181,14 +188,15 @@ function cubeBase(radius: number, segments: number) {
       const i10 = index(segments, x + 1, -segments, z);
       const i01 = index(segments, x, -segments, z + 1);
       const i11 = index(segments, x + 1, -segments, z + 1);
-      if (x < 0 === z < 0) {
+      if ((x < 0) === (z < 0)) {
         indices[i++] = i00;
         indices[i++] = i11;
         indices[i++] = i01;
         indices[i++] = i00;
         indices[i++] = i10;
         indices[i++] = i11;
-      } else {
+      }
+      else {
         indices[i++] = i10;
         indices[i++] = i01;
         indices[i++] = i00;
@@ -202,14 +210,15 @@ function cubeBase(radius: number, segments: number) {
       const i10 = index(segments, segments, y + 1, z);
       const i01 = index(segments, segments, y, z + 1);
       const i11 = index(segments, segments, y + 1, z + 1);
-      if (y < 0 === z < 0) {
+      if ((y < 0) === (z < 0)) {
         indices[i++] = i00;
         indices[i++] = i11;
         indices[i++] = i01;
         indices[i++] = i00;
         indices[i++] = i10;
         indices[i++] = i11;
-      } else {
+      }
+      else {
         indices[i++] = i10;
         indices[i++] = i01;
         indices[i++] = i00;
@@ -223,14 +232,15 @@ function cubeBase(radius: number, segments: number) {
       const i10 = index(segments, x - 1, segments, z);
       const i01 = index(segments, x, segments, z + 1);
       const i11 = index(segments, x - 1, segments, z + 1);
-      if (x > 0 === z < 0) {
+      if ((x > 0) === (z < 0)) {
         indices[i++] = i00;
         indices[i++] = i11;
         indices[i++] = i01;
         indices[i++] = i00;
         indices[i++] = i10;
         indices[i++] = i11;
-      } else {
+      }
+      else {
         indices[i++] = i10;
         indices[i++] = i01;
         indices[i++] = i00;
@@ -244,14 +254,15 @@ function cubeBase(radius: number, segments: number) {
       const i10 = index(segments, -segments, y - 1, z);
       const i01 = index(segments, -segments, y, z + 1);
       const i11 = index(segments, -segments, y - 1, z + 1);
-      if (y > 0 === z < 0) {
+      if ((y > 0) === (z < 0)) {
         indices[i++] = i00;
         indices[i++] = i11;
         indices[i++] = i01;
         indices[i++] = i00;
         indices[i++] = i10;
         indices[i++] = i11;
-      } else {
+      }
+      else {
         indices[i++] = i10;
         indices[i++] = i01;
         indices[i++] = i00;
@@ -268,14 +279,15 @@ function cubeBase(radius: number, segments: number) {
       const i10 = index(segments, x + 1, y, segments);
       const i01 = index(segments, x, y + 1, segments);
       const i11 = index(segments, x + 1, y + 1, segments);
-      if (x < 0 === y < 0) {
+      if ((x < 0) === (y < 0)) {
         indices[i++] = i00;
         indices[i++] = i11;
         indices[i++] = i01;
         indices[i++] = i00;
         indices[i++] = i10;
         indices[i++] = i11;
-      } else {
+      }
+      else {
         indices[i++] = i10;
         indices[i++] = i01;
         indices[i++] = i00;

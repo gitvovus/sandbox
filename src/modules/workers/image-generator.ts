@@ -33,7 +33,8 @@ async function flower(radius: number, petals: number, t: number) {
       for (let i = 0; i < f.length; ++i) {
         if (r > f[i]) {
           rgba[i][3] = std.smoothStep(f[i] + 3, f[i], r);
-        } else {
+        }
+        else {
           rgba[i][3] = r / f[i];
         }
       }
@@ -60,7 +61,8 @@ context.onmessage = async (e: MessageEvent) => {
     const request: msg.FlowerRequest = e.data;
     const image = await flower(request.radius, request.petals, request.t);
     context.postMessage({ ...request, image }, [image]);
-  } else {
+  }
+  else {
     console.log('[image-generator] unknown request:', e.data);
   }
 };

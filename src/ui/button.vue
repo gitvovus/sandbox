@@ -14,10 +14,12 @@ const root = ref<HTMLElement>();
 const checked = computed(() => {
   if (prop.toggle === undefined) {
     return undefined;
-  } else {
+  }
+  else {
     if (prop.toggle === '') {
       return prop.modelValue ? 'checked' : undefined;
-    } else {
+    }
+    else {
       return prop.modelValue === prop.toggle[0] ? 'checked' : undefined;
     }
   }
@@ -26,13 +28,16 @@ const checked = computed(() => {
 function click(e: Event) {
   if (prop.toggle === undefined) {
     emit('click', e);
-  } else if (prop.toggle === '') {
+  }
+  else if (prop.toggle === '') {
     emit('update:modelValue', prop.modelValue ? false : true);
-  } else if (prop.toggle.length === 1) {
+  }
+  else if (prop.toggle.length === 1) {
     if (prop.modelValue !== prop.toggle[0]) {
       emit('update:modelValue', prop.toggle[0]);
     }
-  } else if (prop.toggle.length === 2) {
+  }
+  else if (prop.toggle.length === 2) {
     emit('update:modelValue', prop.modelValue === prop.toggle[0] ? prop.toggle[1] : prop.toggle[0]);
   }
 }
@@ -47,7 +52,13 @@ function focus(e: FocusEvent) {
 </script>
 
 <template>
-  <button ref="root" :checked="checked" @pointerdown.stop @click="click" @focus="focus">
+  <button
+    ref="root"
+    :checked="checked"
+    @pointerdown.stop
+    @click="click"
+    @focus="focus"
+  >
     <slot />
   </button>
 </template>

@@ -121,7 +121,7 @@ export class ImagesModel extends Disposable implements ViewModel {
       0.2126 - 0.2126 * v, 0.7152 + 0.2848 * v, 0.0722 - 0.0722 * v, 0, 0,
       0.2126 - 0.2126 * v, 0.7152 - 0.7152 * v, 0.0722 + 0.9278 * v, 0, 0,
       0, 0, 0, 1, 0,
-    ].map((x) => x.toFixed(4)).join(' ');
+    ].map(x => x.toFixed(4)).join(' ');
   }
 
   get brightness() {

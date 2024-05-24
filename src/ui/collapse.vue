@@ -28,7 +28,8 @@ onBeforeUnmount(() => {
 function apply(expanded: boolean) {
   if (expanded) {
     resizer!.observe(content.value!);
-  } else {
+  }
+  else {
     root.value!.style.height = '0px';
     resizer!.unobserve(content.value!);
   }
@@ -36,8 +37,14 @@ function apply(expanded: boolean) {
 </script>
 
 <template>
-  <div ref="root" class="collapse">
-    <div ref="content" class="collapse-content">
+  <div
+    ref="root"
+    class="collapse"
+  >
+    <div
+      ref="content"
+      class="collapse-content"
+    >
       <slot />
     </div>
   </div>

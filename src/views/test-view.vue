@@ -8,21 +8,31 @@ const { model } = defineProps<{ model: TestModel }>();
   <div class="view test-view">
     <div class="test-grid">
       <div class="test-items-grid">
-        <template v-for="item in model.single.items" :key="item.key">
-          <div class="test-grid-cell">{{ item === model.single.selectedItem ? '+' : ' ' }}</div>
-          <div class="test-grid-cell" @click="model.single.selectedItem = item">
+        <template
+          v-for="item in model.single.items"
+          :key="item.key"
+        >
+          <div class="test-grid-cell">
+            {{ item === model.single.selectedItem ? '+' : ' ' }}
+          </div>
+          <div
+            class="test-grid-cell"
+            @click="model.single.selectedItem = item"
+          >
             {{ item.name }}
           </div>
         </template>
       </div>
       <div class="test-grid-cell">
         <test-container v-model="model.single.selectedItem">
-          <test-header #default="{ selected }">{{ selected?.name || '-' }}</test-header>
+          <test-header v-slot="{ selected }">
+            {{ selected?.name || '-' }}
+          </test-header>
           <test-item
             v-for="item in model.single.items"
             :key="item.key"
+            v-slot="{ selected }"
             :value="item"
-            #default="{ selected }"
           >
             <div :class="{ 'test-selected': selected }">
               {{ item.name }} {{ selected ? '+' : '-' }}
@@ -31,10 +41,30 @@ const { model } = defineProps<{ model: TestModel }>();
         </test-container>
       </div>
     </div>
-    <ui-button class="btn" @click="model.test()">test</ui-button>
-    <ui-button class="btn" @click="model.startTest()">start</ui-button>
-    <ui-button class="btn" @click="model.resolveTest()">resolve</ui-button>
-    <ui-button class="btn" @click="model.rejectTest()">reject</ui-button>
+    <ui-button
+      class="btn"
+      @click="model.test()"
+    >
+      test
+    </ui-button>
+    <ui-button
+      class="btn"
+      @click="model.startTest()"
+    >
+      start
+    </ui-button>
+    <ui-button
+      class="btn"
+      @click="model.resolveTest()"
+    >
+      resolve
+    </ui-button>
+    <ui-button
+      class="btn"
+      @click="model.rejectTest()"
+    >
+      reject
+    </ui-button>
   </div>
 </template>
 

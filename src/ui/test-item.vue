@@ -1,38 +1,11 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref, watchEffect } from 'vue';
-import { DialogModel } from '@/modules/app-model';
-import { Disposable } from '@/lib/std';
-
-const { model } = defineProps<{ model: DialogModel }>();
-
-const root = ref<HTMLDialogElement>();
-const mounted = new Disposable();
-
-onMounted(() => {
-  mounted.add(
-    watchEffect(() => {
-      switch (model.state) {
-        case 0:
-          root.value?.close();
-          break;
-        case 1:
-          root.value?.show();
-          break;
-        case 2:
-          root.value?.showModal();
-          break;
-      }
-    }),
-  );
-});
-
-onBeforeUnmount(() => mounted.dispose());
 </script>
 
 <template>
-  <dialog class="test-dialog" ref="root">
-    <ui-button class="btn" @click="model.close()">close</ui-button>
-  </dialog>
+  <dialog
+    ref="root"
+    class="test-dialog"
+  />
 </template>
 
 <style lang="scss">

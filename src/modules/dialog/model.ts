@@ -178,7 +178,7 @@ export class Model {
       this.#se.element = grid[8];
 
       [this.#nw, this.#nn, this.#ne, this.#ww, this.#ee, this.#sw, this.#ss, this.#se].forEach(
-        (item) => this.#mounted.add(onElementEvent(item.element!, 'pointerdown', item.pick)),
+        item => this.#mounted.add(onElementEvent(item.element!, 'pointerdown', item.pick)),
       );
     }
 

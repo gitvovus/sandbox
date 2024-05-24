@@ -17,30 +17,30 @@ onBeforeUnmount(() => model.unmount());
     :style="[
       model.draggable
         ? {
-            left: `${model.left}px`,
-            top: `${model.top}px`,
-          }
+          left: `${model.left}px`,
+          top: `${model.top}px`,
+        }
         : {},
       model.resizable
         ? {
-            width: `${model.width}px`,
-            height: `${model.height}px`,
-          }
+          width: `${model.width}px`,
+          height: `${model.height}px`,
+        }
         : {},
     ]"
   >
     <div class="dialog-layout">
-      <div :class="{ 'nw-resize': model.resizable }"></div>
-      <div :class="{ 'nn-resize': model.resizable }"></div>
-      <div :class="{ 'ne-resize': model.resizable }"></div>
-      <div :class="{ 'ww-resize': model.resizable }"></div>
+      <div :class="{ 'nw-resize': model.resizable }" />
+      <div :class="{ 'nn-resize': model.resizable }" />
+      <div :class="{ 'ne-resize': model.resizable }" />
+      <div :class="{ 'ww-resize': model.resizable }" />
       <div class="dialog-content">
         <slot />
       </div>
-      <div :class="{ 'ee-resize': model.resizable }"></div>
-      <div :class="{ 'sw-resize': model.resizable }"></div>
-      <div :class="{ 'ss-resize': model.resizable }"></div>
-      <div :class="{ 'se-resize': model.resizable }"></div>
+      <div :class="{ 'ee-resize': model.resizable }" />
+      <div :class="{ 'sw-resize': model.resizable }" />
+      <div :class="{ 'ss-resize': model.resizable }" />
+      <div :class="{ 'se-resize': model.resizable }" />
     </div>
   </dialog>
 </template>

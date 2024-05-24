@@ -1,17 +1,17 @@
-import { Item } from '@/lib/reactive';
-import { Mat, Vec, distance } from '@/lib/bi';
-import { Disposable, Mouse, clamp, onElementEvent, time } from '@/lib/std';
 import { Animation } from '@/lib/animation';
+import { Vec, distance } from '@/lib/bi';
+import { v2 } from '@/lib/helpers';
+import { Item } from '@/lib/reactive';
+import { Disposable, Mouse, clamp, onElementEvent, time } from '@/lib/std';
 import { drawBase, drawShaft } from '@/modules/gear-box/drawings';
-import { Gear, Shaft, Shape, type RotorType } from '@/modules/gear-box/shapes';
+import { levels, type LevelData } from '@/modules/gear-box/levels';
 import { Scene } from '@/modules/gear-box/scene';
+import { Gear, Shaft, Shape, type RotorType } from '@/modules/gear-box/shapes';
 import { Solver } from '@/modules/gear-box/solver';
 import { Camera } from '@/modules/svg/camera';
 import { Controller, Gesture } from '@/modules/svg/controller';
 import { prettyGrid } from '@/modules/svg/utils';
 import { type IViewModel } from '@/modules/view-model';
-import { levels, type LevelData } from '@/modules/gear-box/levels';
-import { v2 } from '@/lib/helpers';
 
 export class GearBoxModel extends Disposable implements IViewModel {
   readonly component = 'gear-box-view';
@@ -33,9 +33,9 @@ export class GearBoxModel extends Disposable implements IViewModel {
     r: 3.5,
   });
   readonly #shaftBase = new Item('path', {
-    id: 'shaft-base',
-    d: drawBase(),
-    stroke: 'black',
+    'id': 'shaft-base',
+    'd': drawBase(),
+    'stroke': 'black',
     'stroke-width': 0.25,
     'vector-effect': 'non-scaling-stroke',
   });
@@ -108,11 +108,11 @@ export class GearBoxModel extends Disposable implements IViewModel {
 
   solve() {
     this.#solver.clear();
-    this.#shafts.forEach((shaft) => this.#solver.addRotor(shaft));
+    this.#shafts.forEach(shaft => this.#solver.addRotor(shaft));
 
-    let ok = true;
+    // let ok = true;
     this.#solver.solve((failure) => {
-      ok = false;
+      // ok = false;
       // console.log('check failed:', failure.type);
     });
   }
@@ -199,11 +199,11 @@ export class GearBoxModel extends Disposable implements IViewModel {
       new Shape('gear', { radius: 3, innerRadius: 0.84, offset: Math.PI / 6, spokes: 3 }),
       new Shape('gear', { radius: 4, innerRadius: 0.78, offset: Math.PI / 4, spokes: 4 }),
       new Shape('gear', { radius: 5, innerRadius: 0.72, offset: Math.PI / 10, spokes: 5 }),
-    ].forEach((item) => this.#gearShapes.set(item.radius, item));
+    ].forEach(item => this.#gearShapes.set(item.radius, item));
 
     this.#scene.addDefs(this.#shaftBack, this.#shaftBase, this.#shaftShape);
-    this.#stubShapes.forEach((item) => this.#scene.addDefs(item.shape));
-    this.#gearShapes.forEach((item) => this.#scene.addDefs(item.shape));
+    this.#stubShapes.forEach(item => this.#scene.addDefs(item.shape));
+    this.#gearShapes.forEach(item => this.#scene.addDefs(item.shape));
 
     [
       ['powered', '#00ff00'],
@@ -212,17 +212,17 @@ export class GearBoxModel extends Disposable implements IViewModel {
     ].forEach(([name, fill]) => {
       const gradient = new Item('radialGradient', { id: `shaft-back-${name}` });
       gradient.add(
-        new Item('stop', { offset: 0.25, 'stop-color': `${fill}40` }),
-        new Item('stop', { offset: 1, 'stop-color': `${fill}00` }),
+        new Item('stop', { 'offset': 0.25, 'stop-color': `${fill}40` }),
+        new Item('stop', { 'offset': 1, 'stop-color': `${fill}00` }),
       );
       this.#scene.addDefs(gradient);
     });
   }
 
   #clear() {
-    this.#shafts.forEach((shaft) => shaft.removeFromScene());
+    this.#shafts.forEach(shaft => shaft.removeFromScene());
     this.#shafts.length = 0;
-    this.#gears.forEach((gear) => gear.removeFromScene());
+    this.#gears.forEach(gear => gear.removeFromScene());
     this.#gears.length = 0;
   }
 

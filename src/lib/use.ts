@@ -124,7 +124,8 @@ export function useRange(
       watch([x, y], () => {
         if (horizontal.value) {
           update(x.value);
-        } else {
+        }
+        else {
           update(1 - y.value);
         }
       }),

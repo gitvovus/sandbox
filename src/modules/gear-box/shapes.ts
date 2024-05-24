@@ -39,7 +39,7 @@ function changeClasses(
   classes: string,
   { add = [], remove = [] }: { add?: string[]; remove?: string[] },
 ) {
-  const updated = classes.split(' ').filter((c) => !add.includes(c) && !remove.includes(c));
+  const updated = classes.split(' ').filter(c => !add.includes(c) && !remove.includes(c));
   updated.push(...add);
   return updated.join(' ');
 }
@@ -56,7 +56,7 @@ export class Shape {
     const id = `shape:${type}-${options.radius}`;
     this.shape = new Item('path', {
       id,
-      d: draw(type, options),
+      'd': draw(type, options),
       'fill-rule': 'evenodd',
       'stroke-width': 0.5,
       'vector-effect': 'non-scaling-stroke',
@@ -122,7 +122,8 @@ export class Shaft implements Rotor {
       const a = this.#back.attributes;
       if (value !== 0) {
         a.class = changeClasses(a.class!, { add: ['powered'], remove: ['unpowered'] });
-      } else {
+      }
+      else {
         a.class = changeClasses(a.class!, { add: ['unpowered'], remove: ['powered'] });
       }
     }
@@ -221,7 +222,7 @@ export class Gear implements Actor {
   }
 
   set position(value) {
-    this.#refs.forEach((ref) => (ref.position = value));
+    this.#refs.forEach(ref => (ref.position = value));
   }
 
   get rotation() {
@@ -229,7 +230,7 @@ export class Gear implements Actor {
   }
 
   set rotation(value) {
-    this.#refs.forEach((ref) => (ref.rotation = value));
+    this.#refs.forEach(ref => (ref.rotation = value));
   }
 
   get rotor() {
@@ -270,7 +271,7 @@ export class Gear implements Actor {
       if (visual.attributes.class!.includes('selected')) {
         visual.attributes.class = visual.attributes
           .class!.split(' ')
-          .filter((c) => c !== 'selected')
+          .filter(c => c !== 'selected')
           .join(' ');
       }
     });
@@ -289,11 +290,11 @@ export class Gear implements Actor {
   }
 
   moveToTop() {
-    this.#visuals.forEach((visual) => (visual.index = -1));
+    this.#visuals.forEach(visual => (visual.index = -1));
   }
 
   flip() {
-    this.#refs.forEach((ref) => this.#scene.removeRefs(`#${ref.attributes.id}`));
+    this.#refs.forEach(ref => this.#scene.removeRefs(`#${ref.attributes.id}`));
     this.#refs = [this.#refs[1], this.#refs[0]];
     this.#radii = [this.#radii[1], this.#radii[0]];
     this.#types = [this.#types[1], this.#types[0]];

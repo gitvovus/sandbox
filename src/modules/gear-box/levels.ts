@@ -1,5 +1,5 @@
-import { Vec, length, normalize } from '@/lib/bi';
-import type { ShapeType, RotorType } from '@/modules/gear-box/shapes';
+import { Vec } from '@/lib/bi';
+import type { RotorType, ShapeType } from '@/modules/gear-box/shapes';
 
 export type GearData = {
   position: Vec;
@@ -15,43 +15,44 @@ export type LevelData = {
   connections: { shaft: number; gear: number }[];
 };
 
-class Level {
-  rotors: { type: RotorType; position: Vec }[] = [{ type: 'source', position: new Vec() }];
+// class Level {
+//   rotors: { type: RotorType; position: Vec }[] = [{ type: 'source', position: new Vec() }];
 
-  add(position: Vec, type: RotorType = 'mediator') {
-    this.rotors.push({ type, position });
-  }
+//   add(position: Vec, type: RotorType = 'mediator') {
+//     this.rotors.push({ type, position });
+//   }
 
-  fromOne(a: Vec, direction: Vec, distance: number) {
-    const d = normalize(direction);
-    return new Vec(a.x + d.x * distance, a.y + d.y * distance);
-  }
+//   fromOne(a: Vec, direction: Vec, distance: number) {
+//     const d = normalize(direction);
+//     return new Vec(a.x + d.x * distance, a.y + d.y * distance);
+//   }
 
-  fromTwo(a: Vec, b: Vec, da: number, db: number) {
-    const ab = new Vec(b.x - a.x, b.y - a.y);
-    const d = length(ab);
-    const x = (d * d + da * da - db * db) / (2 * d);
-    const y = Math.sqrt(da * da - x * x);
+//   fromTwo(a: Vec, b: Vec, da: number, db: number) {
+//     const ab = new Vec(b.x - a.x, b.y - a.y);
+//     const d = length(ab);
+//     const x = (d * d + da * da - db * db) / (2 * d);
+//     const y = Math.sqrt(da * da - x * x);
 
-    const dx = new Vec((ab.x * x) / d, (ab.y * x) / d);
-    const dy = new Vec((-ab.y * y) / d, (ab.x * y) / d);
+//     const dx = new Vec((ab.x * x) / d, (ab.y * x) / d);
+//     const dy = new Vec((-ab.y * y) / d, (ab.x * y) / d);
 
-    return new Vec(a.x + dx.x + dy.x, a.y + dx.y + dy.y);
-  }
-}
+//     return new Vec(a.x + dx.x + dy.x, a.y + dx.y + dy.y);
+//   }
+// }
 
 const v = (x: number, y: number) => new Vec(x, y);
 
 export const levels: LevelData[] = [
   // level 0
   {
-    // prettier-ignore
+    /* eslint-disable */
     shafts: [
       { type: 'source',      position: v(-3, 9) },
       { type: 'mediator',    position: v(-3, 1) },
       { type: 'destination', position: v( 4, 1) },
       { type: 'destination', position: v( 4, 9) },
     ],
+    /* eslint-enable */
     gears: [
       {
         position: v(-12, -6),

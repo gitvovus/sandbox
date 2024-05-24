@@ -7,27 +7,50 @@ defineProps<{ model: ControlsModel }>();
   <div class="view controls-view">
     <!-- popup -->
     <div>
-      <ui-button class="btn" :disabled="model.popup" toggle v-model="model.popup">Popup</ui-button>
+      <ui-button
+        v-model="model.popup"
+        class="btn"
+        :disabled="model.popup"
+        toggle
+      >
+        Popup
+      </ui-button>
       <div class="popup-anchor">
-        <ui-popup class="popup-content" v-model="model.popup">
+        <ui-popup
+          v-model="model.popup"
+          class="popup-content"
+        >
           <p>
             Popup is persistent until it loses focus. If you want popup to be closed when some
             element inside is clicked, add 'action' class to this element, like it is done for these
             buttons:
           </p>
           <div>
-            <ui-button class="btn action round" @click="model.click('ok')">Ok</ui-button>
-            <ui-button class="btn action round" @click="model.click('cancel')">Cancel</ui-button>
+            <ui-button
+              class="btn action round"
+              @click="model.click('ok')"
+            >
+              Ok
+            </ui-button>
+            <ui-button
+              class="btn action round"
+              @click="model.click('cancel')"
+            >
+              Cancel
+            </ui-button>
           </div>
-          <div class="h-separator"></div>
+          <div class="h-separator" />
           <div class="expand-header">
-            <input type="text" v-model="model.text" />
+            <input
+              v-model="model.text"
+              type="text"
+            >
             <ui-button
               v-for="(item, i) in model.paragraphs"
               :key="i"
+              v-model="model.lorem.paragraphs"
               class="btn round"
               :toggle="[item]"
-              v-model="model.lorem.paragraphs"
             >
               {{ item }}
             </ui-button>
@@ -41,28 +64,51 @@ defineProps<{ model: ControlsModel }>();
       <div class="expand-header">
         Buttons:
         <div class="flex-right">
-          <ui-button class="btn round iconic" toggle v-model="model.showButtons">
+          <ui-button
+            v-model="model.showButtons"
+            class="btn round iconic"
+            toggle
+          >
             <ui-icon :class="['icon-gt', model.showButtons ? 'r90' : '']" />
           </ui-button>
         </div>
       </div>
       <ui-collapse :expanded="model.showButtons">
         <div class="m-1">
-          <input type="text" value="text" style="width: 100px" />
-          <ui-button class="btn" @click="model.click('focusable')">focusable</ui-button>
-          <ui-button class="btn" @click="model.click('non-focusable')" no-focus tabindex="-1"
-            >non-focusable</ui-button
+          <input
+            type="text"
+            value="text"
+            style="width: 100px"
           >
-          <ui-button class="btn" @click="model.click('focusable')">focusable</ui-button>
+          <ui-button
+            class="btn"
+            @click="model.click('focusable')"
+          >
+            focusable
+          </ui-button>
+          <ui-button
+            class="btn"
+            no-focus
+            tabindex="-1"
+            @click="model.click('non-focusable')"
+          >
+            non-focusable
+          </ui-button>
+          <ui-button
+            class="btn"
+            @click="model.click('focusable')"
+          >
+            focusable
+          </ui-button>
         </div>
         <div class="m-1">
           <div>Radio (index): {{ model.selectedIndex }}</div>
           <ui-button
             v-for="(item, i) in model.checkboxes"
             :key="`index[${i}]`"
+            v-model="model.selectedIndex"
             class="btn round"
             :toggle="[i]"
-            v-model="model.selectedIndex"
           >
             {{ `#${i}` }}
           </ui-button>
@@ -75,39 +121,58 @@ defineProps<{ model: ControlsModel }>();
           <ui-button
             v-for="(item, i) in model.radioItems"
             :key="`object[${i}]`"
+            v-model="model.selectedRadio"
             class="btn round"
             :toggle="[model.radioItems[i]]"
-            v-model="model.selectedRadio"
           >
             {{ `#${i}` }}
           </ui-button>
         </div>
         <div class="m-1">
           <div>
-            Checkbox: [&nbsp;<span v-for="(item, i) in model.checkboxes" :key="i + 300"
-              >{{ item }}&nbsp;</span
-            >]
+            Checkbox: [&nbsp;<span
+              v-for="(item, i) in model.checkboxes"
+              :key="i + 300"
+            >{{ item }}&nbsp;</span>]
           </div>
           <ui-button
             v-for="(item, i) in model.checkboxes"
             :key="`checkbox[${i}]`"
+            v-model="model.checkboxes[i]"
             class="btn round"
             toggle
-            v-model="model.checkboxes[i]"
           >
             {{ `#${i}` }}
           </ui-button>
         </div>
         <div class="m-1">
           <div>Push: {{ model.message }}</div>
-          <ui-button @click="model.click('unstyled')">Unstyled</ui-button>
-          <ui-button class="btn" @click="model.click('ok')">Ok</ui-button>
-          <ui-button class="btn" @click="model.click('cancel')">Cancel</ui-button>
-          <ui-button class="btn" @click="model.click('disabled')" disabled>Disabled</ui-button>
+          <ui-button @click="model.click('unstyled')">
+            Unstyled
+          </ui-button>
           <ui-button
             class="btn"
-            :toggle="[model.radioItems[0]]"
+            @click="model.click('ok')"
+          >
+            Ok
+          </ui-button>
+          <ui-button
+            class="btn"
+            @click="model.click('cancel')"
+          >
+            Cancel
+          </ui-button>
+          <ui-button
+            class="btn"
+            disabled
+            @click="model.click('disabled')"
+          >
+            Disabled
+          </ui-button>
+          <ui-button
             v-model="model.selectedRadio"
+            class="btn"
+            :toggle="[model.radioItems[0]]"
             disabled
           >
             Disabled
@@ -123,37 +188,50 @@ defineProps<{ model: ControlsModel }>();
           <ui-button
             v-for="(item, i) in model.paragraphs"
             :key="i"
+            v-model="model.lorem.paragraphs"
             class="btn round"
             :toggle="[item]"
-            v-model="model.lorem.paragraphs"
           >
             {{ item }}
           </ui-button>
         </div>
         <div class="flex-right">
-          <ui-button class="btn round iconic" toggle v-model="model.expanded">
+          <ui-button
+            v-model="model.expanded"
+            class="btn round iconic"
+            toggle
+          >
             <ui-icon :class="['icon-gt', model.expanded ? 'r90' : '']" />
           </ui-button>
         </div>
       </div>
       <ui-collapse :expanded="model.expanded">
-        <lorem-view :model="model.lorem" class="content" />
+        <lorem-view
+          :model="model.lorem"
+          class="content"
+        />
       </ui-collapse>
-      <template v-for="(item, i) in 3" :key="`lorem[${i}]`">
+      <template
+        v-for="(item, i) in 3"
+        :key="`lorem[${i}]`"
+      >
         <div class="expand-header">
           <div>Expand (radio #{{ i }}):</div>
           <div class="flex-right">
             <ui-button
+              v-model="model.expandedGroup"
               class="btn round iconic"
               :toggle="[i, undefined]"
-              v-model="model.expandedGroup"
             >
               <ui-icon :class="['icon-gt', model.expandedGroup === i ? 'r90' : '']" />
             </ui-button>
           </div>
         </div>
         <ui-collapse :expanded="model.expandedGroup === i">
-          <lorem-view :paragraphs="1" class="content" />
+          <lorem-view
+            :paragraphs="1"
+            class="content"
+          />
         </ui-collapse>
       </template>
     </div>
@@ -177,7 +255,11 @@ defineProps<{ model: ControlsModel }>();
       <div class="expand-header">
         Range:
         <div class="flex-right">
-          <ui-button class="btn round iconic" toggle v-model="model.showRange">
+          <ui-button
+            v-model="model.showRange"
+            class="btn round iconic"
+            toggle
+          >
             <ui-icon :class="['icon-gt', model.showRange ? 'r90' : '']" />
           </ui-button>
         </div>
@@ -188,19 +270,19 @@ defineProps<{ model: ControlsModel }>();
             {{ model.rangeValue }}
           </span>
           <ui-range
+            v-model="model.rangeValue"
             class="inline-range"
             :min="model.rangeMin"
             :max="model.rangeMax"
             :step="model.rangeStep"
-            v-model="model.rangeValue"
           />
           <input
+            v-model.number="model.rangeValue"
             type="range"
             :min="model.rangeMin"
             :max="model.rangeMax"
             :step="model.rangeStep"
-            v-model.number="model.rangeValue"
-          />
+          >
         </div>
       </ui-collapse>
     </div>

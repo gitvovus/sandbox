@@ -38,30 +38,34 @@ export class Tree<T> {
     }
 
     let node = this.root;
-    while (true) {
+    for (;;) {
       if (this.less(value, node.value)) {
         // go left
         const left = node.left;
         if (left) {
           node = left;
           continue;
-        } else {
+        }
+        else {
           node.left = { parent: node, left: undefined, right: undefined, balance: 0, value };
           node = node.left;
           break;
         }
-      } else if (this.less(node.value, value)) {
+      }
+      else if (this.less(node.value, value)) {
         // go right
         const right = node.right;
         if (right) {
           node = right;
           continue;
-        } else {
+        }
+        else {
           node.right = { parent: node, left: undefined, right: undefined, balance: 0, value };
           node = node.right;
           break;
         }
-      } else {
+      }
+      else {
         // value already exists (TODO: add existing value flag?)
         return node;
       }
@@ -83,28 +87,32 @@ export class Tree<T> {
     }
 
     let node = this.root;
-    while (true) {
+    for (;;) {
       if (this.less(newNode.value, node.value)) {
         // go left
         const left = node.left;
         if (left) {
           node = left;
           continue;
-        } else {
+        }
+        else {
           node.left = newNode;
           break;
         }
-      } else if (this.less(node.value, newNode.value)) {
+      }
+      else if (this.less(node.value, newNode.value)) {
         // go right
         const right = node.right;
         if (right) {
           node = right;
           continue;
-        } else {
+        }
+        else {
           node.right = newNode;
           break;
         }
-      } else {
+      }
+      else {
         // value already exists (TODO: add existing value flag?)
         return node;
       }
@@ -122,10 +130,12 @@ export class Tree<T> {
     if (!node.left) {
       this.#rebalanceBeforeRemove(node);
       this.#shift(node, node.right);
-    } else if (!node.right) {
+    }
+    else if (!node.right) {
       this.#rebalanceBeforeRemove(node);
       this.#shift(node, node.left);
-    } else {
+    }
+    else {
       // remove successor
       const next = successor(node)!;
       this.#rebalanceBeforeRemove(next);
@@ -145,10 +155,12 @@ export class Tree<T> {
       if (parent) {
         if (parent.left === node) {
           parent.left = next;
-        } else {
+        }
+        else {
           parent.right = next;
         }
-      } else {
+      }
+      else {
         this.root = next;
       }
     }
@@ -159,9 +171,11 @@ export class Tree<T> {
     while (node) {
       if (this.less(value, node.value)) {
         node = node.left;
-      } else if (this.less(node.value, value)) {
+      }
+      else if (this.less(node.value, value)) {
         node = node.right;
-      } else {
+      }
+      else {
         return node;
       }
     }
@@ -183,7 +197,8 @@ export class Tree<T> {
     if (node.balance === 0) {
       parent.balance = 1;
       node.balance = -1;
-    } else {
+    }
+    else {
       parent.balance = 0;
       node.balance = 0;
     }
@@ -206,7 +221,8 @@ export class Tree<T> {
     if (node.balance === 0) {
       parent.balance = -1;
       node.balance = 1;
-    } else {
+    }
+    else {
       parent.balance = 0;
       node.balance = 0;
     }
@@ -239,11 +255,13 @@ export class Tree<T> {
     if (middle.balance === 0) {
       parent.balance = 0;
       node.balance = 0;
-    } else {
+    }
+    else {
       if (middle.balance < 0) {
         parent.balance = 1;
         node.balance = 0;
-      } else {
+      }
+      else {
         parent.balance = 0;
         node.balance = -1;
       }
@@ -278,11 +296,13 @@ export class Tree<T> {
     if (middle.balance === 0) {
       parent.balance = 0;
       node.balance = 0;
-    } else {
+    }
+    else {
       if (middle.balance > 0) {
         parent.balance = -1;
         node.balance = 0;
-      } else {
+      }
+      else {
         parent.balance = 0;
         node.balance = 1;
       }
@@ -302,10 +322,12 @@ export class Tree<T> {
         if (parent.balance > 0) {
           if (node.balance < 0) {
             subtree = this.#rotateRightLeft(parent, node);
-          } else {
+          }
+          else {
             subtree = this.#rotateLeft(parent, node);
           }
-        } else {
+        }
+        else {
           if (parent.balance < 0) {
             parent.balance = 0;
             break;
@@ -314,15 +336,18 @@ export class Tree<T> {
           node = parent;
           continue;
         }
-      } else {
+      }
+      else {
         // left subtree increases
         if (parent.balance < 0) {
           if (node.balance > 0) {
             subtree = this.#rotateLeftRight(parent, node);
-          } else {
+          }
+          else {
             subtree = this.#rotateRight(parent, node);
           }
-        } else {
+        }
+        else {
           if (parent.balance > 0) {
             parent.balance = 0;
             break;
@@ -337,10 +362,12 @@ export class Tree<T> {
       if (grand) {
         if (parent === grand.left) {
           grand.left = subtree;
-        } else {
+        }
+        else {
           grand.right = subtree;
         }
-      } else {
+      }
+      else {
         this.root = subtree;
       }
 
@@ -362,10 +389,12 @@ export class Tree<T> {
           balance = right.balance;
           if (right.balance < 0) {
             node = this.#rotateRightLeft(parent, right);
-          } else {
+          }
+          else {
             node = this.#rotateLeft(parent, right);
           }
-        } else {
+        }
+        else {
           if (parent.balance === 0) {
             parent.balance = 1;
             break;
@@ -374,17 +403,20 @@ export class Tree<T> {
           node.balance = 0;
           continue;
         }
-      } else {
+      }
+      else {
         // right subtree decreases
         if (parent.balance < 0) {
           const left = parent.left!;
           balance = left.balance;
           if (left.balance > 0) {
             node = this.#rotateLeftRight(parent, left);
-          } else {
+          }
+          else {
             node = this.#rotateRight(parent, left);
           }
-        } else {
+        }
+        else {
           if (parent.balance === 0) {
             parent.balance = -1;
             break;
@@ -399,10 +431,12 @@ export class Tree<T> {
       if (grand) {
         if (parent === grand.left) {
           grand.left = node;
-        } else {
+        }
+        else {
           grand.right = node;
         }
-      } else {
+      }
+      else {
         this.root = node;
       }
 
@@ -413,9 +447,11 @@ export class Tree<T> {
   #shift(remove: Node<T>, replace?: Node<T>) {
     if (!remove.parent) {
       this.root = replace;
-    } else if (remove === remove.parent.left) {
+    }
+    else if (remove === remove.parent.left) {
       remove.parent.left = replace;
-    } else {
+    }
+    else {
       remove.parent.right = replace;
     }
     if (replace) {
@@ -436,7 +472,8 @@ export function height<T>(node?: Node<T>): number {
   if (!node) return 0;
   if (node.balance < 0) {
     return 1 + height(node.left);
-  } else {
+  }
+  else {
     return 1 + height(node.right);
   }
 }

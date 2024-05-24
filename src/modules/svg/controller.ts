@@ -158,7 +158,8 @@ export class Controller implements std.IDisposable {
     if (widthScale < heightScale) {
       w = this.#vw;
       h = (this.#vh * heightScale) / widthScale;
-    } else {
+    }
+    else {
       w = (this.#vw * widthScale) / heightScale;
       h = this.#vh;
     }
@@ -241,7 +242,8 @@ export class Controller implements std.IDisposable {
         this.#pickedPosition.x - delta.x,
         this.#pickedPosition.y - delta.y,
       );
-    } else {
+    }
+    else {
       const offset = std.elementOffset(this.#element!, e);
       const delta = (2 * Math.PI * (offset.x - this.#pickedOffset.x)) / this.#element!.clientWidth;
       this.#camera.rotation = std.mod(this.#pickedRotation - delta, 2 * Math.PI);

@@ -128,7 +128,7 @@ export class Disposable implements IDisposable {
   readonly #disposers: Disposer[] = [];
 
   dispose() {
-    this.#disposers.forEach((disposer) => disposer());
+    this.#disposers.forEach(disposer => disposer());
     this.#disposers.length = 0;
   }
 

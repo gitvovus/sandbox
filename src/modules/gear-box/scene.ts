@@ -66,7 +66,8 @@ export class Scene {
         this.#masks.push(mask);
         if (i === 0) {
           mask.add(new Item('g', { fill: 'white' }), new Item('g', { fill: 'black' }));
-        } else {
+        }
+        else {
           mask.add(new Item('g', { fill: 'white', mask: `url(#${filter.attributes.id})` }));
         }
 
@@ -126,16 +127,16 @@ export class Scene {
   }
 
   removeRefs(href: string) {
-    this.#remove(this.root, (item) => item.attributes.href === href);
+    this.#remove(this.root, item => item.attributes.href === href);
   }
 
   removeDef(id: string) {
-    this.#remove(this.#defs, (item) => item.attributes.id === id);
+    this.#remove(this.#defs, item => item.attributes.id === id);
   }
 
   #remove(root: Item, predicate: (item: Item) => boolean) {
-    root.items.filter(predicate).forEach((item) => root.remove(item));
-    root.items.forEach((item) => this.#remove(item, predicate));
+    root.items.filter(predicate).forEach(item => root.remove(item));
+    root.items.forEach(item => this.#remove(item, predicate));
   }
 
   #sameRef(item: Item, attributes?: Attributes) {

@@ -110,7 +110,8 @@ export class TestModel extends ViewModel {
       console.log('started');
       const result = await this.#promise;
       console.log('done:', result);
-    } catch (error) {
+    }
+    catch (error) {
       console.log('error:', error);
     }
   }
@@ -150,10 +151,12 @@ export const TestContainer = defineComponent(
     return () => h(props.as, undefined, slots.default());
   },
   {
+    inheritAttrs: false,
     props: {
       as: { type: [Object, String], default: 'div' },
       modelValue: {
         type: [Object, String, Number] as PropType<object | string | number | undefined>,
+        required: true,
       },
     },
     emits: {
@@ -162,7 +165,6 @@ export const TestContainer = defineComponent(
     slots: Object as SlotsType<{
       default(): any;
     }>,
-    inheritAttrs: false,
   },
 );
 
@@ -192,7 +194,10 @@ export const TestItem = defineComponent(
   },
   {
     props: {
-      value: { type: [Object, String, Number] as PropType<object | string | number | undefined> },
+      value: {
+        type: [Object, String, Number] as PropType<object | string | number | undefined>,
+        required: true,
+      },
     },
     slots: Object as SlotsType<{
       default({ selected }: { selected: boolean }): any;

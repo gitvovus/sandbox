@@ -12,27 +12,55 @@ onBeforeUnmount(() => model.unmount());
 
 <template>
   <div class="view p-1">
-    <div class="outer" ref="outer">
-      <div class="inner" ref="inner">
-        <div class="track"></div>
-        <div class="run" :style="{ width: `calc(100px + ${model.x * 100}%)` }"></div>
-        <div class="pre-x" :style="{ left: `${model.preX * 100}%` }"></div>
-        <div class="pre-y" :style="{ top: `${model.preY * 100}%` }"></div>
-        <div class="thumb" :style="{ left: `${model.x * 100}%` }"></div>
+    <div
+      ref="outer"
+      class="outer"
+    >
+      <div
+        ref="inner"
+        class="inner"
+      >
+        <div class="track" />
+        <div
+          class="run"
+          :style="{ width: `calc(100px + ${model.x * 100}%)` }"
+        />
+        <div
+          class="pre-x"
+          :style="{ left: `${model.preX * 100}%` }"
+        />
+        <div
+          class="pre-y"
+          :style="{ top: `${model.preY * 100}%` }"
+        />
+        <div
+          class="thumb"
+          :style="{ left: `${model.x * 100}%` }"
+        />
       </div>
     </div>
-    <br />
+    <br>
     <pre>
       x: {{ model.preX.toFixed(2) }}<br>
       y: {{ model.preY.toFixed(2) }}<br>
     </pre>
     <div class="root">
       <div class="path">
-        <div :class="['ani', ['init', 'move'][model.transitionState]]"></div>
+        <div :class="['ani', ['init', 'move'][model.transitionState]]" />
       </div>
     </div>
-    <ui-button class="btn" @click="model.transitionState = 0">start</ui-button>
-    <ui-button class="btn" @click="model.transitionState = 1">end</ui-button>
+    <ui-button
+      class="btn"
+      @click="model.transitionState = 0"
+    >
+      start
+    </ui-button>
+    <ui-button
+      class="btn"
+      @click="model.transitionState = 1"
+    >
+      end
+    </ui-button>
   </div>
 </template>
 

@@ -16,20 +16,44 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="view">
-    <div class="overlay" ref="root">
-      <ui-item class="overlay" :model="model.root" />
+    <div
+      ref="root"
+      class="overlay"
+    >
+      <ui-item
+        class="overlay"
+        :model="model.root"
+      />
     </div>
     <div class="images-toolbox anchor top right flex">
       <ui-range
+        v-model="model.selectedIndex"
         class="images-range"
         :min="0"
         :max="model.images.length - 1"
         :step="1"
-        v-model="model.selectedIndex"
       />
-      <ui-range class="images-range" :min="0" :max="200" :step="1" v-model="model.brightness" />
-      <ui-range class="images-range" :min="0" :max="200" :step="1" v-model="model.contrast" />
-      <ui-range class="images-range" :min="0" :max="100" :step="1" v-model="model.grayscale" />
+      <ui-range
+        v-model="model.brightness"
+        class="images-range"
+        :min="0"
+        :max="200"
+        :step="1"
+      />
+      <ui-range
+        v-model="model.contrast"
+        class="images-range"
+        :min="0"
+        :max="200"
+        :step="1"
+      />
+      <ui-range
+        v-model="model.grayscale"
+        class="images-range"
+        :min="0"
+        :max="100"
+        :step="1"
+      />
     </div>
   </div>
 </template>

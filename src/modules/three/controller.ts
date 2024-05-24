@@ -67,12 +67,12 @@ export class Controller implements std.IDisposable {
     );
     this.#config.theta = std.clamp(this.#config.theta, this.#minTheta, this.#maxTheta);
 
-    const x =
-      this.#config.lookAt.x +
-      this.#config.radius * Math.cos(this.#config.phi) * Math.cos(this.#config.theta);
-    const y =
-      this.#config.lookAt.y +
-      this.#config.radius * Math.sin(this.#config.phi) * Math.cos(this.#config.theta);
+    const x
+      = this.#config.lookAt.x
+      + this.#config.radius * Math.cos(this.#config.phi) * Math.cos(this.#config.theta);
+    const y
+      = this.#config.lookAt.y
+      + this.#config.radius * Math.sin(this.#config.phi) * Math.cos(this.#config.theta);
     const z = this.#config.lookAt.z + this.#config.radius * Math.sin(this.#config.theta);
 
     camera.position.set(x, y, z);
@@ -127,11 +127,12 @@ export class Controller implements std.IDisposable {
     this.#pointer = { x, y };
 
     if (e.buttons & std.Buttons.LEFT) {
-      this.#config.phi -=
-        (dx * 2 * Math.PI * this.#config.rotationSpeed) / this.#element!.clientWidth;
-      this.#config.theta +=
-        (dy * 2 * Math.PI * this.#config.rotationSpeed) / this.#element!.clientHeight;
-    } else if (e.buttons & std.Buttons.RIGHT) {
+      this.#config.phi
+        -= (dx * 2 * Math.PI * this.#config.rotationSpeed) / this.#element!.clientWidth;
+      this.#config.theta
+        += (dy * 2 * Math.PI * this.#config.rotationSpeed) / this.#element!.clientHeight;
+    }
+    else if (e.buttons & std.Buttons.RIGHT) {
       const delta = this.#panX
         .clone()
         .multiplyScalar(dx / this.#element!.clientWidth)
