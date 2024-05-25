@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref } from 'vue';
-import { Model, State } from './model';
+import { Dialog, State } from './model';
 
-const { model } = defineProps<{ model: Model }>();
+const { model } = defineProps<{ model: Dialog }>();
 
 const root = ref<HTMLDialogElement>();
 

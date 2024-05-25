@@ -36,7 +36,7 @@ async function transitionEnd(target: HTMLElement, propertyName: string) {
   return promise;
 }
 
-export class Model {
+export class Dialog {
   readonly #state = ref(State.CLOSED);
   readonly #options: Options;
   readonly #mounted = new Disposable();
