@@ -2,7 +2,7 @@
 import { nextTick, onBeforeUnmount, onMounted, ref, watch, type WatchStopHandle } from 'vue';
 
 const props = defineProps<{ modelValue: boolean }>();
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits<{ 'update:modelValue': [boolean] }>();
 const root = ref<HTMLElement>();
 
 let unwatch: WatchStopHandle | undefined;
@@ -22,15 +22,8 @@ const update = (visible: boolean) => {
   nextTick(() => element.focus());
 };
 
-function click(e: Event) {
-  let target = e.target as HTMLElement | null;
-  while (target && target !== e.currentTarget) {
-    if (target.classList.contains('action')) {
-      emit('update:modelValue', false);
-      return;
-    }
-    target = target.parentElement;
-  }
+function close() {
+  emit('update:modelValue', false);
 }
 
 function focusout(e: FocusEvent) {
@@ -42,7 +35,7 @@ function focusout(e: FocusEvent) {
     }
     target = target.parentElement;
   }
-  emit('update:modelValue', false);
+  close();
 }
 </script>
 
@@ -51,14 +44,13 @@ function focusout(e: FocusEvent) {
     ref="root"
     :class="['popup', { show: modelValue }]"
     tabindex="-1"
-    @click="click"
     @focusout="focusout"
   >
-    <slot />
+    <slot v-bind="{ close }" />
   </div>
 </template>
 
-<style>
+<style lang="scss">
 .popup {
   position: fixed;
   display: none;

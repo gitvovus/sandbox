@@ -112,7 +112,7 @@ export class TestModel extends ViewModel {
       console.log('done:', result);
     }
     catch (error) {
-      console.log('error:', error);
+      console.log('rejected:', error);
     }
   }
 
@@ -121,7 +121,7 @@ export class TestModel extends ViewModel {
   }
 
   rejectTest() {
-    this.#promise?.reject('because fuck you');
+    this.#promise?.reject('by user');
   }
 }
 
@@ -156,7 +156,7 @@ export const TestContainer = defineComponent(
       as: { type: [Object, String], default: 'div' },
       modelValue: {
         type: [Object, String, Number] as PropType<object | string | number | undefined>,
-        required: true,
+        default: undefined,
       },
     },
     emits: {
@@ -195,7 +195,7 @@ export const TestItem = defineComponent(
   {
     props: {
       value: {
-        type: [Object, String, Number] as PropType<object | string | number | undefined>,
+        type: [Object, String, Number] as PropType<object | string | number>,
         required: true,
       },
     },

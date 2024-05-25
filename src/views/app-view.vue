@@ -89,7 +89,7 @@ defineProps<{ model: AppModel }>();
   </div>
 </template>
 
-<style>
+<style lang="scss">
 .app-bar {
   position: absolute;
   width: 100%;

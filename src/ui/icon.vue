@@ -4,7 +4,7 @@
   <div class="icon" />
 </template>
 
-<style>
+<style lang="scss">
 .icon {
   background-color: currentColor;
   width: 1em;

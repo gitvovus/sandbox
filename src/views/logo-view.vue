@@ -117,7 +117,7 @@ defineProps<{ model: LogoModel }>();
   </div>
 </template>
 
-<style>
+<style lang="scss">
 .logo-wrapper {
   position: absolute;
   left: 0;

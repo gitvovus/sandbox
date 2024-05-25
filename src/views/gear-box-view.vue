@@ -54,7 +54,7 @@ onBeforeUnmount(() => {
   </div>
 </template>
 
-<style>
+<style lang="scss">
 .shaft-back.powered {
   fill: url(#shaft-back-powered);
 }

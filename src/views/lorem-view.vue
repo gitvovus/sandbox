@@ -72,7 +72,7 @@ defineProps<Props>();
   </div>
 </template>
 
-<style>
+<style lang="scss">
 .lorem {
   max-width: 40em;
 }

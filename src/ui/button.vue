@@ -1,49 +1,52 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 
-interface Props {
+const props = defineProps<{
   modelValue?: any;
   toggle?: undefined | '' | [any] | [any, any];
   noFocus?: undefined | '';
-}
+}>();
 
-const prop = defineProps<Props>();
-const emit = defineEmits(['click', 'update:modelValue']);
+const emit = defineEmits<{
+  'click': [Event];
+  'update:modelValue': [any];
+}>();
+
 const root = ref<HTMLElement>();
 
 const checked = computed(() => {
-  if (prop.toggle === undefined) {
+  if (props.toggle === undefined) {
     return undefined;
   }
   else {
-    if (prop.toggle === '') {
-      return prop.modelValue ? 'checked' : undefined;
+    if (props.toggle === '') {
+      return props.modelValue ? 'checked' : undefined;
     }
     else {
-      return prop.modelValue === prop.toggle[0] ? 'checked' : undefined;
+      return props.modelValue === props.toggle[0] ? 'checked' : undefined;
     }
   }
 });
 
 function click(e: Event) {
-  if (prop.toggle === undefined) {
+  if (props.toggle === undefined) {
     emit('click', e);
   }
-  else if (prop.toggle === '') {
-    emit('update:modelValue', prop.modelValue ? false : true);
+  else if (props.toggle === '') {
+    emit('update:modelValue', !props.modelValue);
   }
-  else if (prop.toggle.length === 1) {
-    if (prop.modelValue !== prop.toggle[0]) {
-      emit('update:modelValue', prop.toggle[0]);
+  else if (props.toggle.length === 1) {
+    if (props.modelValue !== props.toggle[0]) {
+      emit('update:modelValue', props.toggle[0]);
     }
   }
-  else if (prop.toggle.length === 2) {
-    emit('update:modelValue', prop.modelValue === prop.toggle[0] ? prop.toggle[1] : prop.toggle[0]);
+  else if (props.toggle.length === 2) {
+    emit('update:modelValue', props.modelValue === props.toggle[0] ? props.toggle[1] : props.toggle[0]);
   }
 }
 
 function focus(e: FocusEvent) {
-  if (prop.noFocus !== undefined) {
+  if (props.noFocus !== undefined) {
     e.preventDefault();
     root.value?.blur();
     (e.relatedTarget as HTMLElement)?.focus?.();
@@ -63,7 +66,7 @@ function focus(e: FocusEvent) {
   </button>
 </template>
 
-<style>
+<style lang="scss">
 .btn {
   background: rgb(255 255 255 / 0.0625);
   border: 1px solid transparent;

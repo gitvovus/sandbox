@@ -50,7 +50,7 @@ function apply(expanded: boolean) {
   </div>
 </template>
 
-<style>
+<style lang="scss">
 .collapse {
   overflow: hidden;
 }

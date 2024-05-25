@@ -17,6 +17,7 @@ defineProps<{ model: ControlsModel }>();
       </ui-button>
       <div class="popup-anchor">
         <ui-popup
+          v-slot="{ close }"
           v-model="model.popup"
           class="popup-content"
         >
@@ -27,14 +28,14 @@ defineProps<{ model: ControlsModel }>();
           </p>
           <div>
             <ui-button
-              class="btn action round"
-              @click="model.click('ok')"
+              class="btn round"
+              @click="() => { close(); model.click('ok'); }"
             >
               Ok
             </ui-button>
             <ui-button
-              class="btn action round"
-              @click="model.click('cancel')"
+              class="btn round"
+              @click="() => { close(); model.click('cancel'); }"
             >
               Cancel
             </ui-button>
@@ -289,7 +290,7 @@ defineProps<{ model: ControlsModel }>();
   </div>
 </template>
 
-<style>
+<style lang="scss">
 .ranges {
   display: flex;
   margin: 1em;

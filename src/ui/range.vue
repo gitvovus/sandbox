@@ -3,20 +3,25 @@ import { computed, ref } from 'vue';
 
 import { useRange } from '@/lib/use';
 
-const prop = defineProps<{
+const props = withDefaults(defineProps<{
   modelValue: number;
   min: number;
   max: number;
-  step?: number;
-}>();
-const emit = defineEmits<{ 'update:modelValue': [value: number] }>();
+  step: number;
+}>(), {
+  min: 0,
+  max: 100,
+  step: 1,
+});
+
+const emit = defineEmits<{ 'update:modelValue': [number] }>();
 
 const outer = ref();
 const inner = ref();
 
-const { horizontal } = useRange(outer, inner, prop, emit);
+const { horizontal } = useRange(outer, inner, props, emit);
 const orientation = computed(() => (horizontal.value ? 'horizontal' : 'vertical'));
-const percents = computed(() => (100 * (prop.modelValue - prop.min)) / (prop.max - prop.min));
+const percents = computed(() => (100 * (props.modelValue - props.min)) / (props.max - props.min));
 </script>
 
 <template>
