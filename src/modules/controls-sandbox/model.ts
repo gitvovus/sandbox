@@ -7,19 +7,18 @@ import {
   onMounted,
   provide,
   ref,
-  shallowReactive,
   shallowRef,
   watchEffect,
   type InjectionKey,
   type PropType,
   type Ref,
-  type ShallowReactive,
   type SlotsType,
 } from 'vue';
 
 import { Disposable } from '@/lib/std';
 import { ViewModel } from '@/modules/view-model';
 import { ExplicitPromise } from '@/lib/async';
+import { SingleSelection } from '@/lib/ui-models';
 
 function wait(ms: number) {
   let t: number;
@@ -39,28 +38,6 @@ function wait(ms: number) {
       reject(reason);
     },
   );
-}
-
-export class SingleSelection<T> {
-  readonly #data: T[];
-  readonly items: ShallowReactive<T[]>;
-  readonly #selectedItem = shallowRef<T | undefined>();
-
-  constructor(data: T[]) {
-    this.#data = data;
-    this.items = shallowReactive(this.#data);
-  }
-
-  get selectedItem() {
-    return this.#selectedItem.value;
-  }
-
-  set selectedItem(value) {
-    if (value !== undefined && !this.items.includes(value)) {
-      return;
-    }
-    this.#selectedItem.value = value;
-  }
 }
 
 export class TestData {

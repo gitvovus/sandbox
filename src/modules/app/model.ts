@@ -2,12 +2,12 @@ import { ref } from 'vue';
 
 import { Controls } from '@/modules/controls/model';
 import { Dialog } from '@/modules/dialog/model';
-import { GearBox } from '@/modules/gear-box/model';
-import { Worker } from '@/modules/worker/model';
+// import { GearBox } from '@/modules/gear-box/model';
+// import { Worker } from '@/modules/worker/model';
 import { Logo } from '@/modules/logo/model';
-import { SvgSandbox } from '@/modules/svg-sandbox/model';
+// import { SvgSandbox } from '@/modules/svg-sandbox/model';
 import { ControlsSandbox } from '@/modules/controls-sandbox/model';
-import { BicubicDemo } from '@/modules/bicubic-demo/model';
+// import { BicubicDemo } from '@/modules/bicubic-demo/model';
 import { ViewModel } from '@/modules/view-model';
 import { Theme } from '@/modules/theme/model';
 
@@ -20,11 +20,11 @@ export const enum Align {
 export class App extends ViewModel {
   readonly pages: ViewModel[] = [
     new Logo(),
-    new BicubicDemo(),
-    new GearBox(),
+    // new BicubicDemo(),
+    // new GearBox(),
     new Controls(),
-    new Worker(),
-    new SvgSandbox(),
+    // new Worker(),
+    // new SvgSandbox(),
     new ControlsSandbox(),
     new Theme(),
   ];

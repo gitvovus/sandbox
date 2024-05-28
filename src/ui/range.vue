@@ -5,9 +5,9 @@ import { useRange } from '@/lib/use';
 
 const props = withDefaults(defineProps<{
   modelValue: number;
-  min: number;
-  max: number;
-  step: number;
+  min?: number;
+  max?: number;
+  step?: number;
 }>(), {
   min: 0,
   max: 100,
@@ -61,11 +61,6 @@ $t: 0.25em;
 .range-outer {
   --track-r: #{$t};
   display: flex;
-  // width: 100%;
-  // height: 100%;
-  background-color: rgba(0 0 0 / 0.2);
-  border-radius: 0.5em;
-  transition: padding 1s;
   &.horizontal {
     padding: 0 $p;
   }

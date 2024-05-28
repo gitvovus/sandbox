@@ -38,6 +38,7 @@ export default ts.config(
       '@stylistic/lines-between-class-members': 'off',
       '@typescript-eslint/no-unused-vars': ['error', { args: 'none' }],
       '@typescript-eslint/no-explicit-any': 'off',
+      'vue/max-attributes-per-line': 'off',
       'vue/multi-word-component-names': 'off',
       'vue/no-mutating-props': 'off',
       'vue/one-component-per-file': 'off',
