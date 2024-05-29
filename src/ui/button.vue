@@ -74,7 +74,6 @@ function focus(e: FocusEvent) {
   color: inherit;
   outline: none;
   user-select: none;
-  margin: 0.375em;
   padding: 0.5em 0.75em;
   transition:
     background-color var(--transition),

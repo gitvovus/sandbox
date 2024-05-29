@@ -1,7 +1,7 @@
 import { computed, reactive, type CSSProperties } from 'vue';
-import { ViewModel } from '@/modules/view-model';
 import { SingleSelection } from '@/lib/ui-models';
-import { Color } from '@/modules/theme/properties/color';
+import { ViewModel } from '@/modules/view-model';
+import { Color } from './properties/color';
 
 export class Theme extends ViewModel {
   readonly #colors = new SingleSelection([
@@ -31,6 +31,10 @@ export class Theme extends ViewModel {
 
   color(name: string) {
     return this.colors.find(item => (item.name === name))!;
+  }
+
+  clear() {
+    localStorage.clear();
   }
 
   save() {

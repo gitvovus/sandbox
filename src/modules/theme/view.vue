@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type Theme } from '@/modules/theme/model';
+import { type Theme } from './model';
 
 const { model } = defineProps<{ model: Theme }>();
 </script>
@@ -8,14 +8,7 @@ const { model } = defineProps<{ model: Theme }>();
   <div class="view theme-view">
     <div class="theme-grid">
       <div class="theme-editor">
-        <div v-if="model.selectedColor" class="theme-ranges">
-          <ui-range v-model="model.selectedColor.r" class="theme-range" :min="0" :max="255" />
-          <ui-range v-model="model.selectedColor.g" class="theme-range" :min="0" :max="255" />
-          <ui-range v-model="model.selectedColor.b" class="theme-range" :min="0" :max="255" />
-          <ui-range v-model="model.selectedColor.a" class="theme-range" :min="0" :max="1" :step="0.01" />
-          <div>{{ model.selectedColor.toRgb() }}</div>
-          <div>{{ model.selectedColor.toHex() }}</div>
-        </div>
+        <color-editor v-if="model.selectedColor" :model="model.selectedColor" />
       </div>
       <div class="theme-list">
         <template
@@ -39,6 +32,9 @@ const { model } = defineProps<{ model: Theme }>();
         </div>
       </div>
       <div class="theme-footer">
+        <ui-button class="btn" @click="model.clear()">
+          Clear
+        </ui-button>
         <ui-button class="btn" @click="model.save()">
           Save
         </ui-button>
@@ -61,26 +57,15 @@ const { model } = defineProps<{ model: Theme }>();
   gap: 0.5em;
 }
 .theme-editor {
-  margin: 25%;
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid orange;
-}
-.theme-ranges {
-  display: flex;
-  flex-direction: column;
-  padding: 0.25em;
-  gap: 0.125em;
-}
-.theme-range {
-  width: 12em;
-  height: 2em;
+  border: 1px solid var(--view-border);
 }
 .theme-list {
   display: flex;
   flex-direction: column;
-  border: 1px solid orange;
+  border: 1px solid var(--view-border);
 }
 .theme-item {
   user-select: none;
@@ -91,7 +76,7 @@ const { model } = defineProps<{ model: Theme }>();
 }
 .theme-playground {
   grid-column: 1 / 3;
-  border: 1px solid orange;
+  border: 1px solid var(--view-border);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -99,6 +84,7 @@ const { model } = defineProps<{ model: Theme }>();
 .theme-control {
   width: 50%;
   height: 50%;
+  margin: 1em;
   display: flex;
   align-items: center;
   justify-content: center;

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type Controls } from '@/modules/controls/model';
+import { type Controls } from './controls';
 defineProps<{ model: Controls }>();
 </script>
 
@@ -9,7 +9,7 @@ defineProps<{ model: Controls }>();
     <div>
       <ui-button
         v-model="model.popup"
-        class="btn"
+        class="btn m-btn"
         :disabled="model.popup"
         toggle
       >
@@ -21,12 +21,8 @@ defineProps<{ model: Controls }>();
           v-model="model.popup"
           class="popup-content"
         >
-          <p>
-            Popup is persistent until it loses focus. If you want popup to be closed when some
-            element inside is clicked, add 'action' class to this element, like it is done for these
-            buttons:
-          </p>
-          <div>
+          <lorem-view :paragraphs="1" />
+          <div class="flex gap-05">
             <ui-button
               class="btn round"
               @click="() => { close(); model.click('ok'); }"
@@ -184,18 +180,16 @@ defineProps<{ model: Controls }>();
     <!-- accordions -->
     <div>
       <div class="expand-header">
-        <div>
-          Expand, paragraphs:
-          <ui-button
-            v-for="(item, i) in model.paragraphs"
-            :key="i"
-            v-model="model.lorem.paragraphs"
-            class="btn round"
-            :toggle="[item]"
-          >
-            {{ item }}
-          </ui-button>
-        </div>
+        <span>Expand, paragraphs:</span>
+        <ui-button
+          v-for="(item, i) in model.paragraphs"
+          :key="i"
+          v-model="model.lorem.paragraphs"
+          class="btn round small"
+          :toggle="[item]"
+        >
+          {{ item }}
+        </ui-button>
         <div class="flex-right">
           <ui-button
             v-model="model.expanded"
@@ -318,6 +312,7 @@ defineProps<{ model: Controls }>();
 
 .expand-header {
   display: flex;
+  gap: 0.5em;
   align-items: center;
   padding: 2px 2px 2px 0.5em;
   background-color: var(--bg);
@@ -362,5 +357,13 @@ defineProps<{ model: Controls }>();
 
 .icon-content:hover {
   color: red;
+}
+
+.btn.small {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 </style>

@@ -43,8 +43,6 @@
   --view-shadow: 0 0 50px rgb(0 0 0 / 0.5);
   --view-border-radius: 0.5em;
   --popup-shadow: 0 0 10px rgb(0 0 0 / 0.5);
-
-  --shaft-shadow: drop-shadow(0 0 0.1px black);
 }
 
 *,
@@ -180,6 +178,18 @@ p {
 
 .flex-right {
   margin-left: auto;
+}
+
+.align-center {
+  align-items: center;
+}
+
+.gap-05 {
+  gap: 0.5em;
+}
+
+.m-btn {
+  margin: 0.375em 0.5em;
 }
 
 .m-1 {

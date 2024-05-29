@@ -24,7 +24,7 @@ defineProps<{ model: App }>();
             Draggable/resizable
           </div>
           <div class="dlg-content">
-            <lorem-view />
+            <responsive-view :model="model.layout" />
           </div>
           <div class="dlg-footer">
             <ui-button
@@ -121,7 +121,6 @@ defineProps<{ model: App }>();
   flex-direction: column;
   pointer-events: none;
   background-color: var(--view-bg);
-  border: 1px solid var(--view-border);
 }
 
 .dlg-header,

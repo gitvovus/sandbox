@@ -5,7 +5,7 @@ import { allPropsExist, hexByte, stringify } from '@/modules/theme/properties/li
 
 export class Color implements PropertyBase {
   readonly key = Symbol();
-  readonly component = 'color-picker';
+  readonly component = 'color-editor';
   readonly name: string;
 
   readonly #r = ref(0);

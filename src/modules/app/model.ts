@@ -1,6 +1,6 @@
 import { ref } from 'vue';
 
-import { Controls } from '@/modules/controls/model';
+import { Controls } from '@/modules/controls/controls';
 import { Dialog } from '@/modules/dialog/model';
 // import { GearBox } from '@/modules/gear-box/model';
 // import { Worker } from '@/modules/worker/model';
@@ -10,6 +10,7 @@ import { ControlsSandbox } from '@/modules/controls-sandbox/model';
 // import { BicubicDemo } from '@/modules/bicubic-demo/model';
 import { ViewModel } from '@/modules/view-model';
 import { Theme } from '@/modules/theme/model';
+import { Responsive } from '@/modules/responsive/model';
 
 export const enum Align {
   LEFT,
@@ -33,6 +34,7 @@ export class App extends ViewModel {
   readonly #pageIndex = ref(this.pages.length - 1);
 
   readonly dialog = new Dialog({ resizable: true });
+  readonly layout = new Responsive();
 
   constructor() {
     super('app-view');

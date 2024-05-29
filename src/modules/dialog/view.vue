@@ -68,10 +68,7 @@ onBeforeUnmount(() => model.unmount());
 .dialog-layout {
   display: grid;
   position: absolute;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
+  inset: 0;
   margin: calc(-1 * var(--dlg-resize));
   grid-template-columns: calc(var(--dlg-resize) * 2) auto calc(var(--dlg-resize) * 2);
   grid-template-rows: calc(var(--dlg-resize) * 2) auto calc(var(--dlg-resize) * 2);
@@ -81,7 +78,7 @@ onBeforeUnmount(() => model.unmount());
   z-index: 1;
   margin: calc(-1 * var(--dlg-resize));
   border-radius: var(--dlg-radius);
-  overflow: auto;
+  overflow: hidden;
   cursor: auto;
 }
 
