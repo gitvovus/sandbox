@@ -112,7 +112,7 @@ export class Mat {
   }
 
   toCss() {
-    return `matrix(${this.elements.join(', ')})`;
+    return `matrix(${this.elements.join(' ')})`;
   }
 }
 

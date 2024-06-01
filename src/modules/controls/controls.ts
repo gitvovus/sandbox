@@ -8,7 +8,7 @@ export class Controls extends ViewModel {
   readonly paragraphs = [1, 2, 3, 4];
 
   // buttons
-  readonly #showButtons = ref(false);
+  readonly #showButtons = ref(true);
   readonly #selectedIndex = ref(3);
   readonly radioItems = shallowReactive(
     [...Array(4)].map((item, i) => ({

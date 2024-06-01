@@ -172,7 +172,7 @@ p {
   display: flex;
 }
 
-.column {
+.col {
   flex-direction: column;
 }
 
@@ -198,6 +198,10 @@ p {
 
 .p-1 {
   padding: 1em;
+}
+
+.p-05 {
+  padding: 0.5em;
 }
 
 .no-mouse {

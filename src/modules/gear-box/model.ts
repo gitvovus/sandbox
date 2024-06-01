@@ -1,6 +1,6 @@
 import { Animation } from '@/lib/animation';
 import { Vec, distance } from '@/lib/bi';
-import { v2 } from '@/lib/helpers';
+// import { v2 } from '@/lib/helpers';
 import { Item } from '@/lib/reactive';
 import { Disposable, Mouse, clamp, onElementEvent, time } from '@/lib/std';
 import { drawBase, drawShaft } from '@/modules/gear-box/lib/drawings';
@@ -11,14 +11,11 @@ import { Solver } from '@/modules/gear-box/lib/solver';
 import { Camera } from '@/lib/svg/camera';
 import { Controller, Gesture } from '@/lib/svg/controller';
 import { prettyGrid } from '@/lib/svg/utils';
-import { type IViewModel } from '@/modules/view-model';
+import { ViewModel } from '@/modules/view-model';
 
-// TODO: extend ViewModel
-export class GearBox extends Disposable implements IViewModel {
-  readonly component = 'gear-box-view';
-  readonly key = Symbol();
-
-  readonly #scene = new Scene('gb', 36.8, 36.8, 3, 0.25, true);
+export class GearBox extends ViewModel {
+  readonly #mounted = new Disposable();
+  readonly #scene = new Scene('gb', 36.8, 36.8, 3, 0.25, false);
   readonly #camera = new Camera({ scale: new Vec(1, -1) });
   readonly #controller = new Controller(this.#scene.root, this.#scene.content, this.#camera, {
     minZoom: 0.5,
@@ -68,7 +65,7 @@ export class GearBox extends Disposable implements IViewModel {
   #selected?: Gear;
 
   constructor() {
-    super();
+    super('gear-box-view');
     this.#controller.resize(this.#scene.width, this.#scene.height);
     this.#createShapes();
     this.#createStatic();
@@ -80,7 +77,7 @@ export class GearBox extends Disposable implements IViewModel {
   }
 
   mount(element: HTMLElement) {
-    this.add(
+    this.#mounted.add(
       onElementEvent(element, 'pointerdown', this.#pick),
       onElementEvent(element, 'pointermove', this.#drag),
       onElementEvent(element, 'pointerup', this.#drop),
@@ -89,18 +86,19 @@ export class GearBox extends Disposable implements IViewModel {
       () => this.#controller.dispose(),
     );
     this.#controller.mount(element);
-    this.check();
+    // this.check();
   }
 
   unmount() {
-    this.dispose();
+    this.#mounted.dispose();
   }
 
   test() {
-    const c = this.#camera;
-    const d = c.transform.decompose();
-    console.log(`original:\np: ${v2(c.position)}, r: ${c.rotation}, s: ${v2(c.scale)}`);
-    console.log(`decomposed:\np: ${v2(d.translation)}, r: ${d.rotation}, s: ${v2(d.scale)}`);
+    // const c = this.#camera;
+    // const d = c.transform.decompose();
+    // console.log(`original:\np: ${v2(c.position)}, r: ${c.rotation}, s: ${v2(c.scale)}`);
+    // console.log(`decomposed:\np: ${v2(d.translation)}, r: ${d.rotation}, s: ${v2(d.scale)}`);
+    // this.#shafts[0].rotation = 0.1;
   }
 
   reset() {
@@ -233,7 +231,7 @@ export class GearBox extends Disposable implements IViewModel {
       gear.position = gear.defaultPosition;
     });
     level.connections.forEach(({ shaft, gear }) => (this.#shafts[shaft].actor = this.#gears[gear]));
-    this.check();
+    this.solve();
   }
 
   #load(level: LevelData) {

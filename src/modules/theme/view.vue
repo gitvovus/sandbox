@@ -95,6 +95,6 @@ const { model } = defineProps<{ model: Theme }>();
 .theme-footer {
   grid-column: 1 / 3;
   display: flex;
-  gap: 0.25em;
+  gap: 0.5em;
 }
 </style>

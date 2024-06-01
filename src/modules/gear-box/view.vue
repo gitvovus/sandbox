@@ -2,15 +2,15 @@
 import { onMounted, onBeforeUnmount, ref } from 'vue';
 import { type GearBox } from '@/modules/gear-box/model';
 
-const props = defineProps<{ model: GearBox }>();
+const { model } = defineProps<{ model: GearBox }>();
 const root = ref();
 
 onMounted(() => {
-  props.model.mount(root.value);
+  model.mount(root.value);
 });
 
 onBeforeUnmount(() => {
-  props.model.unmount();
+  model.unmount();
 });
 </script>
 
@@ -23,8 +23,7 @@ onBeforeUnmount(() => {
       class="overlay"
       :model="model.root"
     />
-    <div class="anchor top right flex">
-      <!-- <ui-button class="btn" @click.stop="model.test()">test</ui-button> -->
+    <div class="anchor top right flex gap-05 p-05">
       <ui-button
         class="btn"
         @click.stop="model.reset()"
@@ -72,7 +71,7 @@ onBeforeUnmount(() => {
 }
 
 .shaft {
-  filter: var(--shaft-shadow);
+  filter: drop-shadow(0 0 0.1px black);
 }
 
 .shaft.source {
@@ -91,6 +90,7 @@ onBeforeUnmount(() => {
 .stub {
   transition: all 0.15s ease-in-out;
   stroke: rgb(0 0 0 / 0.5);
+  filter: drop-shadow(0 0 0.25px rgb(0 0 0 / 0.75));
 }
 .gear.selected,
 .stub.selected {

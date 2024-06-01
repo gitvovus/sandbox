@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { type App, Align } from '@/modules/app/model';
+import { type AppModel, Align } from '@/modules/app/app-model';
 
-defineProps<{ model: App }>();
+defineProps<{ model: AppModel }>();
 </script>
 
 <template>

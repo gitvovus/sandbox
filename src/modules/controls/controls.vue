@@ -71,109 +71,113 @@ defineProps<{ model: Controls }>();
         </div>
       </div>
       <ui-collapse :expanded="model.showButtons">
-        <div class="m-1">
-          <input
-            type="text"
-            value="text"
-            style="width: 100px"
-          >
-          <ui-button
-            class="btn"
-            @click="model.click('focusable')"
-          >
-            focusable
-          </ui-button>
-          <ui-button
-            class="btn"
-            no-focus
-            tabindex="-1"
-            @click="model.click('non-focusable')"
-          >
-            non-focusable
-          </ui-button>
-          <ui-button
-            class="btn"
-            @click="model.click('focusable')"
-          >
-            focusable
-          </ui-button>
-        </div>
-        <div class="m-1">
-          <div>Radio (index): {{ model.selectedIndex }}</div>
-          <ui-button
-            v-for="(item, i) in model.checkboxes"
-            :key="`index[${i}]`"
-            v-model="model.selectedIndex"
-            class="btn round"
-            :toggle="[i]"
-          >
-            {{ `#${i}` }}
-          </ui-button>
-        </div>
-        <div class="m-1">
+        <div class="flex col gap-05 m-1">
+          <div class="flex gap-05">
+            <input
+              type="text"
+              value="text"
+              style="width: 100px"
+            >
+            <ui-button
+              class="btn"
+              @click="model.click('focusable')"
+            >
+              focusable
+            </ui-button>
+            <ui-button
+              class="btn"
+              no-focus
+              tabindex="-1"
+              @click="model.click('non-focusable')"
+            >
+              non-focusable
+            </ui-button>
+            <ui-button
+              class="btn"
+              @click="model.click('focusable')"
+            >
+              focusable
+            </ui-button>
+          </div>
+          <div>
+            Radio (index): {{ model.selectedIndex }}
+          </div>
+          <div class="flex gap-05">
+            <ui-button
+              v-for="(item, i) in model.checkboxes"
+              :key="`index[${i}]`"
+              v-model="model.selectedIndex"
+              class="btn round"
+              :toggle="[i]"
+            >
+              {{ `#${i}` }}
+            </ui-button>
+          </div>
           <div>
             Radio (object): { name: {{ model.selectedRadio.name }}, value:
             {{ model.selectedRadio.value }} }
           </div>
-          <ui-button
-            v-for="(item, i) in model.radioItems"
-            :key="`object[${i}]`"
-            v-model="model.selectedRadio"
-            class="btn round"
-            :toggle="[model.radioItems[i]]"
-          >
-            {{ `#${i}` }}
-          </ui-button>
-        </div>
-        <div class="m-1">
+          <div class="flex gap-05">
+            <ui-button
+              v-for="(item, i) in model.radioItems"
+              :key="`object[${i}]`"
+              v-model="model.selectedRadio"
+              class="btn round"
+              :toggle="[model.radioItems[i]]"
+            >
+              {{ `#${i}` }}
+            </ui-button>
+          </div>
           <div>
             Checkbox: [&nbsp;<span
               v-for="(item, i) in model.checkboxes"
               :key="i + 300"
             >{{ item }}&nbsp;</span>]
           </div>
-          <ui-button
-            v-for="(item, i) in model.checkboxes"
-            :key="`checkbox[${i}]`"
-            v-model="model.checkboxes[i]"
-            class="btn round"
-            toggle
-          >
-            {{ `#${i}` }}
-          </ui-button>
-        </div>
-        <div class="m-1">
+          <div class="flex gap-05">
+            <ui-button
+              v-for="(item, i) in model.checkboxes"
+              :key="`checkbox[${i}]`"
+              v-model="model.checkboxes[i]"
+              class="btn round"
+              toggle
+            >
+              {{ `#${i}` }}
+            </ui-button>
+          </div>
           <div>Push: {{ model.message }}</div>
-          <ui-button @click="model.click('unstyled')">
-            Unstyled
-          </ui-button>
-          <ui-button
-            class="btn"
-            @click="model.click('ok')"
-          >
-            Ok
-          </ui-button>
-          <ui-button
-            class="btn"
-            @click="model.click('cancel')"
-          >
-            Cancel
-          </ui-button>
-          <ui-button
-            class="btn"
-            disabled
-            @click="model.click('disabled')"
-          >
-            Disabled
-          </ui-button>
-          <ui-button
-            v-model="model.selectedRadio"
-            class="btn"
-            :toggle="[model.radioItems[0]]"
-            disabled
-          >
-            Disabled
-          </ui-button>
+          <div class="flex gap-05">
+            <ui-button @click="model.click('unstyled')">
+              Unstyled
+            </ui-button>
+            <ui-button
+              class="btn"
+              @click="model.click('ok')"
+            >
+              Ok
+            </ui-button>
+            <ui-button
+              class="btn"
+              @click="model.click('cancel')"
+            >
+              Cancel
+            </ui-button>
+            <ui-button
+              class="btn"
+              disabled
+              @click="model.click('disabled')"
+            >
+              Disabled
+            </ui-button>
+            <ui-button
+              v-model="model.selectedRadio"
+              class="btn"
+              :toggle="[model.radioItems[0]]"
+              disabled
+            >
+              Disabled
+            </ui-button>
+          </div>
         </div>
       </ui-collapse>
     </div>

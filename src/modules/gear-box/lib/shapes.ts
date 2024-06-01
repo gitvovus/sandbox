@@ -83,12 +83,12 @@ export class Shaft implements Rotor {
   constructor(type: RotorType, scene: Scene, back: Item, base: Item, shaft: Item, index: number) {
     this.#type = type;
     this.#scene = scene;
-    this.#back = useT(back, { id: `ref:shaft-back:${index}`, class: `shaft-back ${type}` });
+    this.#back = useT(back, { class: `shaft-back ${type}` });
     if (type !== 'source') {
       this.#back.attributes.class += ' unpowered';
     }
-    this.#base = useT(base, { id: `ref:shaft-base:${index}`, class: `shaft-base` });
-    this.#shaft = useT(shaft, { id: `ref:shaft:${index}`, class: `shaft ${type}` });
+    this.#base = useT(base, { class: `shaft-base` });
+    this.#shaft = useT(shaft, { class: `shaft ${type}` });
   }
 
   get position() {
@@ -159,16 +159,14 @@ export class Shaft implements Rotor {
   }
 
   addToScene() {
-    this.#scene.addDefs(this.#back, this.#base, this.#shaft);
-    this.#scene.addToGround(use(this.#back));
-    this.#scene.addToGround(use(this.#base));
-    this.#scene.addToGround(use(this.#shaft), false);
+    this.#scene.addToGround(this.#back);
+    this.#scene.addToGround(this.#base);
+    this.#scene.addToGround(this.#shaft, false);
   }
 
   removeFromScene() {
     [this.#back, this.#base, this.#shaft].forEach((item) => {
       this.#scene.removeRefs(item.attributes.href!);
-      this.#scene.removeDef(item.attributes.id!);
     });
   }
 }

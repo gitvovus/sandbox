@@ -18,7 +18,7 @@ export const enum Align {
   RIGHT,
 }
 
-export class App extends ViewModel {
+export class AppModel extends ViewModel {
   readonly pages: ViewModel[] = [
     new Logo(),
     // new BicubicDemo(),
@@ -31,7 +31,7 @@ export class App extends ViewModel {
   ];
 
   readonly #toolBarAlign = ref(Align.CENTER);
-  readonly #pageIndex = ref(this.pages.length - 1);
+  readonly #pageIndex = ref(1);
 
   readonly dialog = new Dialog({ resizable: true });
   readonly layout = new Responsive();
