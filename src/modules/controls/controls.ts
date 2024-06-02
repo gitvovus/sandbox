@@ -8,7 +8,7 @@ export class Controls extends ViewModel {
   readonly paragraphs = [1, 2, 3, 4];
 
   // buttons
-  readonly #showButtons = ref(true);
+  readonly #showButtons = ref(false);
   readonly #selectedIndex = ref(3);
   readonly radioItems = shallowReactive(
     [...Array(4)].map((item, i) => ({
@@ -28,9 +28,12 @@ export class Controls extends ViewModel {
   readonly #expanded = ref(false);
   readonly #expandedGroup = ref<number | undefined>();
 
+  // icons
+  readonly #showIcons = ref(false);
+
   // range
   readonly #showRange = ref(true);
-  readonly #rangeValue = ref(25);
+  readonly #rangeValue = ref(24);
   readonly rangeMin = 0;
   readonly rangeMax = 100;
   readonly rangeStep = 2;
@@ -105,6 +108,14 @@ export class Controls extends ViewModel {
 
   set expandedGroup(value) {
     this.#expandedGroup.value = value;
+  }
+
+  get showIcons() {
+    return this.#showIcons.value;
+  }
+
+  set showIcons(value) {
+    this.#showIcons.value = value;
   }
 
   get showRange() {

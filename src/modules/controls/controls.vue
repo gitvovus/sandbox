@@ -37,7 +37,7 @@ defineProps<{ model: Controls }>();
             </ui-button>
           </div>
           <div class="h-separator" />
-          <div class="expand-header">
+          <div class="details-header">
             <input
               v-model="model.text"
               type="text"
@@ -56,22 +56,19 @@ defineProps<{ model: Controls }>();
         </ui-popup>
       </div>
     </div>
+
     <!-- buttons -->
-    <div>
-      <div class="expand-header">
-        Buttons:
-        <div class="flex-right">
-          <ui-button
-            v-model="model.showButtons"
-            class="btn round iconic"
-            toggle
-          >
-            <ui-icon :class="['icon-gt', model.showButtons ? 'r90' : '']" />
-          </ui-button>
+    <ui-details v-model="model.showButtons">
+      <template #header="{expanded}">
+        <div class="details-header">
+          Buttons:
+          <div class="flex-right">
+            <ui-icon :class="['icon-gt', { r90: expanded }]" />
+          </div>
         </div>
-      </div>
-      <ui-collapse :expanded="model.showButtons">
-        <div class="flex col gap-05 m-1">
+      </template>
+      <template #content>
+        <div class="flex col gap-05 p-1">
           <div class="flex gap-05">
             <input
               type="text"
@@ -179,130 +176,146 @@ defineProps<{ model: Controls }>();
             </ui-button>
           </div>
         </div>
-      </ui-collapse>
-    </div>
-    <!-- accordions -->
-    <div>
-      <div class="expand-header">
-        <span>Expand, paragraphs:</span>
-        <ui-button
-          v-for="(item, i) in model.paragraphs"
-          :key="i"
-          v-model="model.lorem.paragraphs"
-          class="btn round small"
-          :toggle="[item]"
-        >
-          {{ item }}
-        </ui-button>
-        <div class="flex-right">
+      </template>
+    </ui-details>
+
+    <!-- dynamic content -->
+    <ui-details v-model="model.expanded">
+      <template #header="{expanded}">
+        <div class="details-header">
+          Expand, paragraphs:
           <ui-button
-            v-model="model.expanded"
-            class="btn round iconic"
-            toggle
+            v-for="(item, i) in model.paragraphs"
+            :key="i"
+            v-model="model.lorem.paragraphs"
+            v-click-stop
+            class="btn round small"
+            :toggle="[item]"
           >
-            <ui-icon :class="['icon-gt', model.expanded ? 'r90' : '']" />
+            {{ item }}
           </ui-button>
-        </div>
-      </div>
-      <ui-collapse :expanded="model.expanded">
-        <lorem-view
-          :model="model.lorem"
-          class="content"
-        />
-      </ui-collapse>
-      <template
-        v-for="(item, i) in 3"
-        :key="`lorem[${i}]`"
-      >
-        <div class="expand-header">
-          <div>Expand (radio #{{ i }}):</div>
           <div class="flex-right">
-            <ui-button
-              v-model="model.expandedGroup"
-              class="btn round iconic"
-              :toggle="[i, undefined]"
-            >
-              <ui-icon :class="['icon-gt', model.expandedGroup === i ? 'r90' : '']" />
-            </ui-button>
+            <ui-icon :class="['icon-gt', { r90: expanded }]" />
           </div>
         </div>
-        <ui-collapse :expanded="model.expandedGroup === i">
-          <lorem-view
-            :paragraphs="1"
-            class="content"
-          />
-        </ui-collapse>
       </template>
-    </div>
-    <!-- icons -->
-    <!-- <div class="icons">
-      <div v-for="item in ['down', 'gt', 'lt', 'up']" :key="item" class="icon-content">
-        <ui-icon :class="`icon-${item}`" />
-      </div>
-    </div>
-    <p class="inline-icons">
-      Inline
-      <ui-icon class="inline icon-down" />
-      <ui-icon class="inline icon-gt" />
-      <ui-icon class="inline icon-quad" />
-      <ui-icon class="inline icon-lt" />
-      <ui-icon class="inline icon-up" />
-      icons
-    </p> -->
-    <!-- range -->
-    <div>
-      <div class="expand-header">
-        Range:
-        <div class="flex-right">
-          <ui-button
-            v-model="model.showRange"
-            class="btn round iconic"
-            toggle
-          >
-            <ui-icon :class="['icon-gt', model.showRange ? 'r90' : '']" />
-          </ui-button>
+      <template #content>
+        <div class="p-1">
+          <lorem-view :model="model.lorem" />
         </div>
-      </div>
-      <ui-collapse :expanded="model.showRange">
+      </template>
+    </ui-details>
+
+    <!-- radio details -->
+    <ui-details v-for="(item, i) in 3" :key="i" v-model="model.expandedGroup" :toggle="[i]">
+      <template #header="{expanded}">
+        <div class="details-header">
+          Expand (radio #{{ i }}):
+          <div class="flex-right">
+            <ui-icon :class="['icon-gt', { r90: expanded }]" />
+          </div>
+        </div>
+      </template>
+      <template #content>
+        <div class="p-1">
+          <lorem-view :paragraphs="1" />
+        </div>
+      </template>
+    </ui-details>
+
+    <!-- icons -->
+    <ui-details v-model="model.showIcons">
+      <template #header="{expanded}">
+        <div class="details-header">
+          Icons
+          <div class="flex-right">
+            <ui-icon :class="['icon-gt', { r90: expanded }]" />
+          </div>
+        </div>
+      </template>
+      <template #content>
+        <div class="p-1">
+          <div class="icons">
+            <div v-for="item in ['lt', 'gt', 'up', 'down']" :key="item" class="icon-content">
+              <ui-icon :class="`icon-${item}`" />
+            </div>
+          </div>
+          <div v-for="i in 4" :key="i" class="inline-icons" :style="{fontSize: `${i}em`}">
+            <span>
+              Inline
+              <ui-icon class="inline icon-lt" />
+              <ui-icon class="inline icon-gt" />
+              <ui-icon class="inline icon-quad" />
+              <ui-icon class="inline icon-up" />
+              <ui-icon class="inline icon-down" />
+              icons
+            </span>
+          </div>
+        </div>
+      </template>
+    </ui-details>
+
+    <!-- range -->
+    <ui-details v-model="model.showRange">
+      <template #header="{expanded}">
+        <div class="details-header">
+          Range:
+          <div class="flex-right">
+            <ui-icon :class="['icon-gt', { r90: expanded }]" />
+          </div>
+        </div>
+      </template>
+      <template #content>
         <div class="ranges">
-          <span style="width: 2em">
-            {{ model.rangeValue }}
-          </span>
           <ui-range
             v-model="model.rangeValue"
-            class="inline-range"
+            class="v-range"
             :min="model.rangeMin"
             :max="model.rangeMax"
             :step="model.rangeStep"
           />
-          <input
-            v-model.number="model.rangeValue"
-            type="range"
+          <span />
+          <div class="flex align-center justify-center">
+            {{ model.rangeValue }}
+          </div>
+          <ui-range
+            v-model="model.rangeValue"
+            class="h-range"
             :min="model.rangeMin"
             :max="model.rangeMax"
             :step="model.rangeStep"
-          >
+          />
         </div>
-      </ui-collapse>
-    </div>
+      </template>
+    </ui-details>
   </div>
 </template>
 
 <style lang="scss">
+$w: 12em;
+$h: 2em;
 .ranges {
-  display: flex;
-  margin: 1em;
-  gap: 1em;
-  height: 2em;
+  display: grid;
+  grid-template-columns: $h $w;
+  grid-template-rows: $w $h;
+  padding: 1em;
+  gap: 0.5em;
 }
-.inline-range {
+.v-range {
+  width: $h;
+  height: $w;
+  background-color: darkslategrey;
+}
+.h-range {
   width: 12em;
   height: 2em;
+  background-color: darkslategrey;
 }
 
 .inline-icons {
   font-size: 4em;
   background-color: darkslategrey;
+  padding: 0 1rem;
 }
 
 .inline.icon {
@@ -314,11 +327,11 @@ defineProps<{ model: Controls }>();
   overflow: auto;
 }
 
-.expand-header {
+.details-header {
   display: flex;
   gap: 0.5em;
   align-items: center;
-  padding: 2px 2px 2px 0.5em;
+  padding: 0.125em 0.5em;
   background-color: var(--bg);
 }
 
@@ -335,17 +348,11 @@ defineProps<{ model: Controls }>();
   padding: 0 0.5em;
 }
 
-.content {
-  padding: 0 0.5em;
-}
-
 .icons {
   display: flex;
   justify-content: center;
   align-items: center;
-  border: 1px solid rgb(255 255 255 / 0.0625);
   border-radius: 0.25rem;
-  margin: 1em;
   padding: 1em;
   gap: 0.5em;
 }

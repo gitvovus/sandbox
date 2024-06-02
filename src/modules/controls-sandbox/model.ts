@@ -81,7 +81,7 @@ export class ControlsSandbox extends ViewModel {
 
   #promise?: ExplicitPromise<number>;
 
-  async startTest() {
+  async start() {
     try {
       this.#promise = wait(3000);
       console.log('started');
@@ -93,11 +93,11 @@ export class ControlsSandbox extends ViewModel {
     }
   }
 
-  resolveTest() {
+  resolve() {
     this.#promise?.resolve(69);
   }
 
-  rejectTest() {
+  reject() {
     this.#promise?.reject('by user');
   }
 }

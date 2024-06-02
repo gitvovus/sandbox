@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref, watchEffect } from 'vue';
-import { type Disposer } from '@/lib/std';
+import { Disposable } from '@/lib/std';
 
 const props = defineProps<{ expanded: boolean }>();
 const root = ref<HTMLElement>();
 const content = ref<HTMLElement>();
 
-let disposer: Disposer | undefined;
+const mounted = new Disposable();
 let resizer: ResizeObserver | undefined;
 
 onMounted(() => {
@@ -14,15 +14,14 @@ onMounted(() => {
   resizer = new ResizeObserver(() => {
     root.value!.style.height = content.value!.scrollHeight + 'px';
   });
-  disposer = watchEffect(() => apply(props.expanded));
+  mounted.add(watchEffect(() => apply(props.expanded)));
 });
 
 onBeforeUnmount(() => {
   root.value!.classList.remove('mounted');
   resizer!.disconnect();
   resizer = undefined;
-  disposer!();
-  disposer = undefined;
+  mounted.dispose();
 });
 
 function apply(expanded: boolean) {

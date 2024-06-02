@@ -5,7 +5,8 @@ const { model } = defineProps<{ model: ControlsSandbox }>();
 </script>
 
 <template>
-  <div class="view test-view">
+  <div class="view test-view flex col gap-05">
+    <!-- grid -->
     <div class="test-grid">
       <div class="test-items-grid">
         <template
@@ -41,30 +42,21 @@ const { model } = defineProps<{ model: ControlsSandbox }>();
         </test-container>
       </div>
     </div>
-    <ui-button
-      class="btn"
-      @click="model.test()"
-    >
-      test
-    </ui-button>
-    <ui-button
-      class="btn"
-      @click="model.startTest()"
-    >
-      start
-    </ui-button>
-    <ui-button
-      class="btn"
-      @click="model.resolveTest()"
-    >
-      resolve
-    </ui-button>
-    <ui-button
-      class="btn"
-      @click="model.rejectTest()"
-    >
-      reject
-    </ui-button>
+    <!-- buttons -->
+    <div class="flex gap-05">
+      <ui-button class="btn" @click="model.test()">
+        test
+      </ui-button>
+      <ui-button class="btn" @click="model.start()">
+        start
+      </ui-button>
+      <ui-button class="btn" @click="model.resolve()">
+        resolve
+      </ui-button>
+      <ui-button class="btn" @click="model.reject()">
+        reject
+      </ui-button>
+    </div>
   </div>
 </template>
 

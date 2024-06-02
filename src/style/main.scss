@@ -184,12 +184,23 @@ p {
   align-items: center;
 }
 
+.justify-center {
+  justify-content: center;
+}
+
 .gap-05 {
   gap: 0.5em;
+}
+.gap-1 {
+  gap: 1em;
 }
 
 .m-btn {
   margin: 0.375em 0.5em;
+}
+
+.m-05 {
+  margin: 0.5em;
 }
 
 .m-1 {

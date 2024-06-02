@@ -10,6 +10,9 @@ import UiPopup from '@/ui/popup.vue';
 import UiRange from '@/ui/range.vue';
 import UiTestItem from '@/ui/test-item.vue';
 
+// directives
+import { vClickStop } from '@/ui/directives';
+
 // property editors
 import ColorEditor from '@/modules/theme/editors/color.vue';
 
@@ -47,6 +50,8 @@ export class Application {
       .component('ui-popup', UiPopup)
       .component('ui-range', UiRange)
       .component('ui-test-item', UiTestItem)
+      // directives
+      .directive('click-stop', vClickStop)
       // views
       .component('bicubic-demo-view', BicubicDemo)
       .component('controls-view', Controls)

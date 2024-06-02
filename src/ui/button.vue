@@ -112,20 +112,20 @@ function focus(e: FocusEvent) {
 }
 
 .btn.iconic {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   width: 24px;
   height: 24px;
-  margin: 2px;
-  padding: 3px;
-  font-size: 16px;
+  font-size: 1em;
+  padding: unset;
 }
 
 .btn.iconic:hover {
-  padding: 1px;
-  font-size: 20px;
+  font-size: 1.25em;
 }
 
 .btn.iconic:active:hover {
-  padding: 2px;
-  font-size: 18px;
+  font-size: 1.125em;
 }
 </style>
