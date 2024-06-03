@@ -6,6 +6,7 @@ type Props = {
   paragraphs?: number;
 };
 
+// TODO: remove cringe
 defineProps<Props>();
 </script>
 

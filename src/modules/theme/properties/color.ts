@@ -69,7 +69,6 @@ export class Color implements PropertyBase {
   }
 
   load() {
-    localStorage.getItem(this.name);
     const data = JSON.parse(localStorage.getItem(this.name) ?? '{}');
     if (allPropsExist(data, ['r', 'g', 'b', 'a'])) {
       this.r = Number(data.r);

@@ -84,6 +84,14 @@ body {
   background-image: url(@/assets/bg.png);
 }
 
+.code {
+  font-family: 'Courier New', Courier, monospace;
+}
+
+.no-resize {
+  resize: none;
+}
+
 body,
 dialog {
   color: var(--tx);

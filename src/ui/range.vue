@@ -3,6 +3,7 @@ import { computed, ref } from 'vue';
 
 import { useRange } from '@/lib/use';
 
+// TODO: use defineModel
 const props = withDefaults(defineProps<{
   modelValue: number;
   min?: number;

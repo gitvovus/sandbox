@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { type Controls } from './controls';
-defineProps<{ model: Controls }>();
+const { model } = defineProps<{ model: Controls }>();
 </script>
 
 <template>

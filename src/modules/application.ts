@@ -15,6 +15,7 @@ import { vClickStop } from '@/ui/directives';
 
 // property editors
 import ColorEditor from '@/modules/theme/editors/color.vue';
+import TextEditor from '@/modules/theme/editors/text.vue';
 
 // views
 import AppView from '@/modules/app/app-view.vue';
@@ -27,7 +28,7 @@ import Logo from '@/modules/logo/view.vue';
 import Lorem from '@/modules/lorem/view.vue';
 import ResponsiveView from '@/modules/responsive/view.vue';
 import SvgSandbox from '@/modules/svg-sandbox/view.vue';
-import ThemeView from '@/modules/theme/view.vue';
+import ThemeView from '@/modules/theme/theme-view.vue';
 import Worker from '@/modules/worker/view.vue';
 
 import { AppModel } from '@/modules/app/app-model';
@@ -66,6 +67,7 @@ export class Application {
       .component('worker-view', Worker)
       // properties
       .component('color-editor', ColorEditor)
+      .component('text-editor', TextEditor)
       // test
       .component('test-container', TestContainer)
       .component('test-header', TestHeader)

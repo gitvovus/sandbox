@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type Color } from '@/modules/theme/properties/color';
+import { type Color } from '../properties/color';
 
 const { model } = defineProps<{ model: Color }>();
 </script>

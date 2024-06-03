@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type Theme } from './model';
+import { type Theme } from './theme-model';
 
 const { model } = defineProps<{ model: Theme }>();
 </script>
@@ -8,7 +8,11 @@ const { model } = defineProps<{ model: Theme }>();
   <div class="view theme-view">
     <div class="theme-grid">
       <div class="theme-editor">
-        <color-editor v-if="model.selectedColor" :model="model.selectedColor" />
+        <component
+          :is="model.selectedProperty.component"
+          v-if="model.selectedProperty"
+          :model="model.selectedProperty"
+        />
       </div>
       <div class="theme-list">
         <template
@@ -16,14 +20,14 @@ const { model } = defineProps<{ model: Theme }>();
           :key="item.name"
         >
           <div
-            :class="['theme-item', {'selected': model.selectedColor === item}]"
-            @click="model.selectedColor = item"
+            :class="['theme-item', {'selected': model.selectedProperty === item}]"
+            @click="model.selectedProperty = item"
           >
             {{ item.name }}
           </div>
         </template>
       </div>
-      <div class="theme-playground">
+      <div class="theme-playground" :style="{ backgroundColor: model.property('background-color').toCss() }">
         <div
           class="theme-control"
           :style="model.style"
@@ -76,7 +80,6 @@ const { model } = defineProps<{ model: Theme }>();
 }
 .theme-playground {
   grid-column: 1 / 3;
-  border: 1px solid var(--view-border);
   display: flex;
   align-items: center;
   justify-content: center;

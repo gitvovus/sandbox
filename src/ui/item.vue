@@ -2,15 +2,15 @@
 import { onMounted, onBeforeUnmount, ref } from 'vue';
 import { type Item } from '@/lib/reactive';
 
-const props = defineProps<{ model: Item }>();
+const { model } = defineProps<{ model: Item }>();
 const root = ref();
 
 onMounted(() => {
-  props.model.mount(root.value);
+  model.mount(root.value);
 });
 
 onBeforeUnmount(() => {
-  props.model.unmount();
+  model.unmount();
 });
 </script>
 
