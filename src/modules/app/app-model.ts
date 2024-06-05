@@ -6,7 +6,7 @@ import { Dialog } from '@/modules/dialog/model';
 // import { Worker } from '@/modules/worker/model';
 import { Logo } from '@/modules/logo/model';
 // import { SvgSandbox } from '@/modules/svg-sandbox/model';
-import { ControlsSandbox } from '@/modules/controls-sandbox/model';
+import { SandboxModel } from '@/modules/sandbox/sandbox-model';
 // import { BicubicDemo } from '@/modules/bicubic-demo/model';
 import { ViewModel } from '@/modules/view-model';
 import { Theme } from '@/modules/theme/theme-model';
@@ -26,12 +26,12 @@ export class AppModel extends ViewModel {
     new Controls(),
     // new Worker(),
     // new SvgSandbox(),
-    new ControlsSandbox(),
+    new SandboxModel(),
     new Theme(),
   ];
 
   readonly #toolBarAlign = ref(Align.CENTER);
-  readonly #pageIndex = ref(3);
+  readonly #pageIndex = ref(1);
 
   readonly dialog = new Dialog({ resizable: true });
   readonly layout = new Responsive();

@@ -97,7 +97,7 @@ dialog {
   color: var(--tx);
 }
 
-input {
+.input {
   background: rgb(0 0 0 / 0.0625);
   border: none;
   border-bottom: 1px solid rgb(255 255 255 / 0.0625);
@@ -186,6 +186,10 @@ p {
 
 .flex-right {
   margin-left: auto;
+}
+
+.align-start {
+  align-items: start;
 }
 
 .align-center {

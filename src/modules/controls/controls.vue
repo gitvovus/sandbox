@@ -1,6 +1,18 @@
 <script setup lang="ts">
 import { type Controls } from './controls';
-const { model } = defineProps<{ model: Controls }>();
+defineProps<{ model: Controls }>();
+
+function str(s?: string) {
+  if (s === undefined) {
+    return '<undefined>';
+  }
+  else if (s === '') {
+    return '<empty>';
+  }
+  else {
+    return s;
+  }
+}
 </script>
 
 <template>
@@ -41,6 +53,7 @@ const { model } = defineProps<{ model: Controls }>();
             <input
               v-model="model.text"
               type="text"
+              class="input"
             >
             <ui-button
               v-for="(item, i) in model.paragraphs"
@@ -61,7 +74,7 @@ const { model } = defineProps<{ model: Controls }>();
     <ui-details v-model="model.showButtons">
       <template #header="{expanded}">
         <div class="details-header">
-          Buttons:
+          Buttons
           <div class="flex-right">
             <ui-icon :class="['icon-gt', { r90: expanded }]" />
           </div>
@@ -73,6 +86,7 @@ const { model } = defineProps<{ model: Controls }>();
             <input
               type="text"
               value="text"
+              class="input"
               style="width: 100px"
             >
             <ui-button
@@ -183,7 +197,7 @@ const { model } = defineProps<{ model: Controls }>();
     <ui-details v-model="model.expanded">
       <template #header="{expanded}">
         <div class="details-header">
-          Expand, paragraphs:
+          Expand, paragraphs
           <ui-button
             v-for="(item, i) in model.paragraphs"
             :key="i"
@@ -210,7 +224,7 @@ const { model } = defineProps<{ model: Controls }>();
     <ui-details v-for="(item, i) in 3" :key="i" v-model="model.expandedGroup" :toggle="[i]">
       <template #header="{expanded}">
         <div class="details-header">
-          Expand (radio #{{ i }}):
+          Expand (radio #{{ i }})
           <div class="flex-right">
             <ui-icon :class="['icon-gt', { r90: expanded }]" />
           </div>
@@ -259,7 +273,7 @@ const { model } = defineProps<{ model: Controls }>();
     <ui-details v-model="model.showRange">
       <template #header="{expanded}">
         <div class="details-header">
-          Range:
+          Range
           <div class="flex-right">
             <ui-icon :class="['icon-gt', { r90: expanded }]" />
           </div>
@@ -285,6 +299,26 @@ const { model } = defineProps<{ model: Controls }>();
             :max="model.rangeMax"
             :step="model.rangeStep"
           />
+        </div>
+      </template>
+    </ui-details>
+
+    <!-- inputs -->
+    <ui-details v-model="model.showInputs">
+      <template #header="{expanded}">
+        <div class="details-header">
+          Input
+          <div class="flex-right">
+            <ui-icon :class="['icon-gt', { r90: expanded }]" />
+          </div>
+        </div>
+      </template>
+      <template #content>
+        <div class="flex col gap-05 p-1 align-start">
+          <span> {{ str(model.email) }} </span>
+          <ui-input v-model="model.email" type="email" title="e-mail" />
+          <span> {{ str(model.password) }} </span>
+          <ui-input v-model="model.password" type="password" title="Password" />
         </div>
       </template>
     </ui-details>

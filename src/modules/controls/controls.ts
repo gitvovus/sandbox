@@ -32,11 +32,16 @@ export class Controls extends ViewModel {
   readonly #showIcons = ref(false);
 
   // range
-  readonly #showRange = ref(true);
+  readonly #showRange = ref(false);
   readonly #rangeValue = ref(24);
   readonly rangeMin = 0;
   readonly rangeMax = 100;
   readonly rangeStep = 2;
+
+  // input
+  readonly #showInputs = ref(true);
+  readonly #email = ref('email');
+  readonly #password = ref('password');
 
   constructor() {
     super('controls-view');
@@ -132,5 +137,29 @@ export class Controls extends ViewModel {
 
   set rangeValue(value) {
     this.#rangeValue.value = value;
+  }
+
+  get showInputs() {
+    return this.#showInputs.value;
+  }
+
+  set showInputs(value) {
+    this.#showInputs.value = value;
+  }
+
+  get email() {
+    return this.#email.value;
+  }
+
+  set email(value) {
+    this.#email.value = value;
+  }
+
+  get password() {
+    return this.#password.value;
+  }
+
+  set password(value) {
+    this.#password.value = value;
   }
 }

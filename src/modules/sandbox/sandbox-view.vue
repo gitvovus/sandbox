@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { ControlsSandbox } from '@/modules/controls-sandbox/model';
+import { SandboxModel } from '@/modules/sandbox/sandbox-model';
 
-const { model } = defineProps<{ model: ControlsSandbox }>();
+const { model } = defineProps<{ model: SandboxModel }>();
 </script>
 
 <template>
@@ -85,3 +85,4 @@ const { model } = defineProps<{ model: ControlsSandbox }>();
   background-color: rgba(0 0 0 / 0.25);
 }
 </style>
+@/modules/sandbox/model

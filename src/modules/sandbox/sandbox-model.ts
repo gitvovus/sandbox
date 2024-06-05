@@ -67,12 +67,22 @@ export class TestData {
   }
 }
 
-export class ControlsSandbox extends ViewModel {
+export class SandboxModel extends ViewModel {
   readonly #data = [new TestData('one', 1), new TestData('two', 2), new TestData('three', 3)];
   readonly single = new SingleSelection(this.#data);
 
+  readonly #hidden = ref(false);
+
   constructor() {
-    super('controls-sandbox-view');
+    super('sandbox-view');
+  }
+
+  get hidden() {
+    return this.#hidden.value;
+  }
+
+  set hidden(value) {
+    this.#hidden.value = value;
   }
 
   test() {

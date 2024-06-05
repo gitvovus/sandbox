@@ -5,6 +5,7 @@ import UiButton from '@/ui/button.vue';
 import UiCollapse from '@/ui/collapse.vue';
 import UiDetails from '@/ui/details.vue';
 import UiIcon from '@/ui/icon.vue';
+import UiInput from '@/ui/input.vue';
 import UiItem from '@/ui/item.vue';
 import UiPopup from '@/ui/popup.vue';
 import UiRange from '@/ui/range.vue';
@@ -21,7 +22,7 @@ import TextEditor from '@/modules/theme/editors/text.vue';
 import AppView from '@/modules/app/app-view.vue';
 import BicubicDemo from '@/modules/bicubic-demo/view.vue';
 import Controls from '@/modules/controls/controls.vue';
-import ControlsSandbox from '@/modules/controls-sandbox/view.vue';
+import SandboxView from '@/modules/sandbox/sandbox-view.vue';
 import Dialog from '@/modules/dialog/view.vue';
 import GearBox from '@/modules/gear-box/view.vue';
 import Logo from '@/modules/logo/view.vue';
@@ -33,7 +34,7 @@ import Worker from '@/modules/worker/view.vue';
 
 import { AppModel } from '@/modules/app/app-model';
 
-import { TestContainer, TestHeader, TestItem } from '@/modules/controls-sandbox/model';
+import { TestContainer, TestHeader, TestItem } from '@/modules/sandbox/sandbox-model';
 
 export class Application {
   readonly #appModel = new AppModel();
@@ -47,6 +48,7 @@ export class Application {
       .component('ui-collapse', UiCollapse)
       .component('ui-details', UiDetails)
       .component('ui-icon', UiIcon)
+      .component('ui-input', UiInput)
       .component('ui-item', UiItem)
       .component('ui-popup', UiPopup)
       .component('ui-range', UiRange)
@@ -56,7 +58,7 @@ export class Application {
       // views
       .component('bicubic-demo-view', BicubicDemo)
       .component('controls-view', Controls)
-      .component('controls-sandbox-view', ControlsSandbox)
+      .component('sandbox-view', SandboxView)
       .component('dialog-view', Dialog)
       .component('gear-box-view', GearBox)
       .component('logo-view', Logo)
