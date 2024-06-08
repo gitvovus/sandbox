@@ -1,0 +1,17 @@
+@each $i in (200, 300, 400, 500, 600, 700) {
+  @font-face {
+    font-family: 'Fira Sans';
+    src: url(@/assets/font/FiraSans-#{$i}.ttf);
+    font-weight: $i;
+    font-style: normal;
+  }
+
+  .fw-#{$i} { font-weight: $i; }
+}
+
+body {
+  font-family: 'Fira Sans', sans-serif;
+  font-size: 15px;
+  // font-family: 'Segoe UI', sans-serif;
+  // font-size: 16px;
+}

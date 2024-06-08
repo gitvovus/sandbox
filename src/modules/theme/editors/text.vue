@@ -8,7 +8,7 @@ const input = ref();
 
 function keydown(e: KeyboardEvent) {
   if (e.code === 'Enter') {
-    e.preventDefault();
+    // e.preventDefault();
     model.text = input.value.value;
   }
 }
@@ -18,12 +18,20 @@ function keydown(e: KeyboardEvent) {
   <textarea
     ref="input"
     v-model.lazy="model.text"
-    class="code no-resize"
+    class="text-editor code"
     type="text"
-    rows="2"
-    cols="48"
+    rows="5"
     maxlength="95"
     spellcheck="false"
     @keydown="keydown"
   />
 </template>
+
+<style lang="scss">
+.text-editor {
+  position: absolute;
+  inset: 0;
+  resize: none;
+  background-color: rgb(0 0 0 / 0.1);
+}
+</style>

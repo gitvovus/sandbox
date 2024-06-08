@@ -107,7 +107,7 @@ defineProps<{ model: Logo }>();
       <use
         id="logo-title"
         href="#logo"
-        fill="var(--tx)"
+        fill="#d0d0d0"
       />
       <!-- <animate href="#logo-title" attributeName="x" values="128;32" dur="0.75s" fill="freeze" />
       <animate href="#logo-vue" attributeName="x" values="64;32" begin="0.5s" dur="0.5s" fill="freeze" />

@@ -26,7 +26,7 @@ import SandboxView from '@/modules/sandbox/sandbox-view.vue';
 import Dialog from '@/modules/dialog/view.vue';
 import GearBox from '@/modules/gear-box/view.vue';
 import Logo from '@/modules/logo/view.vue';
-import Lorem from '@/modules/lorem/view.vue';
+import Lorem from '@/modules/lorem/lorem.vue';
 import ResponsiveView from '@/modules/responsive/view.vue';
 import SvgSandbox from '@/modules/svg-sandbox/view.vue';
 import ThemeView from '@/modules/theme/theme-view.vue';

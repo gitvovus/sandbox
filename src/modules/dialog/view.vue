@@ -52,12 +52,12 @@ onBeforeUnmount(() => model.unmount());
   border: unset;
   background: unset;
   overflow: unset;
-  border-radius: var(--dlg-radius);
+  border-radius: var(--radius-small);
   z-index: var(--z-dlg);
 
   &::backdrop {
     background-color: rgb(0 0 0 / 0);
-    transition: background-color var(--transition);
+    transition: background-color var(--fast);
   }
 
   &.show::backdrop {
@@ -69,15 +69,15 @@ onBeforeUnmount(() => model.unmount());
   display: grid;
   position: absolute;
   inset: 0;
-  margin: calc(-1 * var(--dlg-resize));
-  grid-template-columns: calc(var(--dlg-resize) * 2) auto calc(var(--dlg-resize) * 2);
-  grid-template-rows: calc(var(--dlg-resize) * 2) auto calc(var(--dlg-resize) * 2);
+  margin: calc(-1 * var(--radius-medium));
+  grid-template-columns: calc(var(--radius-medium) * 2) auto calc(var(--radius-medium) * 2);
+  grid-template-rows: calc(var(--radius-medium) * 2) auto calc(var(--radius-medium) * 2);
 }
 .dialog-content {
-  box-shadow: var(--dlg-shadow);
+  box-shadow: var(--shadow-large);
   z-index: 1;
-  margin: calc(-1 * var(--dlg-resize));
-  border-radius: var(--dlg-radius);
+  margin: calc(-1 * var(--radius-medium));
+  border-radius: var(--radius-small);
   overflow: hidden;
   cursor: auto;
 }
@@ -86,8 +86,8 @@ onBeforeUnmount(() => model.unmount());
   transform: scale(0.5);
   opacity: 0;
   transition:
-    transform var(--transition),
-    opacity var(--transition);
+    transform var(--fast),
+    opacity var(--fast);
 }
 
 .show.effect {

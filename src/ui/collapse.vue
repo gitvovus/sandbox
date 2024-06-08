@@ -55,7 +55,7 @@ function apply(expanded: boolean) {
 }
 
 .collapse.mounted {
-  transition: height var(--transition);
+  transition: height var(--fast);
 }
 
 .collapse-content {

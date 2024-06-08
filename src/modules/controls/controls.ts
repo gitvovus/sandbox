@@ -1,6 +1,6 @@
 import { ref, shallowReactive, shallowRef } from 'vue';
 
-import { Lorem } from '@/modules/lorem/model';
+import { Lorem } from '@/modules/lorem/lorem';
 import { ViewModel } from '@/modules/view-model';
 
 export class Controls extends ViewModel {
@@ -29,7 +29,7 @@ export class Controls extends ViewModel {
   readonly #expandedGroup = ref<number | undefined>();
 
   // icons
-  readonly #showIcons = ref(false);
+  readonly #showIcons = ref(true);
 
   // range
   readonly #showRange = ref(false);
@@ -39,7 +39,7 @@ export class Controls extends ViewModel {
   readonly rangeStep = 2;
 
   // input
-  readonly #showInputs = ref(true);
+  readonly #showInputs = ref(false);
   readonly #email = ref('email');
   readonly #password = ref('password');
 

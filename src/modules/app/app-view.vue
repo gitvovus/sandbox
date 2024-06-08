@@ -49,7 +49,7 @@ const { model } = defineProps<{ model: AppModel }>();
           class="btn round iconic"
           :toggle="[Align.LEFT, Align.CENTER]"
         >
-          <ui-icon class="icon-lt" />
+          <ui-icon class="lt" />
         </ui-button>
         <ui-button
           class="btn round"
@@ -81,7 +81,7 @@ const { model } = defineProps<{ model: AppModel }>();
           class="btn round iconic"
           :toggle="[Align.RIGHT, Align.CENTER]"
         >
-          <ui-icon class="icon-gt" />
+          <ui-icon class="gt" />
         </ui-button>
       </div>
       <div :class="['spacer', { collapsed: model.toolBarAlign === Align.RIGHT }]" />
@@ -103,9 +103,9 @@ const { model } = defineProps<{ model: AppModel }>();
   display: flex;
   align-items: center;
   border-radius: 4px 4px 0 0;
-  box-shadow: var(--shadow);
+  box-shadow: var(--shadow-small);
   pointer-events: auto;
-  background-color: var(--bg);
+  background-color: var(--bg-primary);
   padding: 0.33em 0.5em;
   gap: 0.5em;
 }
@@ -120,13 +120,13 @@ const { model } = defineProps<{ model: AppModel }>();
   display: flex;
   flex-direction: column;
   pointer-events: none;
-  background-color: var(--view-bg);
+  background-color: var(--bg-primary);
 }
 
 .dlg-header,
 .dlg-footer {
   display: flex;
-  margin: var(--dlg-margin);
+  margin: 1em;
   align-items: center;
   justify-content: center;
 }
@@ -136,12 +136,12 @@ const { model } = defineProps<{ model: AppModel }>();
   flex: 1 1 auto;
   overflow: auto;
   pointer-events: auto;
-  padding: 0 var(--dlg-margin);
+  padding: 0 1em;
 }
 
 .spacer {
   flex-grow: 1;
-  transition: flex-grow var(--transition);
+  transition: flex-grow var(--fast);
 }
 
 .spacer.collapsed {
@@ -154,6 +154,6 @@ const { model } = defineProps<{ model: AppModel }>();
 }
 .v-enter-active,
 .v-leave-active {
-  transition: opacity var(--page-transition);
+  transition: opacity var(--slow);
 }
 </style>

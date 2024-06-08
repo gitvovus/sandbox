@@ -1,37 +1,16 @@
 @use 'sass:map';
 
-$theme-light: (
-  //
-  bg-primary: #eee,
-  bg-header: #edc,
-  bg-header-secondary: #fed,
-  //
-  tx-primary: #222,
-  tx-header: #234,
-  tx-shadow: 0 0 0.25em white,
-  //
-  border-primary: #ddd,
-  //
-  link: #222,
-  link-hover: #000,
-  link-active: #f00,
-  link-exact-active: #f80
-);
+$rgb-dark: ();
 
 $theme-dark: (
-  //
-  bg-primary: #222,
-  bg-header: #234,
-  bg-header-secondary: #123,
-  //
-  tx-primary: #eee,
-  tx-header: #edc,
-  tx-shadow: 0 0 0.25em black,
-  //
-  border-primary: #333,
-  //
-  link: #eee,
-  link-hover: #fff,
-  link-active: #f00,
-  link-exact-active: #f80
+  bg-primary: #181c24,
+  bg-darker: rgb(0 0 0 / 0.2),
+  bg-lighter: rgb(255 255 255 / 0.125),
+  bg-overlay: rgb(9 30 51 / 0.75),
+  bg-shadow: rgb(0 0 0 / 0.5),
+
+  tx-primary: #a4acbe,
+
+  scroll-track: #1d242b,
+  scroll-thumb: #2a353f,
 );

@@ -13,6 +13,8 @@ function str(s?: string) {
     return s;
   }
 }
+
+const icons = ['check', 'lt', 'gt', 'up', 'down', 'menu'];
 </script>
 
 <template>
@@ -21,7 +23,7 @@ function str(s?: string) {
     <div>
       <ui-button
         v-model="model.popup"
-        class="btn m-btn"
+        class="btn m-05"
         :disabled="model.popup"
         toggle
       >
@@ -72,11 +74,11 @@ function str(s?: string) {
 
     <!-- buttons -->
     <ui-details v-model="model.showButtons">
-      <template #header="{expanded}">
+      <template #header="{ expanded }">
         <div class="details-header">
           Buttons
           <div class="flex-right">
-            <ui-icon :class="['icon-gt', { r90: expanded }]" />
+            <ui-icon :class="['gt', { r90: expanded }]" />
           </div>
         </div>
       </template>
@@ -195,7 +197,7 @@ function str(s?: string) {
 
     <!-- dynamic content -->
     <ui-details v-model="model.expanded">
-      <template #header="{expanded}">
+      <template #header="{ expanded }">
         <div class="details-header">
           Expand, paragraphs
           <ui-button
@@ -209,12 +211,12 @@ function str(s?: string) {
             {{ item }}
           </ui-button>
           <div class="flex-right">
-            <ui-icon :class="['icon-gt', { r90: expanded }]" />
+            <ui-icon :class="['gt', { r90: expanded }]" />
           </div>
         </div>
       </template>
       <template #content>
-        <div class="p-1">
+        <div class="px-1">
           <lorem-view :model="model.lorem" />
         </div>
       </template>
@@ -222,16 +224,16 @@ function str(s?: string) {
 
     <!-- radio details -->
     <ui-details v-for="(item, i) in 3" :key="i" v-model="model.expandedGroup" :toggle="[i]">
-      <template #header="{expanded}">
+      <template #header="{ expanded }">
         <div class="details-header">
           Expand (radio #{{ i }})
           <div class="flex-right">
-            <ui-icon :class="['icon-gt', { r90: expanded }]" />
+            <ui-icon :class="['gt', { r90: expanded }]" />
           </div>
         </div>
       </template>
       <template #content>
-        <div class="p-1">
+        <div class="px-1">
           <lorem-view :paragraphs="1" />
         </div>
       </template>
@@ -239,43 +241,42 @@ function str(s?: string) {
 
     <!-- icons -->
     <ui-details v-model="model.showIcons">
-      <template #header="{expanded}">
+      <template #header="{ expanded }">
         <div class="details-header">
           Icons
           <div class="flex-right">
-            <ui-icon :class="['icon-gt', { r90: expanded }]" />
+            <ui-icon :class="['gt', { r90: expanded }]" />
           </div>
         </div>
       </template>
       <template #content>
         <div class="p-1">
-          <div class="icons">
-            <div v-for="item in ['lt', 'gt', 'up', 'down']" :key="item" class="icon-content">
-              <ui-icon :class="`icon-${item}`" />
+          <div class="flex gap-05 my-05">
+            <div v-for="icon in icons" :key="icon" class="flex gap-05">
+              <div class="icon-content">
+                <ui-icon :class="['f-72', `${icon}`]" />
+                <div class="icon-name">
+                  {{ icon }}
+                </div>
+              </div>
             </div>
           </div>
-          <div v-for="i in 4" :key="i" class="inline-icons" :style="{fontSize: `${i}em`}">
-            <span>
-              Inline
-              <ui-icon class="inline icon-lt" />
-              <ui-icon class="inline icon-gt" />
-              <ui-icon class="inline icon-quad" />
-              <ui-icon class="inline icon-up" />
-              <ui-icon class="inline icon-down" />
-              icons
-            </span>
-          </div>
+          <span>
+            Inline
+            <ui-icon v-for="icon in icons" :key="icon" :class="['inline', icon]" />
+            icons
+          </span>
         </div>
       </template>
     </ui-details>
 
     <!-- range -->
     <ui-details v-model="model.showRange">
-      <template #header="{expanded}">
+      <template #header="{ expanded }">
         <div class="details-header">
           Range
           <div class="flex-right">
-            <ui-icon :class="['icon-gt', { r90: expanded }]" />
+            <ui-icon :class="['gt', { r90: expanded }]" />
           </div>
         </div>
       </template>
@@ -289,7 +290,7 @@ function str(s?: string) {
             :step="model.rangeStep"
           />
           <span />
-          <div class="flex align-center justify-center">
+          <div class="flex ai-center jc-center">
             {{ model.rangeValue }}
           </div>
           <ui-range
@@ -305,20 +306,20 @@ function str(s?: string) {
 
     <!-- inputs -->
     <ui-details v-model="model.showInputs">
-      <template #header="{expanded}">
+      <template #header="{ expanded }">
         <div class="details-header">
           Input
           <div class="flex-right">
-            <ui-icon :class="['icon-gt', { r90: expanded }]" />
+            <ui-icon :class="['gt', { r90: expanded }]" />
           </div>
         </div>
       </template>
       <template #content>
-        <div class="flex col gap-05 p-1 align-start">
+        <div class="flex col gap-05 p-1 ai-start">
           <span> {{ str(model.email) }} </span>
-          <ui-input v-model="model.email" type="email" title="e-mail" />
+          <ui-input v-model="model.email" type="email" title="e-mail" class="controls-input" />
           <span> {{ str(model.password) }} </span>
-          <ui-input v-model="model.password" type="password" title="Password" />
+          <ui-input v-model="model.password" type="password" title="Password" class="controls-input" />
         </div>
       </template>
     </ui-details>
@@ -346,12 +347,6 @@ $h: 2em;
   background-color: darkslategrey;
 }
 
-.inline-icons {
-  font-size: 4em;
-  background-color: darkslategrey;
-  padding: 0 1rem;
-}
-
 .inline.icon {
   display: inline flow-root;
   margin-bottom: -0.2em;
@@ -366,7 +361,8 @@ $h: 2em;
   gap: 0.5em;
   align-items: center;
   padding: 0.125em 0.5em;
-  background-color: var(--bg);
+  background-color: var(--bg-primary);
+  user-select: none;
 }
 
 .popup-anchor {
@@ -392,12 +388,18 @@ $h: 2em;
 }
 
 .icon-content {
-  width: 64px;
-  height: 64px;
-  color: green;
-  font-size: 64px;
-  background-color: rgb(0 0 0 / 0.25);
-  border-radius: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  background-color: rgb(0 0 0 / 0.125);
+  border-radius: 8px;
+}
+.icon-name {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
+  border-radius: 0 0 8px 8px;
+  background-color: rgb(255 255 255 / 0.125);
 }
 
 .icon-content:hover {
@@ -410,5 +412,10 @@ $h: 2em;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.controls-input {
+  background-color: var(--bg-primary);
+  color: orange;
 }
 </style>

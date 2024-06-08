@@ -17,12 +17,13 @@ export class Theme extends ViewModel {
 
   constructor() {
     super('theme-view');
-    this.colors.forEach((item) => {
+    this.properties.forEach((item) => {
       (this.style as any)[item.name] = computed(() => item.toCss());
     });
+    this.load();
   }
 
-  get colors() {
+  get properties() {
     return this.#properties.items;
   }
   get selectedProperty() {
@@ -33,7 +34,11 @@ export class Theme extends ViewModel {
   }
 
   property(name: string) {
-    return this.colors.find(item => (item.name === name))!;
+    return this.properties.find(item => (item.name === name))!;
+  }
+
+  css(name: string) {
+    return this.property(name).toCss();
   }
 
   clear() {
@@ -41,10 +46,10 @@ export class Theme extends ViewModel {
   }
 
   save() {
-    this.colors.forEach(item => item.save());
+    this.properties.forEach(item => item.save());
   }
 
   load() {
-    this.colors.forEach(item => item.load());
+    this.properties.forEach(item => item.load());
   }
 }

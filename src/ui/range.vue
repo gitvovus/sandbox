@@ -55,12 +55,12 @@ const percents = computed(() => (100 * (props.modelValue - props.min)) / (props.
 </template>
 
 <style lang="scss">
-$p: 1em;
-$v: 1.25em;
-$t: 0.25em;
+$p: 0.75em;
+$v: 1em;
+$tr: 2px;
 
 .range-outer {
-  --track-r: #{$t};
+  --track-r: #{$tr};
   display: flex;
   &.horizontal {
     padding: 0 $p;
@@ -91,32 +91,32 @@ $t: 0.25em;
 
 .range-track {
   position: absolute;
-  left: -$t;
-  top: -$t;
-  right: -$t;
-  bottom: -$t;
-  border-radius: $t;
-  box-shadow: 0 0 $t black inset;
+  left: -$tr;
+  top: -$tr;
+  right: -$tr;
+  bottom: -$tr;
+  border-radius: $tr;
+  box-shadow: 0 0 $tr black inset;
 }
 
 .range-fill {
   position: absolute;
-  border-radius: $t;
+  border-radius: $tr;
   background-color: rgb(red, 0.25);
-  left: -$t;
-  bottom: -$t;
-  transition: background-color var(--transition);
+  left: -$tr;
+  bottom: -$tr;
+  transition: background-color var(--fast);
   &.horizontal {
-    top: -$t;
+    top: -$tr;
   }
   &.vertical {
-    right: -$t;
+    right: -$tr;
   }
 }
 
 .range-outer:hover .range-fill,
 .range-outer:focus-within .range-fill {
-  background-color: rgb(red, 0.3125);
+  background-color: rgb(red, 0.5);
 }
 
 .range-value {

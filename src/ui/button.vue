@@ -76,10 +76,10 @@ function focus(e: FocusEvent) {
   user-select: none;
   padding: 0.5em 0.75em;
   transition:
-    background-color var(--transition),
-    border-color var(--transition),
-    box-shadow var(--transition),
-    text-shadow var(--transition);
+    background-color var(--fast),
+    border-color var(--fast),
+    box-shadow var(--fast),
+    text-shadow var(--fast);
 }
 
 .btn[disabled] {
