@@ -14,7 +14,7 @@ function str(s?: string) {
   }
 }
 
-const icons = ['check', 'lt', 'gt', 'up', 'down', 'menu'];
+const icons = ['check', 'lt', 'gt', 'up', 'down', 'menu', 'quad', 'dot'];
 </script>
 
 <template>
@@ -30,44 +30,38 @@ const icons = ['check', 'lt', 'gt', 'up', 'down', 'menu'];
         Popup
       </ui-button>
       <div class="popup-anchor">
-        <ui-popup
-          v-slot="{ close }"
-          v-model="model.popup"
-          class="popup-content"
-        >
-          <lorem-view :paragraphs="1" />
-          <div class="flex gap-05">
-            <ui-button
-              class="btn round"
-              @click="() => { close(); model.click('ok'); }"
-            >
-              Ok
-            </ui-button>
-            <ui-button
-              class="btn round"
-              @click="() => { close(); model.click('cancel'); }"
-            >
-              Cancel
-            </ui-button>
+        <ui-popup v-slot="{ close }" v-model="model.popup">
+          <div class="popup-content">
+            <lorem-view :paragraphs="1" />
+            <div class="flex gap-05">
+              <ui-button
+                class="btn round"
+                @click="() => { close(); model.click('ok'); }"
+              >
+                Ok
+              </ui-button>
+              <ui-button
+                class="btn round"
+                @click="() => { close(); model.click('cancel'); }"
+              >
+                Cancel
+              </ui-button>
+            </div>
+            <div class="h-separator" />
+            <div class="flex py-05 gap-05">
+              <input v-model="model.text" type="text" class="input">
+              <ui-button
+                v-for="(item, i) in model.paragraphs"
+                :key="i"
+                v-model="model.lorem.paragraphs"
+                class="btn round"
+                :toggle="[item]"
+              >
+                {{ item }}
+              </ui-button>
+            </div>
+            <lorem-view :model="model.lorem" />
           </div>
-          <div class="h-separator" />
-          <div class="details-header">
-            <input
-              v-model="model.text"
-              type="text"
-              class="input"
-            >
-            <ui-button
-              v-for="(item, i) in model.paragraphs"
-              :key="i"
-              v-model="model.lorem.paragraphs"
-              class="btn round"
-              :toggle="[item]"
-            >
-              {{ item }}
-            </ui-button>
-          </div>
-          <lorem-view :model="model.lorem" />
         </ui-popup>
       </div>
     </div>
@@ -77,20 +71,14 @@ const icons = ['check', 'lt', 'gt', 'up', 'down', 'menu'];
       <template #header="{ expanded }">
         <div class="details-header">
           Buttons
-          <div class="flex-right">
-            <ui-icon :class="['gt', { r90: expanded }]" />
-          </div>
+          <div class="spacer h-separator" />
+          <ui-icon :class="['gt', { r90: expanded }]" />
         </div>
       </template>
       <template #content>
         <div class="flex col gap-05 p-1">
           <div class="flex gap-05">
-            <input
-              type="text"
-              value="text"
-              class="input"
-              style="width: 100px"
-            >
+            <input v-model="model.text" type="text" class="input">
             <ui-button
               class="btn"
               @click="model.click('focusable')"
@@ -205,14 +193,13 @@ const icons = ['check', 'lt', 'gt', 'up', 'down', 'menu'];
             :key="i"
             v-model="model.lorem.paragraphs"
             v-click-stop
-            class="btn round small"
+            class="btn small"
             :toggle="[item]"
           >
             {{ item }}
           </ui-button>
-          <div class="flex-right">
-            <ui-icon :class="['gt', { r90: expanded }]" />
-          </div>
+          <div class="spacer h-separator" />
+          <ui-icon :class="['gt', { r90: expanded }]" />
         </div>
       </template>
       <template #content>
@@ -226,10 +213,12 @@ const icons = ['check', 'lt', 'gt', 'up', 'down', 'menu'];
     <ui-details v-for="(item, i) in 3" :key="i" v-model="model.expandedGroup" :toggle="[i]">
       <template #header="{ expanded }">
         <div class="details-header">
-          Expand (radio #{{ i }})
-          <div class="flex-right">
-            <ui-icon :class="['gt', { r90: expanded }]" />
+          Expand, radio
+          <div class="icon-wrap">
+            <ui-icon :class="['dot', { hidden: !expanded }]" />
           </div>
+          <div class="spacer h-separator" />
+          <ui-icon :class="['gt', { r90: expanded }]" />
         </div>
       </template>
       <template #content>
@@ -244,9 +233,8 @@ const icons = ['check', 'lt', 'gt', 'up', 'down', 'menu'];
       <template #header="{ expanded }">
         <div class="details-header">
           Icons
-          <div class="flex-right">
-            <ui-icon :class="['gt', { r90: expanded }]" />
-          </div>
+          <div class="spacer h-separator" />
+          <ui-icon :class="['gt', { r90: expanded }]" />
         </div>
       </template>
       <template #content>
@@ -263,7 +251,7 @@ const icons = ['check', 'lt', 'gt', 'up', 'down', 'menu'];
           </div>
           <span>
             Inline
-            <ui-icon v-for="icon in icons" :key="icon" :class="['inline', icon]" />
+            <ui-icon v-for="icon in icons" :key="icon" :class="icon" />
             icons
           </span>
         </div>
@@ -275,9 +263,8 @@ const icons = ['check', 'lt', 'gt', 'up', 'down', 'menu'];
       <template #header="{ expanded }">
         <div class="details-header">
           Range
-          <div class="flex-right">
-            <ui-icon :class="['gt', { r90: expanded }]" />
-          </div>
+          <div class="spacer h-separator" />
+          <ui-icon :class="['gt', { r90: expanded }]" />
         </div>
       </template>
       <template #content>
@@ -309,9 +296,8 @@ const icons = ['check', 'lt', 'gt', 'up', 'down', 'menu'];
       <template #header="{ expanded }">
         <div class="details-header">
           Input
-          <div class="flex-right">
-            <ui-icon :class="['gt', { r90: expanded }]" />
-          </div>
+          <div class="spacer h-separator" />
+          <ui-icon :class="['gt', { r90: expanded }]" />
         </div>
       </template>
       <template #content>
@@ -339,17 +325,10 @@ $h: 2em;
 .v-range {
   width: $h;
   height: $w;
-  background-color: darkslategrey;
 }
 .h-range {
   width: 12em;
   height: 2em;
-  background-color: darkslategrey;
-}
-
-.inline.icon {
-  display: inline flow-root;
-  margin-bottom: -0.2em;
 }
 
 .view.controls-view {
@@ -361,30 +340,22 @@ $h: 2em;
   gap: 0.5em;
   align-items: center;
   padding: 0.125em 0.5em;
-  background-color: var(--bg-primary);
+  // border-top: 1px solid var(--bg-lighter);
   user-select: none;
 }
 
 .popup-anchor {
   display: inline-block;
   position: relative;
-  width: 0;
-  height: 0;
 }
 
 .popup-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
   max-width: 25em;
   max-height: 30em;
   padding: 0 0.5em;
-}
-
-.icons {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 0.25rem;
-  padding: 1em;
-  gap: 0.5em;
 }
 
 .icon-content {
@@ -392,6 +363,9 @@ $h: 2em;
   flex-direction: column;
   background-color: rgb(0 0 0 / 0.125);
   border-radius: 8px;
+  &:hover {
+    color: var(--blue);
+  }
 }
 .icon-name {
   display: flex;
@@ -401,14 +375,19 @@ $h: 2em;
   border-radius: 0 0 8px 8px;
   background-color: rgb(255 255 255 / 0.125);
 }
-
-.icon-content:hover {
-  color: red;
+.icon-wrap {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1em;
+  height: 1em;
+  border: 1px solid currentColor;
+  border-radius: 50%;
 }
 
 .btn.small {
-  width: 24px;
-  height: 24px;
+  width: 1em;
+  height: 1em;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -416,6 +395,6 @@ $h: 2em;
 
 .controls-input {
   background-color: var(--bg-primary);
-  color: orange;
+  color: var(--orange);
 }
 </style>

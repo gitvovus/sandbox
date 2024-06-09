@@ -88,15 +88,12 @@ p {
 }
 
 .h-separator {
-  align-self: stretch;
   height: 2px;
-  margin: 0.25em;
   border-top: 1px solid var(--bg-darker);
   border-bottom: 1px solid var(--bg-lighter);
 }
 
 .v-separator {
-  align-self: stretch;
   width: 2px;
   border-left: 1px solid var(--bg-darker);
   border-right: 1px solid var(--bg-lighter);
@@ -104,12 +101,17 @@ p {
 
 svg text { user-select: none; }
 
+.hidden {
+  visibility: hidden;
+}
+
 .flex { display: flex; }
 .col { flex-direction: column; }
 .row { flex-direction: row; }
 .flex-right { margin-left: auto; }
 .ai-start { align-items: start; }
 .ai-center { align-items: center; }
+.as-stretch { align-self: stretch; }
 .jc-center { justify-content: center; }
 
 .round { border-radius: 50%; }

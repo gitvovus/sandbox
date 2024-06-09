@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref } from 'vue';
-import { Dialog, State } from './model';
+import { Dialog, State } from './dialog';
 
 const { model } = defineProps<{ model: Dialog }>();
 

@@ -1,5 +1,16 @@
-.code {
+body {
+  font-family: 'Fira Sans', sans-serif;
+  font-size: 14px;
+}
+
+// h4 {
+//   font-weight: 600;
+//   font-size: 1em;
+//   line-height: 1.2;
+// }
+
+code, .code {
   font-family: monospace;
-  font-size: 1em;
-  line-height: 1.25em;
+  font-size: smaller;
+  line-height: 1.25;
 }

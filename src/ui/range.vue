@@ -124,7 +124,7 @@ $tr: 2px;
   width: $v;
   height: $v;
   border-radius: 50%;
-  border: 2px solid orange;
+  border: 2px solid var(--orange);
   filter: drop-shadow(0 0 3px rgb(0 0 0 / 0.5));
   &.horizontal {
     transform: translate(-50%, -50%);

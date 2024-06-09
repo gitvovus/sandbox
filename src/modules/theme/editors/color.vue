@@ -10,10 +10,9 @@ const { model } = defineProps<{ model: Color }>();
     <ui-range v-model="model.g" class="color-range" :min="0" :max="255" />
     <ui-range v-model="model.b" class="color-range" :min="0" :max="255" />
     <ui-range v-model="model.a" class="color-range" :min="0" :max="1" :step="0.01" />
-    <div class="code">
+    <div class="code px-05">
       {{ model.toRgb() }}
-    </div>
-    <div class="code">
+      <br>
       {{ model.toHex() }}
     </div>
   </div>

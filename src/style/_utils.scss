@@ -1,10 +1,16 @@
 .f-36 { font-size: 36px; }
 .f-72 { font-size: 72px; }
 
-.red { color: darkred; }
-.orange { color: orange; }
-.blue { color: dodgerblue; }
+:root {
+  --red: darkred;
+  --orange: orange;
+  --blue: dodgerblue;
+}
 
-.bg-red { background-color: darkred; }
-.bg-orange { background-color: orange; }
-.bg-blue { background-color: dodgerblue; }
+.red { color: var(--red); }
+.orange { color: var(--orange); }
+.blue { color: var(--blue); }
+
+.bg-red { color: var(--red); }
+.bg-orange { color: var(--orange); }
+.bg-blue { color: var(--blue); }

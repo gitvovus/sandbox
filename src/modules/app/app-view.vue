@@ -15,10 +15,7 @@ const { model } = defineProps<{ model: AppModel }>();
     </transition>
 
     <teleport to="body">
-      <dialog-view
-        class="effect"
-        :model="model.dialog"
-      >
+      <dialog-view class="effect" :model="model.dialog">
         <div class="dlg-panel">
           <div class="dlg-header">
             Draggable/resizable
@@ -63,7 +60,7 @@ const { model } = defineProps<{ model: AppModel }>();
         >
           M
         </ui-button>
-        <span class="v-separator" />
+        <span class="v-separator as-stretch" />
         <ui-button
           v-for="(dummy, i) in model.pages"
           :key="i"
@@ -73,7 +70,7 @@ const { model } = defineProps<{ model: AppModel }>();
         >
           {{ i }}
         </ui-button>
-        <span class="v-separator" />
+        <span class="v-separator as-stretch" />
         <ui-button
           v-model="model.toolBarAlign"
           no-focus
@@ -110,10 +107,6 @@ const { model } = defineProps<{ model: AppModel }>();
   gap: 0.5em;
 }
 
-.app-buttons .btn {
-  margin: 0;
-}
-
 .dlg-panel {
   width: 100%;
   height: 100%;
@@ -126,19 +119,25 @@ const { model } = defineProps<{ model: AppModel }>();
 .dlg-header,
 .dlg-footer {
   display: flex;
-  margin: 1em;
   align-items: center;
   justify-content: center;
+}
+.dlg-header {
+  margin: 1em;
+}
+.dlg-footer {
+  margin: 0.5em;
 }
 
 .dlg-content {
   position: relative;
   flex: 1 1 auto;
   overflow: auto;
-  pointer-events: auto;
+  // pointer-events: auto;
   padding: 0 1em;
 }
 
+// TODO: move
 .spacer {
   flex-grow: 1;
   transition: flex-grow var(--fast);

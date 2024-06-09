@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 import { useResizer } from '@/lib/use';
-import { Responsive } from './model';
+import { Responsive } from './responsive';
 
 const { model } = defineProps<{ model: Responsive }>();
 const root = ref();
@@ -24,7 +24,8 @@ useResizer(root, (width, height) => {
 .responsive-view {
   position: absolute;
   inset: 0;
-  border-top: 1px solid grey;
-  border-bottom: 1px solid grey;
+  border-top: 1px solid var(--bg-lighter);
+  border-bottom: 1px solid var(--bg-lighter);
+  padding: 0.5em;
 }
 </style>

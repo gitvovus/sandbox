@@ -25,7 +25,7 @@ async function transitionEnd(target: HTMLElement, propertyName: string) {
   const { promise, resolve } = promiseWithResolvers<void>();
 
   const eventHandler = (e: TransitionEvent) => {
-    if (e.target === target || e.propertyName === propertyName) {
+    if (e.target === target && e.propertyName === propertyName) {
       target.removeEventListener('transitionend', eventHandler);
       resolve();
     }
@@ -238,19 +238,6 @@ export class Dialog {
     }
     return ![State.CLOSED, State.CLOSING_TRANSITION].includes(this.state);
   }
-
-  // #transitionEnd = (e: TransitionEvent) => {
-  //   if (
-  //     this.state !== State.CLOSING_TRANSITION ||
-  //     this.#root === undefined ||
-  //     e.target !== this.#root ||
-  //     e.propertyName !== 'transform'
-  //   ) {
-  //     return;
-  //   }
-  //   this.#state.value = State.CLOSED;
-  //   this.#root.close();
-  // };
 
   #capture(h: Handler, e: PointerEvent) {
     h.element!.addEventListener('pointermove', h.drag);

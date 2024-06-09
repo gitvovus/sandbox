@@ -8,7 +8,6 @@ const input = ref();
 
 function keydown(e: KeyboardEvent) {
   if (e.code === 'Enter') {
-    // e.preventDefault();
     model.text = input.value.value;
   }
 }
@@ -32,6 +31,7 @@ function keydown(e: KeyboardEvent) {
   position: absolute;
   inset: 0;
   resize: none;
+  padding: 0.5em;
   background-color: rgb(0 0 0 / 0.1);
 }
 </style>

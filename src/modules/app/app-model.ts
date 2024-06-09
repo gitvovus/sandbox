@@ -1,7 +1,7 @@
 import { ref } from 'vue';
 
 import { Controls } from '@/modules/controls/controls';
-import { Dialog } from '@/modules/dialog/model';
+import { Dialog } from '@/modules/dialog/dialog';
 // import { GearBox } from '@/modules/gear-box/model';
 // import { Worker } from '@/modules/worker/model';
 import { Logo } from '@/modules/logo/model';
@@ -10,7 +10,7 @@ import { SandboxModel } from '@/modules/sandbox/sandbox-model';
 // import { BicubicDemo } from '@/modules/bicubic-demo/model';
 import { ViewModel } from '@/modules/view-model';
 import { Theme } from '@/modules/theme/theme-model';
-import { Responsive } from '@/modules/responsive/model';
+import { Responsive } from '@/modules/responsive/responsive';
 
 export const enum Align {
   LEFT,
