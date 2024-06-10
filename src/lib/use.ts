@@ -1,4 +1,4 @@
-import { onBeforeUnmount, onMounted, ref, watch, type Ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch, type Ref } from 'vue';
 
 import { Disposable, Mouse, clamp, mix, onElementEvent } from '@/lib/std';
 
@@ -98,18 +98,22 @@ export function useHorizontal(el: Ref<HTMLElement | undefined>) {
 export function useRange(
   outer: Ref<HTMLElement | undefined>,
   inner: Ref<HTMLElement | undefined>,
-  prop: { modelValue: number; min: number; max: number; step?: number },
+  props: { modelValue: number; min: number; max: number; step: number },
   emit: (e: 'update:modelValue', value: number) => void,
 ) {
   const { x, y } = useClamp(outer, inner);
   const horizontal = useHorizontal(outer);
 
+  const percents = computed(() => {
+    const range = props.max - props.min;
+    const value = 100 * (props.modelValue - props.min);
+    return range > 0 ? value / range : 0;
+  });
+
   function toRange(normalized: number) {
-    let value = mix(prop.min, prop.max, normalized);
-    if (prop.step) {
-      const steps = Math.round((value - prop.min) / prop.step);
-      value = clamp(prop.min + steps * prop.step, prop.min, prop.max);
-    }
+    let value = mix(props.min, props.max, normalized);
+    const steps = Math.round((value - props.min) / props.step);
+    value = clamp(props.min + steps * props.step, props.min, props.max);
     return value;
   }
 
@@ -133,28 +137,28 @@ export function useRange(
     if (outer.value) {
       mounted.add(
         onElementEvent(outer.value, 'keydown', (e: KeyboardEvent) => {
-          const step = prop.step || 1;
+          const step = props.step || 1;
           let value: number;
           switch (e.code) {
             case 'ArrowLeft':
             case 'ArrowDown':
-              value = Math.max(prop.min, prop.modelValue - step);
+              value = Math.max(props.min, props.modelValue - step);
               break;
             case 'ArrowRight':
             case 'ArrowUp':
-              value = Math.min(prop.max, prop.modelValue + step);
+              value = Math.min(props.max, props.modelValue + step);
               break;
             case 'Home':
-              value = prop.min;
+              value = props.min;
               break;
             case 'End':
-              value = prop.max;
+              value = props.max;
               break;
             default:
               return;
           }
           e.stopPropagation();
-          if (value !== prop.modelValue) {
+          if (value !== props.modelValue) {
             emit('update:modelValue', value);
           }
         }),
@@ -164,5 +168,5 @@ export function useRange(
 
   onBeforeUnmount(() => mounted.dispose());
 
-  return { horizontal };
+  return { horizontal, percents };
 }

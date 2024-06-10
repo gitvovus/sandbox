@@ -20,21 +20,13 @@ const emit = defineEmits<{ 'update:modelValue': [number] }>();
 const outer = ref();
 const inner = ref();
 
-const { horizontal } = useRange(outer, inner, props, emit);
+const { horizontal, percents } = useRange(outer, inner, props, emit);
 const orientation = computed(() => (horizontal.value ? 'horizontal' : 'vertical'));
-const percents = computed(() => (100 * (props.modelValue - props.min)) / (props.max - props.min));
 </script>
 
 <template>
-  <div
-    ref="outer"
-    :class="['range-outer', orientation]"
-    tabindex="0"
-  >
-    <div
-      ref="inner"
-      class="range-inner"
-    >
+  <div ref="outer" :class="['range-outer', orientation]" tabindex="0">
+    <div ref="inner" class="range-inner">
       <div :class="['range-strip', orientation]">
         <div :class="['range-track', orientation]" />
         <div
@@ -46,7 +38,7 @@ const percents = computed(() => (100 * (props.modelValue - props.min)) / (props.
           "
         />
         <div
-          :class="['range-value', orientation]"
+          :class="['range-value', orientation, { hidden: min === max }]"
           :style="horizontal ? { left: `${percents}%` } : { bottom: `${percents}%` }"
         />
       </div>

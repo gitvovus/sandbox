@@ -35,13 +35,10 @@ export class ImageData {
 }
 
 export class Worker extends ViewModel {
-  static readonly #imagesCount = 11;
   readonly component = 'worker-view';
   readonly key = Symbol();
 
-  readonly images = shallowReactive(
-    [...Array(Worker.#imagesCount)].map(() => new ImageData(0, 0, '')),
-  );
+  readonly images = shallowReactive<ImageData[]>([]);
   readonly root: Item;
 
   #selectedIndex = ref(0);
@@ -49,6 +46,19 @@ export class Worker extends ViewModel {
   readonly #size = 500;
   readonly #camera = new Camera({ scale: new Vec(1, 1) });
   readonly #controller: Controller;
+
+  readonly radiusMin = 100;
+  readonly radiusMax = 500;
+  readonly radiusStep = 50;
+  readonly #radius = ref(250);
+
+  readonly petalsMin = 3;
+  readonly petalsMax = 11;
+  readonly #petals = ref(7);
+
+  readonly imagesMin = 10;
+  readonly imagesMax = 100;
+  readonly #count = ref(25);
 
   #grayscaleFilter: Item;
   #brightnessFilter: Item;
@@ -77,10 +87,22 @@ export class Worker extends ViewModel {
     this.brightness = 100;
     this.contrast = 100;
 
+    this.#worker.onmessage = (e: MessageEvent) => {
+      const data: msg.FlowerResponse = e.data;
+      this.images[data.id] = new ImageData(
+        data.radius * 2,
+        data.radius * 2,
+        img.fromImageBitmap(data.image),
+      );
+    };
+
     const image = this.root.find('image')!;
     this.#disposer.add(
       () => this.#worker.terminate(),
       watchEffect(() => {
+        if (this.selectedIndex >= this.images.length) {
+          return;
+        }
         const item = this.images[this.selectedIndex];
         Object.assign(image.attributes, {
           x: -item.width / 2,
@@ -93,15 +115,15 @@ export class Worker extends ViewModel {
     );
 
     this.#createStatic();
-    this.#createImages();
   }
 
-  first() {
-    this.selectedIndex = 0;
+  mount(element: HTMLElement) {
+    this.#controller.mount(element);
+    this.#mounted.add(() => this.#controller.unmount());
   }
 
-  last() {
-    this.selectedIndex = this.images.length - 1;
+  unmount() {
+    this.#mounted.dispose();
   }
 
   get selectedIndex() {
@@ -153,44 +175,51 @@ export class Worker extends ViewModel {
     }
   }
 
-  mount(element: HTMLElement) {
-    this.#controller.mount(element);
-    this.#mounted.add(() => this.#controller.unmount());
+  get radius() {
+    return this.#radius.value;
   }
 
-  unmount() {
-    this.#mounted.dispose();
+  set radius(value) {
+    this.#radius.value = value;
+  }
+
+  get petals() {
+    return this.#petals.value;
+  }
+
+  set petals(value) {
+    this.#petals.value = value;
+  }
+
+  get count() {
+    return this.#count.value;
+  }
+
+  set count(value) {
+    this.#count.value = value;
+  }
+
+  generate() {
+    this.selectedIndex = 0;
+    this.images.length = 0;
+    for (let i = 0; i < this.count; ++i) {
+      this.images.push(new ImageData(0, 0, ''));
+      this.#worker.postMessage({
+        type: 'flower',
+        id: i,
+        radius: this.radius,
+        petals: this.petals,
+        t: i / (this.count - 1),
+      });
+    }
   }
 
   #createStatic() {
     const back = this.root.find('images-back')!;
+    const step = Math.round(this.#size / 250) * 10;
     back.add(
-      prettyGrid(this.#size / 2, this.#size / 4, 20, 1, '#00000018'),
-      prettyGrid(this.#size / 2, this.#size / 4, 100, 1, '#00000040'),
+      prettyGrid(this.#size / 2, this.#size / 4, step, 1, '#00000018'),
+      prettyGrid(this.#size / 2, this.#size / 4, step * 5, 1, '#00000040'),
     );
-  }
-
-  #createImages() {
-    const radius = 200;
-    const petals = 7;
-
-    this.#worker.onmessage = (e: MessageEvent) => {
-      const data: msg.FlowerResponse = e.data;
-      this.images[data.id] = new ImageData(
-        data.radius * 2,
-        data.radius * 2,
-        img.fromImageBitmap(data.image),
-      );
-    };
-
-    this.images.forEach((value, index, array) => {
-      this.#worker.postMessage({
-        type: 'flower',
-        id: index,
-        radius,
-        petals,
-        t: index / (array.length - 1),
-      });
-    });
   }
 }
