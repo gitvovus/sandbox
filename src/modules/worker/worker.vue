@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref } from 'vue';
-import { type Worker } from './model';
+import { type Worker } from './worker';
 
 const { model } = defineProps<{ model: Worker }>();
 const root = ref();
@@ -15,17 +15,11 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div class="view">
-    <div
-      ref="root"
-      class="overlay"
-    >
-      <ui-item
-        class="overlay"
-        :model="model.root"
-      />
+  <div class="view paper">
+    <div ref="root" class="overlay">
+      <ui-item class="overlay" :model="model.root" />
     </div>
-    <div class="images-toolbox anchor top right flex">
+    <div class="tools bottom right flex m-05 p-05">
       <ui-range
         v-model="model.selectedIndex"
         class="images-range"

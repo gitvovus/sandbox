@@ -125,7 +125,7 @@ $tr: 2px;
   height: $v;
   border-radius: 50%;
   border: 2px solid var(--orange);
-  filter: drop-shadow(0 0 3px rgb(0 0 0 / 0.5));
+  filter: drop-shadow(0 0 3px rgb(var(--shadow)));
   &.horizontal {
     transform: translate(-50%, -50%);
   }

@@ -11,6 +11,8 @@ import UiPopup from '@/ui/popup.vue';
 import UiRange from '@/ui/range.vue';
 import UiTestItem from '@/ui/test-item.vue';
 
+import Dialog from '@/modules/dialog/dialog.vue';
+
 // directives
 import { vClickStop } from '@/ui/directives';
 
@@ -20,21 +22,20 @@ import TextEditor from '@/modules/theme/editors/text.vue';
 
 // views
 import AppView from '@/modules/app/app-view.vue';
-import BicubicDemo from '@/modules/bicubic-demo/view.vue';
-import Controls from '@/modules/controls/controls.vue';
-import SandboxView from '@/modules/sandbox/sandbox-view.vue';
-import Dialog from '@/modules/dialog/dialog.vue';
-import GearBox from '@/modules/gear-box/view.vue';
-import Logo from '@/modules/logo/view.vue';
-import Lorem from '@/modules/lorem/lorem.vue';
+import BicubicView from '@/modules/bicubic/bicubic.vue';
+import ControlsView from '@/modules/controls/controls.vue';
+import SandboxView from '@/modules/sandbox/sandbox.vue';
+import GearsView from '@/modules/gears/gears.vue';
+import LogoView from '@/modules/logo/logo.vue';
+import LoremView from '@/modules/lorem/lorem.vue';
 import ResponsiveView from '@/modules/responsive/responsive.vue';
-import SvgSandbox from '@/modules/svg-sandbox/view.vue';
+import SvgSandbox from '@/modules/svg-sandbox/svg-sandbox.vue';
 import ThemeView from '@/modules/theme/theme-view.vue';
-import Worker from '@/modules/worker/view.vue';
+import WorkerView from '@/modules/worker/worker.vue';
 
 import { AppModel } from '@/modules/app/app-model';
 
-import { TestContainer, TestHeader, TestItem } from '@/modules/sandbox/sandbox-model';
+import { TestContainer, TestHeader, TestItem } from '@/modules/sandbox/sandbox';
 
 export class Application {
   readonly #appModel = new AppModel();
@@ -56,17 +57,17 @@ export class Application {
       // directives
       .directive('click-stop', vClickStop)
       // views
-      .component('bicubic-demo-view', BicubicDemo)
-      .component('controls-view', Controls)
+      .component('bicubic-view', BicubicView)
+      .component('controls-view', ControlsView)
       .component('sandbox-view', SandboxView)
       .component('dialog-view', Dialog)
-      .component('gear-box-view', GearBox)
-      .component('logo-view', Logo)
-      .component('lorem-view', Lorem)
+      .component('gears-view', GearsView)
+      .component('logo-view', LogoView)
+      .component('lorem-view', LoremView)
       .component('responsive-view', ResponsiveView)
       .component('svg-sandbox-view', SvgSandbox)
       .component('theme-view', ThemeView)
-      .component('worker-view', Worker)
+      .component('worker-view', WorkerView)
       // properties
       .component('color-editor', ColorEditor)
       .component('text-editor', TextEditor)

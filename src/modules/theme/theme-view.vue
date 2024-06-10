@@ -56,7 +56,7 @@ const { model } = defineProps<{ model: Theme }>();
 }
 .theme-content {
   padding: 0.5em;
-  border-right: 1px solid var(--bg-lighter);
+  border-right: 1px solid rgb(var(--line));
   overflow: auto;
 }
 .theme-tools {

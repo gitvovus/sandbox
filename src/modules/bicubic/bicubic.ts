@@ -1,14 +1,14 @@
 import * as tri from 'three';
 
 import * as std from '@/lib/std';
-import { Bicubic } from '@/modules/bicubic-demo/lib/bicubic';
 import { ViewModel } from '@/modules/view-model';
+import { Demo } from './lib/demo';
 
-export class BicubicDemo extends ViewModel {
+export class Bicubic extends ViewModel {
   readonly #disposer = new std.Disposable();
   readonly #mounted = new std.Disposable();
 
-  readonly #demo: Bicubic;
+  readonly #demo: Demo;
   readonly #scene: tri.Scene;
   readonly #camera: tri.PerspectiveCamera;
   #renderer!: tri.WebGLRenderer;
@@ -18,7 +18,7 @@ export class BicubicDemo extends ViewModel {
   #height = 0;
 
   constructor() {
-    super('bicubic-demo-view');
+    super('bicubic-view');
 
     this.#camera = new tri.PerspectiveCamera(30, 1, 0.1, 50);
     this.#camera.up.set(0, 0, 1);
@@ -28,7 +28,7 @@ export class BicubicDemo extends ViewModel {
     this.#scene.add(new tri.AmbientLight(0x404040));
     this.#scene.add(this.#camera);
 
-    this.#demo = new Bicubic(this.#scene, this.#camera);
+    this.#demo = new Demo(this.#scene, this.#camera);
 
     this.#disposer.add(() => this.#demo.dispose());
   }

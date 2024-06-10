@@ -67,7 +67,7 @@ export class TestData {
   }
 }
 
-export class SandboxModel extends ViewModel {
+export class Sandbox extends ViewModel {
   readonly #data = [new TestData('one', 1), new TestData('two', 2), new TestData('three', 3)];
   readonly single = new SingleSelection(this.#data);
 

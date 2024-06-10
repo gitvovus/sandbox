@@ -1,7 +1,7 @@
 import * as std from '@/lib/std';
 import * as bi from '@/lib/bi';
-import { teethPerUnitRadius } from '@/modules/gear-box/lib/drawings';
-import { type Actor, type Rotor, type ShapeType } from '@/modules/gear-box/lib/shapes';
+import { teethPerUnitRadius } from '@/modules/gears/lib/drawings';
+import { type Actor, type Rotor, type ShapeType } from '@/modules/gears/lib/shapes';
 
 const eps = 1e-3;
 

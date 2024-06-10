@@ -56,7 +56,7 @@ function focusout(e: FocusEvent) {
   position: fixed;
   display: none;
   overflow: auto;
-  background-color: var(--bg-primary);
+  background-color: rgb(var(--surface));
   border: 1px solid rgb(255 255 255 / 0.0625);
   box-shadow: var(--shadow-small);
   z-index: 1;

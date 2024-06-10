@@ -1,7 +1,7 @@
 import * as bi from '@/lib/bi';
 import { type Attributes, Item } from '@/lib/reactive';
-import { type Scene } from '@/modules/gear-box/lib/scene';
-import { draw, type DrawingOptions } from '@/modules/gear-box/lib/drawings';
+import { type Scene } from '@/modules/gears/lib/scene';
+import { draw, type DrawingOptions } from '@/modules/gears/lib/drawings';
 import { Transformable } from '@/lib/svg/transformable';
 
 export type ShapeType = 'gear' | 'stub';

@@ -2,12 +2,12 @@ import { ref } from 'vue';
 
 import { Controls } from '@/modules/controls/controls';
 import { Dialog } from '@/modules/dialog/dialog';
-// import { GearBox } from '@/modules/gear-box/model';
-// import { Worker } from '@/modules/worker/model';
-import { Logo } from '@/modules/logo/model';
-// import { SvgSandbox } from '@/modules/svg-sandbox/model';
-import { SandboxModel } from '@/modules/sandbox/sandbox-model';
-// import { BicubicDemo } from '@/modules/bicubic-demo/model';
+import { Bicubic } from '@/modules/bicubic/bicubic';
+import { Gears } from '@/modules/gears/gears';
+import { Worker } from '@/modules/worker/worker';
+import { Logo } from '@/modules/logo/logo';
+import { SvgSandbox } from '@/modules/svg-sandbox/svg-sandbox';
+import { Sandbox } from '@/modules/sandbox/sandbox';
 import { ViewModel } from '@/modules/view-model';
 import { Theme } from '@/modules/theme/theme-model';
 import { Responsive } from '@/modules/responsive/responsive';
@@ -21,17 +21,17 @@ export const enum Align {
 export class AppModel extends ViewModel {
   readonly pages: ViewModel[] = [
     new Logo(),
-    // new BicubicDemo(),
-    // new GearBox(),
+    new Bicubic(),
+    new Gears(),
+    new Worker(),
     new Controls(),
-    // new Worker(),
-    // new SvgSandbox(),
-    new SandboxModel(),
+    new SvgSandbox(),
+    new Sandbox(),
     new Theme(),
   ];
 
   readonly #toolBarAlign = ref(Align.CENTER);
-  readonly #pageIndex = ref(1);
+  readonly #pageIndex = ref(3);
 
   readonly dialog = new Dialog({ resizable: true });
   readonly layout = new Responsive();

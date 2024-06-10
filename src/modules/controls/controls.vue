@@ -18,7 +18,7 @@ const icons = ['check', 'lt', 'gt', 'up', 'down', 'menu', 'quad', 'dot'];
 </script>
 
 <template>
-  <div class="view controls-view">
+  <div class="view surface controls-view">
     <!-- popup -->
     <div>
       <ui-button
@@ -340,7 +340,6 @@ $h: 2em;
   gap: 0.5em;
   align-items: center;
   padding: 0.125em 0.5em;
-  // border-top: 1px solid var(--bg-lighter);
   user-select: none;
 }
 
@@ -394,7 +393,7 @@ $h: 2em;
 }
 
 .controls-input {
-  background-color: var(--bg-primary);
+  background-color: rgb(var(--surface));
   color: var(--orange);
 }
 </style>

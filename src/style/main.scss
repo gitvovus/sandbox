@@ -22,9 +22,9 @@
   @include expand-map($theme-dark);
 }
 
-// @media (prefers-color-scheme: dark) {
+// @media (prefers-color-scheme: light) {
 //   :root {
-//     @include expand-map($theme-dark);
+//     @include expand-map($theme-light);
 //   }
 // }
 
@@ -36,9 +36,9 @@
   --radius-medium: 8px;
   --radius-large: 12px;
 
-  --shadow-small: 0 0 5px 1px var(--bg-shadow);
-  --shadow-medium: 0 0 10px 10px var(--bg-shadow);
-  --shadow-large: 0 0 20px 10px var(--bg-shadow);
+  --shadow-small: 0 0 5px 1px rgb(var(--shadow));
+  --shadow-medium: 0 0 10px 10px rgb(var(--shadow));
+  --shadow-large: 0 0 20px 10px rgb(var(--shadow));
 
   --z-app: 20;
   --z-dlg: 10;
@@ -50,7 +50,7 @@ body {
 
 body,
 dialog {
-  color: var(--tx-primary);
+  color: rgb(var(--text));
 }
 
 .input {
@@ -75,35 +75,39 @@ p {
 }
 
 .app {
-  background: var(--bg-overlay);
+  background: rgb(var(--back));
   box-shadow: 0 0 25vw rgb(0 0 0) inset;
 }
 
 .view {
   margin: 7vh 7vw 9vh;
-  background-color: var(--bg-primary);
-  border: 1px solid var(--bg-lighter);
+  border: 1px solid rgb(var(--line));
   border-radius: var(--radius-medium);
   box-shadow: var(--shadow-large);
 }
 
+.tools {
+  position: absolute;
+  background-color: rgb(var(--glass));
+  border-radius: 0.5em;
+}
+
+.surface { background-color: rgb(var(--surface)); }
+.paper { background-color: rgb(var(--paper)); }
+
 .h-separator {
-  height: 2px;
-  border-top: 1px solid var(--bg-darker);
-  border-bottom: 1px solid var(--bg-lighter);
+  height: 1px;
+  background-color: rgb(var(--line));
 }
 
 .v-separator {
-  width: 2px;
-  border-left: 1px solid var(--bg-darker);
-  border-right: 1px solid var(--bg-lighter);
+  width: 1px;
+  background-color: rgb(var(--line));
 }
 
 svg text { user-select: none; }
 
-.hidden {
-  visibility: hidden;
-}
+.hidden { visibility: hidden; }
 
 .flex { display: flex; }
 .col { flex-direction: column; }

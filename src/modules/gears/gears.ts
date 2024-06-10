@@ -1,19 +1,18 @@
 import { Animation } from '@/lib/animation';
 import { Vec, distance } from '@/lib/bi';
-// import { v2 } from '@/lib/helpers';
 import { Item } from '@/lib/reactive';
 import { Disposable, Mouse, clamp, onElementEvent, time } from '@/lib/std';
-import { drawBase, drawShaft } from '@/modules/gear-box/lib/drawings';
-import { levels, type LevelData } from '@/modules/gear-box/lib/levels';
-import { Scene } from '@/modules/gear-box/lib/scene';
-import { Gear, Shaft, Shape, type RotorType } from '@/modules/gear-box/lib/shapes';
-import { Solver } from '@/modules/gear-box/lib/solver';
+import { drawBase, drawShaft } from '@/modules/gears/lib/drawings';
+import { levels, type LevelData } from '@/modules/gears/lib/levels';
+import { Scene } from '@/modules/gears/lib/scene';
+import { Gear, Shaft, Shape, type RotorType } from '@/modules/gears/lib/shapes';
+import { Solver } from '@/modules/gears/lib/solver';
 import { Camera } from '@/lib/svg/camera';
 import { Controller, Gesture } from '@/lib/svg/controller';
 import { prettyGrid } from '@/lib/svg/utils';
 import { ViewModel } from '@/modules/view-model';
 
-export class GearBox extends ViewModel {
+export class Gears extends ViewModel {
   readonly #mounted = new Disposable();
   readonly #scene = new Scene('gb', 36.8, 36.8, 3, 0.25, false);
   readonly #camera = new Camera({ scale: new Vec(1, -1) });
@@ -65,7 +64,7 @@ export class GearBox extends ViewModel {
   #selected?: Gear;
 
   constructor() {
-    super('gear-box-view');
+    super('gears-view');
     this.#controller.resize(this.#scene.width, this.#scene.height);
     this.#createShapes();
     this.#createStatic();

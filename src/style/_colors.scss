@@ -3,14 +3,15 @@
 $rgb-dark: ();
 
 $theme-dark: (
-  bg-primary: #181c24,
-  bg-darker: rgb(0 0 0 / 0.1),
-  bg-lighter: rgb(255 255 255 / 0.1),
-  bg-overlay: rgb(9 30 51 / 0.75),
-  bg-shadow: rgb(0 0 0 / 0.5),
+  back: 9 30 51 / 0.75,
+  surface: 24 28 36,
+  paper: 48 60 74,
+  glass: 0 0 0 / 0.5,
+  text: 164 172 190,
 
-  tx-primary: #a4acbe,
+  line: 255 255 255 / 0.1,
+  shadow: 0 0 0 / 0.5,
 
-  scroll-track: #1d242b,
-  scroll-thumb: #2a353f,
+  scroll-track: 29 36 43,
+  scroll-thumb: 42 53 63,
 );

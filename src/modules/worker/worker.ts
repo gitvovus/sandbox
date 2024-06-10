@@ -11,7 +11,8 @@ import * as msg from '@/modules/worker/lib/messages';
 
 import ImageGenerator from '@/modules/worker/lib/image-generator?worker';
 
-import source from '@/assets/images-view/scene.svg?raw';
+import scene from '@/assets/worker/scene.svg?raw';
+import { prettyGrid } from '@/lib/svg/utils';
 
 export class ImageData {
   width: number;
@@ -33,8 +34,7 @@ export class ImageData {
   }
 }
 
-// TODO: extend ViewModel, use Disposable
-export class Worker extends Disposable implements ViewModel {
+export class Worker extends ViewModel {
   static readonly #imagesCount = 11;
   readonly component = 'worker-view';
   readonly key = Symbol();
@@ -46,6 +46,7 @@ export class Worker extends Disposable implements ViewModel {
 
   #selectedIndex = ref(0);
 
+  readonly #size = 500;
   readonly #camera = new Camera({ scale: new Vec(1, 1) });
   readonly #controller: Controller;
 
@@ -57,15 +58,16 @@ export class Worker extends Disposable implements ViewModel {
   #contrast = ref(0);
 
   #worker = new ImageGenerator();
+  #disposer = new Disposable();
   #mounted = new Disposable();
 
-  public constructor() {
-    super();
+  constructor() {
+    super('worker-view');
 
-    this.root = fromSource(source)!;
-    const scene = this.root.find('scene')!;
-    this.#controller = new Controller(this.root, scene, this.#camera);
-    this.#controller.resize(500, 500);
+    this.root = fromSource(scene)!;
+    const content = this.root.find('images-content')!;
+    this.#controller = new Controller(this.root, content, this.#camera);
+    this.#controller.resize(this.#size, this.#size);
 
     this.#grayscaleFilter = this.root.find('image-grayscale')!;
     this.#brightnessFilter = this.root.find('image-brightness')!;
@@ -76,7 +78,7 @@ export class Worker extends Disposable implements ViewModel {
     this.contrast = 100;
 
     const image = this.root.find('image')!;
-    this.add(
+    this.#disposer.add(
       () => this.#worker.terminate(),
       watchEffect(() => {
         const item = this.images[this.selectedIndex];
@@ -90,6 +92,7 @@ export class Worker extends Disposable implements ViewModel {
       }),
     );
 
+    this.#createStatic();
     this.#createImages();
   }
 
@@ -116,7 +119,6 @@ export class Worker extends Disposable implements ViewModel {
   set grayscale(value) {
     this.#grayscale.value = value;
     const v = 1 - 0.01 * value;
-    // prettier-ignore
     this.#grayscaleFilter.attributes.values = [
       0.2126 + 0.7874 * v, 0.7152 - 0.7152 * v, 0.0722 - 0.0722 * v, 0, 0,
       0.2126 - 0.2126 * v, 0.7152 + 0.2848 * v, 0.0722 - 0.0722 * v, 0, 0,
@@ -158,6 +160,14 @@ export class Worker extends Disposable implements ViewModel {
 
   unmount() {
     this.#mounted.dispose();
+  }
+
+  #createStatic() {
+    const back = this.root.find('images-back')!;
+    back.add(
+      prettyGrid(this.#size / 2, this.#size / 4, 20, 1, '#00000018'),
+      prettyGrid(this.#size / 2, this.#size / 4, 100, 1, '#00000040'),
+    );
   }
 
   #createImages() {

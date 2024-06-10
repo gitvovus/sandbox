@@ -1,5 +1,5 @@
 import { Vec } from '@/lib/bi';
-import type { RotorType, ShapeType } from '@/modules/gear-box/lib/shapes';
+import type { RotorType, ShapeType } from '@/modules/gears/lib/shapes';
 
 export type GearData = {
   position: Vec;

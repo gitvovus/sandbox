@@ -1,9 +1,4 @@
-export interface IViewModel {
-  readonly component: string;
-  readonly key: symbol;
-}
-
-export class ViewModel implements IViewModel {
+export class ViewModel {
   readonly component: string;
   readonly key = Symbol();
 

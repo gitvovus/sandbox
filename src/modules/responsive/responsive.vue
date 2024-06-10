@@ -24,8 +24,8 @@ useResizer(root, (width, height) => {
 .responsive-view {
   position: absolute;
   inset: 0;
-  border-top: 1px solid var(--bg-lighter);
-  border-bottom: 1px solid var(--bg-lighter);
+  border-top: 1px solid rgb(var(--line));
+  border-bottom: 1px solid rgb(var(--line));
   padding: 0.5em;
 }
 </style>

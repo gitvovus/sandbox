@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Logo } from '@/modules/logo/model';
+import { Logo } from './logo';
 
 defineProps<{ model: Logo }>();
 </script>

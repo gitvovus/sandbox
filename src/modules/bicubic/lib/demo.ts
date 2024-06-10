@@ -3,10 +3,10 @@ import * as tri from 'three';
 import * as geo from '@/lib/geometry';
 import * as img from '@/lib/images';
 import * as std from '@/lib/std';
-import { Controller } from '@/modules/bicubic-demo/lib/controller';
-import { SelectionGroup } from '@/modules/bicubic-demo/lib/selection-group';
+import { Controller } from './controller';
+import { SelectionGroup } from './selection-group';
 
-export class Bicubic extends std.Disposable {
+export class Demo extends std.Disposable {
   readonly #mounted = new std.Disposable();
 
   readonly #scene: tri.Scene;

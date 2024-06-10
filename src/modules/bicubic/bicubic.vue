@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue';
-import { type BicubicDemo } from '@/modules/bicubic-demo/model';
+import { type Bicubic } from './bicubic';
 
-const props = defineProps<{ model: BicubicDemo }>();
+const props = defineProps<{ model: Bicubic }>();
 const root = ref();
 const canvas = ref();
 
@@ -16,15 +16,8 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div
-    ref="root"
-    class="view"
-    tabindex="0"
-  >
-    <canvas
-      ref="canvas"
-      class="three-viewport"
-    />
+  <div ref="root" class="view paper" tabindex="0">
+    <canvas ref="canvas" class="three-viewport" />
     <slot />
   </div>
 </template>

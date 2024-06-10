@@ -102,7 +102,7 @@ const { model } = defineProps<{ model: AppModel }>();
   border-radius: 4px 4px 0 0;
   box-shadow: var(--shadow-small);
   pointer-events: auto;
-  background-color: var(--bg-primary);
+  background-color: rgb(var(--surface));
   padding: 0.33em 0.5em;
   gap: 0.5em;
 }
@@ -113,7 +113,7 @@ const { model } = defineProps<{ model: AppModel }>();
   display: flex;
   flex-direction: column;
   pointer-events: none;
-  background-color: var(--bg-primary);
+  background-color: rgb(var(--surface));
 }
 
 .dlg-header,

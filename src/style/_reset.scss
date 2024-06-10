@@ -14,17 +14,17 @@ button, input, textarea {
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--scroll-thumb) var(--scroll-track);
+  scrollbar-color: rgb(var(--scroll-thumb)) rgb(var(--scroll-track));
 }
 
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
-  background-color: var(--scroll-track);
+  background-color: rgb(var(--scroll-track));
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: var(--scroll-thumb);
+  background-color: rgb(var(--scroll-thumb));
 }
 
 ::-webkit-scrollbar-corner {

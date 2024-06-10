@@ -36,6 +36,6 @@ withDefaults(defineProps<{
 .input-text {
   border: none;
   background: unset;
-  color: var(--tx-primary);
+  color: rgb(var(--text));
 }
 </style>

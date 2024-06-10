@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { SandboxModel } from '@/modules/sandbox/sandbox-model';
+import { Sandbox } from './sandbox';
 
-const { model } = defineProps<{ model: SandboxModel }>();
+const { model } = defineProps<{ model: Sandbox }>();
 </script>
 
 <template>
-  <div class="view test-view flex col gap-05">
+  <div class="view surface test-view flex col gap-05">
     <!-- grid -->
     <div class="test-grid">
       <div class="test-items-grid">
@@ -85,4 +85,3 @@ const { model } = defineProps<{ model: SandboxModel }>();
   background-color: rgba(0 0 0 / 0.25);
 }
 </style>
-@/modules/sandbox/model
