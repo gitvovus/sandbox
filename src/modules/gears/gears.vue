@@ -5,33 +5,29 @@ import { type Gears } from './gears';
 const { model } = defineProps<{ model: Gears }>();
 const root = ref();
 
-onMounted(() => {
-  model.mount(root.value);
-});
-
-onBeforeUnmount(() => {
-  model.unmount();
-});
+onMounted(() => model.mount(root.value));
+onBeforeUnmount(() => model.unmount());
 </script>
 
 <template>
-  <div ref="root" class="view paper">
-    <ui-item class="overlay" :model="model.root" />
+  <div class="view">
+    <div ref="root" class="paper clip view">
+      <ui-item class="clip view" :model="model.root" />
+    </div>
     <div class="anchor top right flex gap-05 p-05">
-      <ui-button v-click-stop class="btn" @click="model.reset()">
+      <ui-button class="btn" @click="model.reset()">
         reset
       </ui-button>
-      <ui-button v-click-stop class="btn" @click="model.check()">
+      <ui-button class="btn" @click="model.check()">
         check
       </ui-button>
-      <ui-button v-click-stop class="btn" @click="model.start()">
+      <ui-button class="btn" @click="model.start()">
         start
       </ui-button>
-      <ui-button v-click-stop class="btn" @click="model.stop()">
+      <ui-button class="btn" @click="model.stop()">
         stop
       </ui-button>
     </div>
-    <slot />
   </div>
 </template>
 

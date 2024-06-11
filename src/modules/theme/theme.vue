@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { type Theme } from './theme-model';
+import { Theme } from './theme';
 
 const { model } = defineProps<{ model: Theme }>();
 </script>
 
 <template>
-  <div class="view theme-view" :style="model.style">
+  <div class="theme view" :style="model.style">
     <div class="theme-content">
       <component :is="`h${i}`" v-for="i in 4" :key="i">
         Header, h{{ i }}
@@ -49,7 +49,7 @@ const { model } = defineProps<{ model: Theme }>();
 </template>
 
 <style lang="scss">
-.theme-view {
+.theme {
   display: grid;
   grid-template-columns: 3fr 1fr;
   grid-template-rows: 1fr;

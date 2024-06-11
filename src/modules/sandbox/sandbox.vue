@@ -5,7 +5,7 @@ const { model } = defineProps<{ model: Sandbox }>();
 </script>
 
 <template>
-  <div class="view surface test-view flex col gap-05">
+  <div class="scrollable surface view flex col gap-05 p-05">
     <!-- grid -->
     <div class="test-grid">
       <div class="test-items-grid">
@@ -61,11 +61,6 @@ const { model } = defineProps<{ model: Sandbox }>();
 </template>
 
 <style lang="scss">
-.view.test-view {
-  overflow: auto;
-  padding: 0.5em;
-}
-
 .test-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;

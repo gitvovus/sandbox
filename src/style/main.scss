@@ -67,23 +67,15 @@ p {
 }
 
 .app,
-.view,
-.overlay {
+.view {
   position: absolute;
   inset: 0;
-  overflow: hidden;
 }
 
 .app {
+  overflow: hidden;
   background: rgb(var(--back));
   box-shadow: 0 0 25vw rgb(0 0 0) inset;
-}
-
-.view {
-  margin: 7vh 7vw 9vh;
-  border: 1px solid rgb(var(--line));
-  border-radius: var(--radius-medium);
-  box-shadow: var(--shadow-large);
 }
 
 .tools {
@@ -107,6 +99,8 @@ p {
 
 svg text { user-select: none; }
 
+.clip { overflow: hidden; }
+.scrollable { overflow: auto; }
 .hidden { visibility: hidden; }
 
 .flex { display: flex; }
@@ -118,7 +112,7 @@ svg text { user-select: none; }
 .as-stretch { align-self: stretch; }
 .jc-center { justify-content: center; }
 
-.round { border-radius: 50%; }
+.round { border-radius: 50vh; }
 .anchor { position: absolute; }
 .left { left: 0; }
 .right { right: 0; }

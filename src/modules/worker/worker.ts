@@ -6,31 +6,23 @@ import { Item, fromSource } from '@/lib/reactive';
 import { Disposable } from '@/lib/std';
 import { Camera } from '@/lib/svg/camera';
 import { Controller } from '@/lib/svg/controller';
+import { prettyGrid } from '@/lib/svg/utils';
 import { ViewModel } from '@/modules/view-model';
-import * as msg from '@/modules/worker/lib/messages';
 
-import ImageGenerator from '@/modules/worker/lib/image-generator?worker';
+import * as msg from './lib/messages';
+import ImageGenerator from './lib/image-generator?worker';
 
 import scene from '@/assets/worker/scene.svg?raw';
-import { prettyGrid } from '@/lib/svg/utils';
 
 export class ImageData {
-  width: number;
-  height: number;
-  #source = ref('');
+  readonly width: number;
+  readonly height: number;
+  readonly source: string;
 
   constructor(width: number, height: number, source: string) {
     this.width = width;
     this.height = height;
     this.source = source;
-  }
-
-  get source() {
-    return this.#source.value;
-  }
-
-  set source(value) {
-    this.#source.value = value;
   }
 }
 

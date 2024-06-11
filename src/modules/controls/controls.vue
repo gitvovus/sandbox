@@ -18,7 +18,7 @@ const icons = ['check', 'lt', 'gt', 'up', 'down', 'menu', 'quad', 'dot'];
 </script>
 
 <template>
-  <div class="view surface controls-view">
+  <div class="scrollable surface view">
     <!-- popup -->
     <div>
       <ui-button
@@ -187,7 +187,7 @@ const icons = ['check', 'lt', 'gt', 'up', 'down', 'menu', 'quad', 'dot'];
     <ui-details v-model="model.expanded">
       <template #header="{ expanded }">
         <div class="details-header">
-          Expand, paragraphs
+          Details, dynamic
           <ui-button
             v-for="(item, i) in model.paragraphs"
             :key="i"
@@ -213,7 +213,7 @@ const icons = ['check', 'lt', 'gt', 'up', 'down', 'menu', 'quad', 'dot'];
     <ui-details v-for="(item, i) in 3" :key="i" v-model="model.expandedGroup" :toggle="[i]">
       <template #header="{ expanded }">
         <div class="details-header">
-          Expand, radio
+          Details, radio
           <div class="icon-wrap">
             <ui-icon :class="['dot', { hidden: !expanded }]" />
           </div>
@@ -331,10 +331,6 @@ $h: 2em;
   height: 2em;
 }
 
-.view.controls-view {
-  overflow: auto;
-}
-
 .details-header {
   display: flex;
   gap: 0.5em;
@@ -344,8 +340,7 @@ $h: 2em;
 }
 
 .popup-anchor {
-  display: inline-block;
-  position: relative;
+  display: inline flow-root;
 }
 
 .popup-content {
@@ -381,7 +376,7 @@ $h: 2em;
   width: 1em;
   height: 1em;
   border: 1px solid currentColor;
-  border-radius: 50%;
+  border-radius: 50vh;
 }
 
 .btn.small {

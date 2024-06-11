@@ -13,7 +13,7 @@ useResizer(root, (width, height) => {
 </script>
 
 <template>
-  <div ref="root" class="responsive-view">
+  <div ref="root" class="scrollable responsive view">
     <code>
       {{ model.width }} &times; {{ model.height }}
     </code>
@@ -21,9 +21,7 @@ useResizer(root, (width, height) => {
 </template>
 
 <style lang="scss">
-.responsive-view {
-  position: absolute;
-  inset: 0;
+.responsive {
   border-top: 1px solid rgb(var(--line));
   border-bottom: 1px solid rgb(var(--line));
   padding: 0.5em;

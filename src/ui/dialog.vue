@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref } from 'vue';
-import { Dialog, State } from './dialog';
+import { Dialog, State } from './lib/dialog';
 
 const { model } = defineProps<{ model: Dialog }>();
 
@@ -13,7 +13,8 @@ onBeforeUnmount(() => model.unmount());
 <template>
   <dialog
     ref="root"
-    :class="['dialog', { show: [State.NON_MODAL, State.MODAL].includes(model.state) }]"
+    class="dialog dialog-animation"
+    :class="{ visible: [State.NON_MODAL, State.MODAL].includes(model.state) }"
     :style="[
       model.draggable
         ? {
@@ -31,15 +32,15 @@ onBeforeUnmount(() => model.unmount());
   >
     <div class="dialog-layout">
       <div :class="{ 'nw-resize': model.resizable }" />
-      <div :class="{ 'nn-resize': model.resizable }" />
+      <div :class="{ 'n-resize': model.resizable }" />
       <div :class="{ 'ne-resize': model.resizable }" />
-      <div :class="{ 'ww-resize': model.resizable }" />
+      <div :class="{ 'w-resize': model.resizable }" />
       <div class="dialog-content">
         <slot />
       </div>
-      <div :class="{ 'ee-resize': model.resizable }" />
+      <div :class="{ 'e-resize': model.resizable }" />
       <div :class="{ 'sw-resize': model.resizable }" />
-      <div :class="{ 'ss-resize': model.resizable }" />
+      <div :class="{ 's-resize': model.resizable }" />
       <div :class="{ 'se-resize': model.resizable }" />
     </div>
   </dialog>
@@ -60,7 +61,7 @@ onBeforeUnmount(() => model.unmount());
     transition: background-color var(--fast);
   }
 
-  &.show::backdrop {
+  &.visible::backdrop {
     background-color: rgb(0 0 0 / 0.25);
   }
 }
@@ -73,6 +74,7 @@ onBeforeUnmount(() => model.unmount());
   grid-template-columns: calc(var(--radius-medium) * 2) auto calc(var(--radius-medium) * 2);
   grid-template-rows: calc(var(--radius-medium) * 2) auto calc(var(--radius-medium) * 2);
 }
+
 .dialog-content {
   box-shadow: var(--shadow-large);
   z-index: 1;
@@ -82,41 +84,14 @@ onBeforeUnmount(() => model.unmount());
   cursor: auto;
 }
 
-.effect {
+.dialog-animation {
   transform: scale(0.5);
   opacity: 0;
-  transition:
-    transform var(--fast),
-    opacity var(--fast);
-}
+  transition: transform var(--fast), opacity var(--fast);
 
-.show.effect {
-  transform: scale(1);
-  opacity: 1;
-}
-
-.nw-resize {
-  cursor: nw-resize;
-}
-.nn-resize {
-  cursor: n-resize;
-}
-.ne-resize {
-  cursor: ne-resize;
-}
-.ww-resize {
-  cursor: w-resize;
-}
-.ee-resize {
-  cursor: e-resize;
-}
-.sw-resize {
-  cursor: sw-resize;
-}
-.ss-resize {
-  cursor: s-resize;
-}
-.se-resize {
-  cursor: se-resize;
+  &.visible {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
 </style>

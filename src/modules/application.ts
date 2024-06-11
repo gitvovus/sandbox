@@ -1,17 +1,18 @@
 import { createApp, type App } from 'vue';
 
+import { AppModel } from '@/modules/app/app-model';
+
 // ui componnents
 import UiButton from '@/ui/button.vue';
 import UiCollapse from '@/ui/collapse.vue';
 import UiDetails from '@/ui/details.vue';
+import UiDialog from '@/ui/dialog.vue';
 import UiIcon from '@/ui/icon.vue';
 import UiInput from '@/ui/input.vue';
 import UiItem from '@/ui/item.vue';
 import UiPopup from '@/ui/popup.vue';
 import UiRange from '@/ui/range.vue';
 import UiTestItem from '@/ui/test-item.vue';
-
-import Dialog from '@/modules/dialog/dialog.vue';
 
 // directives
 import { vClickStop } from '@/ui/directives';
@@ -30,11 +31,10 @@ import LogoView from '@/modules/logo/logo.vue';
 import LoremView from '@/modules/lorem/lorem.vue';
 import ResponsiveView from '@/modules/responsive/responsive.vue';
 import SvgSandbox from '@/modules/svg-sandbox/svg-sandbox.vue';
-import ThemeView from '@/modules/theme/theme-view.vue';
+import ThemeView from '@/modules/theme/theme.vue';
 import WorkerView from '@/modules/worker/worker.vue';
 
-import { AppModel } from '@/modules/app/app-model';
-
+// test
 import { TestContainer, TestHeader, TestItem } from '@/modules/sandbox/sandbox';
 
 export class Application {
@@ -48,6 +48,7 @@ export class Application {
       .component('ui-button', UiButton)
       .component('ui-collapse', UiCollapse)
       .component('ui-details', UiDetails)
+      .component('ui-dialog', UiDialog)
       .component('ui-icon', UiIcon)
       .component('ui-input', UiInput)
       .component('ui-item', UiItem)
@@ -60,7 +61,6 @@ export class Application {
       .component('bicubic-view', BicubicView)
       .component('controls-view', ControlsView)
       .component('sandbox-view', SandboxView)
-      .component('dialog-view', Dialog)
       .component('gears-view', GearsView)
       .component('logo-view', LogoView)
       .component('lorem-view', LoremView)

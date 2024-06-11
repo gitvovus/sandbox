@@ -15,7 +15,9 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <div ref="root" class="view paper">
-    <ui-item class="overlay" :model="model.root" />
+  <div class="view">
+    <div ref="root" class="paper clip view">
+      <ui-item class="clip view" :model="model.root" />
+    </div>
   </div>
 </template>

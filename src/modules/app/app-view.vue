@@ -7,15 +7,26 @@ const { model } = defineProps<{ model: AppModel }>();
 <template>
   <div class="app">
     <transition>
-      <component
-        :is="model.activePage.component"
-        v-if="model.activePage !== undefined"
-        :model="model.activePage"
-      />
+      <div v-if="model.pageIndex === 0" class="view">
+        <component
+          :is="model.activePage.component"
+          v-if="model.activePage !== undefined"
+          :model="model.activePage"
+        />
+      </div>
+      <div v-else class="view-card" :data-page-index="model.pageIndex">
+        <transition>
+          <component
+            :is="model.activePage.component"
+            v-if="model.activePage !== undefined"
+            :model="model.activePage"
+          />
+        </transition>
+      </div>
     </transition>
 
     <teleport to="body">
-      <dialog-view class="effect" :model="model.dialog">
+      <ui-dialog :model="model.dialog">
         <div class="dlg-panel">
           <div class="dlg-header">
             Draggable/resizable
@@ -33,7 +44,7 @@ const { model } = defineProps<{ model: AppModel }>();
             </ui-button>
           </div>
         </div>
-      </dialog-view>
+      </ui-dialog>
     </teleport>
 
     <div class="app-bar">
@@ -105,6 +116,16 @@ const { model } = defineProps<{ model: AppModel }>();
   background-color: rgb(var(--surface));
   padding: 0.33em 0.5em;
   gap: 0.5em;
+}
+
+.view-card {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  margin: 7vh 7vw 9vh;
+  border: 1px solid rgb(var(--line));
+  border-radius: var(--radius-medium);
+  box-shadow: var(--shadow-large);
 }
 
 .dlg-panel {

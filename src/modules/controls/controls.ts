@@ -29,7 +29,7 @@ export class Controls extends ViewModel {
   readonly #expandedGroup = ref<number | undefined>();
 
   // icons
-  readonly #showIcons = ref(true);
+  readonly #showIcons = ref(false);
 
   // range
   readonly #showRange = ref(false);
