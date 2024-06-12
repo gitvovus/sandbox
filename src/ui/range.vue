@@ -94,7 +94,7 @@ $tr: 2px;
 .range-fill {
   position: absolute;
   border-radius: $tr;
-  background-color: rgb(red, 0.25);
+  background-color: rgb(var(--red) / 0.5);
   left: -$tr;
   bottom: -$tr;
   transition: background-color var(--fast);
@@ -108,7 +108,7 @@ $tr: 2px;
 
 .range-outer:hover .range-fill,
 .range-outer:focus-within .range-fill {
-  background-color: rgb(red, 0.5);
+  background-color: rgb(var(--red));
 }
 
 .range-value {
@@ -116,7 +116,7 @@ $tr: 2px;
   width: $v;
   height: $v;
   border-radius: 50vh;
-  border: 2px solid var(--orange);
+  border: 2px solid rgb(var(--orange));
   filter: drop-shadow(0 0 3px rgb(var(--shadow)));
   &.horizontal {
     transform: translate(-50%, -50%);

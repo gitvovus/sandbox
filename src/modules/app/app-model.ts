@@ -3,11 +3,12 @@ import { ref } from 'vue';
 import { Controls } from '@/modules/controls/controls';
 import { Dialog } from '@/ui/lib/dialog';
 import { Bicubic } from '@/modules/bicubic/bicubic';
+import { BinaryTree } from '@/modules/binary-tree/binary-tree';
 import { Gears } from '@/modules/gears/gears';
-import { Worker } from '@/modules/worker/worker';
+import { Flowers } from '@/modules/flowers/flowers';
 import { Logo } from '@/modules/logo/logo';
-import { SvgSandbox } from '@/modules/svg-sandbox/svg-sandbox';
-import { Sandbox } from '@/modules/sandbox/sandbox';
+// import { SvgSandbox } from '@/modules/svg-sandbox/svg-sandbox';
+// import { Sandbox } from '@/modules/sandbox/sandbox';
 import { ViewModel } from '@/modules/view-model';
 import { Theme } from '@/modules/theme/theme';
 import { Responsive } from '@/modules/responsive/responsive';
@@ -23,15 +24,16 @@ export class AppModel extends ViewModel {
     new Logo(),
     new Bicubic(),
     new Gears(),
-    new Worker(),
+    new Flowers(),
+    new BinaryTree(),
+    // new SvgSandbox(),
+    // new Sandbox(),
     new Controls(),
-    new SvgSandbox(),
-    new Sandbox(),
     new Theme(),
   ];
 
   readonly #toolBarAlign = ref(Align.CENTER);
-  readonly #pageIndex = ref(4);
+  readonly #pageIndex = ref(3);
 
   readonly dialog = new Dialog({ resizable: true });
   readonly layout = new Responsive();

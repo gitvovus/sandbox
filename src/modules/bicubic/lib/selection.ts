@@ -2,9 +2,7 @@ import * as tri from 'three';
 
 import * as geo from '@/lib/geometry';
 
-export class SelectionGroup {
-  readonly items: tri.Object3D[] = [];
-
+export class Selection {
   #hoveredObject?: tri.Object3D;
   #selectedObject?: tri.Object3D;
 

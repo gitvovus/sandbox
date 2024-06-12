@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref } from 'vue';
-import { type Worker } from './worker';
+import { type Flowers } from './flowers';
 
-const { model } = defineProps<{ model: Worker }>();
+const { model } = defineProps<{ model: Flowers }>();
 const root = ref();
 
 onMounted(() => {

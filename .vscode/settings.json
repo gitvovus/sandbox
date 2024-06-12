@@ -3,5 +3,11 @@
   "eslint.experimental.useFlatConfig": true,
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
-  }
+  },
+  "css.lint.validProperties": [
+    "vector-effect"
+  ],
+  "scss.lint.validProperties": [
+    "vector-effect"
+  ]
 }

@@ -24,7 +24,7 @@ const defaultConfig: Config = {
 };
 
 export class Controller implements std.IDisposable {
-  #config = defaultConfig;
+  #config = { ...defaultConfig };
 
   #element?: HTMLElement;
   #disposer = new std.Disposable();
@@ -39,8 +39,6 @@ export class Controller implements std.IDisposable {
   #lastUpdate = std.time();
   #trackPointer = false;
   #pointer = { x: 0, y: 0 };
-  #panX = new tri.Vector3();
-  #panY = new tri.Vector3();
 
   constructor(options?: Partial<Config>) {
     Object.assign(this.#config, options);
@@ -98,18 +96,9 @@ export class Controller implements std.IDisposable {
   }
 
   readonly #pick = (e: PointerEvent) => {
-    if (!(e.buttons & (std.Buttons.LEFT | std.Buttons.RIGHT)) || this.#trackPointer) {
+    if (!(e.buttons & std.Buttons.LEFT) || this.#trackPointer) {
       return;
     }
-
-    const cosPhi = Math.cos(this.#config.phi);
-    const sinPhi = Math.sin(this.#config.phi);
-    const cosTheta = Math.cos(this.#config.theta);
-    const sinTheta = Math.sin(this.#config.theta);
-    this.#panX.set(-sinPhi, cosPhi, 0).multiplyScalar(this.#config.radius);
-    this.#panY
-      .set(-cosPhi * sinTheta, -sinPhi * sinTheta, cosTheta)
-      .multiplyScalar(this.#config.radius);
 
     this.#trackPointer = true;
     this.#pointer = std.elementOffset(this.#element!, e);
@@ -132,17 +121,10 @@ export class Controller implements std.IDisposable {
       this.#config.theta
         += (dy * 2 * Math.PI * this.#config.rotationSpeed) / this.#element!.clientHeight;
     }
-    else if (e.buttons & std.Buttons.RIGHT) {
-      const delta = this.#panX
-        .clone()
-        .multiplyScalar(dx / this.#element!.clientWidth)
-        .add(this.#panY.clone().multiplyScalar(-dy / this.#element!.clientHeight));
-      this.#config.lookAt.sub(delta);
-    }
   };
 
   readonly #drop = (e: PointerEvent) => {
-    if (this.#trackPointer && !(e.buttons & (std.Buttons.LEFT | std.Buttons.RIGHT))) {
+    if (this.#trackPointer && !(e.buttons & std.Buttons.LEFT)) {
       this.#element!.releasePointerCapture(e.pointerId);
       this.#trackPointer = false;
     }

@@ -10,9 +10,9 @@ import { prettyGrid } from '@/lib/svg/utils';
 import { ViewModel } from '@/modules/view-model';
 
 import * as msg from './lib/messages';
-import ImageGenerator from './lib/image-generator?worker';
+import Worker from './lib/worker?worker';
 
-import scene from '@/assets/worker/scene.svg?raw';
+import scene from '@/assets/flowers/scene.svg?raw';
 
 export class ImageData {
   readonly width: number;
@@ -26,10 +26,7 @@ export class ImageData {
   }
 }
 
-export class Worker extends ViewModel {
-  readonly component = 'worker-view';
-  readonly key = Symbol();
-
+export class Flowers extends ViewModel {
   readonly images = shallowReactive<ImageData[]>([]);
   readonly root: Item;
 
@@ -59,12 +56,12 @@ export class Worker extends ViewModel {
   #brightness = ref(0);
   #contrast = ref(0);
 
-  #worker = new ImageGenerator();
+  #worker = new Worker();
   #disposer = new Disposable();
   #mounted = new Disposable();
 
   constructor() {
-    super('worker-view');
+    super('flowers-view');
 
     this.root = fromSource(scene)!;
     const content = this.root.find('images-content')!;

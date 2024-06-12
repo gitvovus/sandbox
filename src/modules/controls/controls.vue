@@ -358,7 +358,7 @@ $h: 2em;
   background-color: rgb(0 0 0 / 0.125);
   border-radius: 8px;
   &:hover {
-    color: var(--blue);
+    color: rgb(var(--blue));
   }
 }
 .icon-name {
@@ -389,6 +389,6 @@ $h: 2em;
 
 .controls-input {
   background-color: rgb(var(--surface));
-  color: var(--orange);
+  color: rgb(var(--blue));
 }
 </style>

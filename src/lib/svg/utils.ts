@@ -1,4 +1,4 @@
-import { Item } from '@/lib/reactive';
+import { Item, type Attributes } from '@/lib/reactive';
 
 export function grid(
   width: number,
@@ -46,5 +46,42 @@ export function prettyGrid(
       new Item('line', { 'x1': -b, 'y1': a, 'x2': b, 'y2': a, 'vector-effect': 'non-scaling-stroke' }),
     );
   }
+  return grid;
+}
+
+export function comb(r: number, attrs?: Attributes) {
+  const angles = [...Array(6)].map((value, i) => (i + 0.5) * Math.PI / 3);
+  const x = angles.map(value => Math.cos(value));
+  const y = angles.map(value => Math.sin(value));
+  const a = angles.map((value, i) => `${i ? 'L' : 'M'} ${x[i] * r} ${y[i] * r}`);
+  a.push('z');
+  return new Item('path', { d: a.join(' '), ...attrs });
+}
+
+export function prettyComb(
+  r: number,
+  rComb: number,
+  groupAttrs?: Attributes,
+  combAttrs?: Attributes,
+) {
+  const k = 1.1;
+  const stepX = k * Math.sqrt(3) * rComb;
+  const stepY = k * 1.5 * rComb;
+  const n = Math.ceil(r / stepX);
+  const grid = new Item('g', { ...groupAttrs });
+
+  for (let x = -n; x <= n; ++x) {
+    grid.add(comb(rComb, { transform: `translate(${x * stepX}, 0)`, ...combAttrs }));
+  }
+
+  for (let y = 1; y <= n; ++y) {
+    for (let x = -n; x <= n - y; ++x) {
+      grid.add(
+        comb(rComb, { transform: `translate(${(y * 0.5 + x) * stepX} ${-y * stepY})`, ...combAttrs }),
+        comb(rComb, { transform: `translate(${(y * 0.5 + x) * stepX} ${y * stepY})`, ...combAttrs }),
+      );
+    }
+  }
+
   return grid;
 }

@@ -1,6 +1,6 @@
 import * as img from '@/lib/images';
 import * as std from '@/lib/std';
-import * as msg from '@/modules/worker/lib/messages';
+import * as msg from './messages';
 
 function saw(x: number) {
   const t = 0.5 * x;
@@ -56,11 +56,21 @@ async function flower(radius: number, petals: number, t: number) {
 
 const context: Worker = self as any;
 
+const requests: msg.FlowerRequest[] = [];
+
 context.onmessage = async (e: MessageEvent) => {
   if (e.data.type === 'flower') {
     const request: msg.FlowerRequest = e.data;
-    const image = await flower(request.radius, request.petals, request.t);
-    context.postMessage({ ...request, image }, [image]);
+    requests.push(request);
+    if (requests.length > 1) {
+      return;
+    }
+    while (requests.length > 0) {
+      const r = requests[0];
+      const image = await flower(r.radius, r.petals, r.t);
+      requests.shift();
+      context.postMessage({ ...r, image }, [image]);
+    }
   }
   else {
     console.log('[image-generator] unknown request:', e.data);

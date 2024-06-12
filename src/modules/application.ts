@@ -7,6 +7,7 @@ import UiButton from '@/ui/button.vue';
 import UiCollapse from '@/ui/collapse.vue';
 import UiDetails from '@/ui/details.vue';
 import UiDialog from '@/ui/dialog.vue';
+import UiHotkey from '@/ui/hotkey.vue';
 import UiIcon from '@/ui/icon.vue';
 import UiInput from '@/ui/input.vue';
 import UiItem from '@/ui/item.vue';
@@ -24,15 +25,16 @@ import TextEditor from '@/modules/theme/editors/text.vue';
 // views
 import AppView from '@/modules/app/app-view.vue';
 import BicubicView from '@/modules/bicubic/bicubic.vue';
+import BinaryTreeView from '@/modules/binary-tree/binary-tree.vue';
 import ControlsView from '@/modules/controls/controls.vue';
-import SandboxView from '@/modules/sandbox/sandbox.vue';
+import FlowersView from '@/modules/flowers/flowers.vue';
 import GearsView from '@/modules/gears/gears.vue';
 import LogoView from '@/modules/logo/logo.vue';
 import LoremView from '@/modules/lorem/lorem.vue';
 import ResponsiveView from '@/modules/responsive/responsive.vue';
-import SvgSandbox from '@/modules/svg-sandbox/svg-sandbox.vue';
+import SandboxView from '@/modules/sandbox/sandbox.vue';
+import SvgSandboxView from '@/modules/svg-sandbox/svg-sandbox.vue';
 import ThemeView from '@/modules/theme/theme.vue';
-import WorkerView from '@/modules/worker/worker.vue';
 
 // test
 import { TestContainer, TestHeader, TestItem } from '@/modules/sandbox/sandbox';
@@ -49,6 +51,7 @@ export class Application {
       .component('ui-collapse', UiCollapse)
       .component('ui-details', UiDetails)
       .component('ui-dialog', UiDialog)
+      .component('ui-hotkey', UiHotkey)
       .component('ui-icon', UiIcon)
       .component('ui-input', UiInput)
       .component('ui-item', UiItem)
@@ -59,15 +62,16 @@ export class Application {
       .directive('click-stop', vClickStop)
       // views
       .component('bicubic-view', BicubicView)
+      .component('binary-tree-view', BinaryTreeView)
       .component('controls-view', ControlsView)
-      .component('sandbox-view', SandboxView)
+      .component('flowers-view', FlowersView)
       .component('gears-view', GearsView)
       .component('logo-view', LogoView)
       .component('lorem-view', LoremView)
       .component('responsive-view', ResponsiveView)
-      .component('svg-sandbox-view', SvgSandbox)
+      .component('sandbox-view', SandboxView)
+      .component('svg-sandbox-view', SvgSandboxView)
       .component('theme-view', ThemeView)
-      .component('worker-view', WorkerView)
       // properties
       .component('color-editor', ColorEditor)
       .component('text-editor', TextEditor)

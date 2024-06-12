@@ -4,23 +4,24 @@ import * as geo from '@/lib/geometry';
 import * as img from '@/lib/images';
 import * as std from '@/lib/std';
 import { Controller } from './controller';
-import { SelectionGroup } from './selection-group';
+import { Selection } from './selection';
 
 export class Demo extends std.Disposable {
   readonly #mounted = new std.Disposable();
 
+  #element?: HTMLElement;
   readonly #scene: tri.Scene;
   readonly #camera: tri.PerspectiveCamera;
-  #element?: HTMLElement;
   readonly #controller: Controller;
   readonly #root = new tri.Group();
 
-  #z: number[] = [];
-  #meshes: tri.Mesh[] = [];
-  #coordinateGrid?: tri.LineSegments;
-  #loRes?: tri.LineSegments;
-  #hiRes?: tri.LineSegments;
-  #group = new SelectionGroup();
+  readonly #numSpheres = 7;
+  readonly #z: number[] = Array(this.#numSpheres * this.#numSpheres);
+  readonly #spheres: tri.Mesh[] = [];
+  #plane!: tri.LineSegments;
+  #loRes!: tri.LineSegments;
+  #hiRes!: tri.LineSegments;
+  #selection = new Selection();
 
   #raycaster = new tri.Raycaster();
   #trackPointer = false;
@@ -28,17 +29,15 @@ export class Demo extends std.Disposable {
   #dragCenter!: tri.Vector3;
   #dragScale = 1;
 
-  #gridSize = 7;
+  readonly #offset = -0.5 * (this.#numSpheres - 1);
   #subdiv = 10;
 
-  readonly #minGridSize = 2;
-  readonly #maxGridSize = 10;
   readonly #minSubdiv = 2;
   readonly #maxSubdiv = 16;
   readonly #minZ = -2;
   readonly #maxZ = 2;
 
-  readonly #meshColor = 0xffff00;
+  readonly #sphereColor = 0xffff00;
   readonly #loResColor = 0xf06000;
   readonly #hiResColor = 0x008000;
   readonly #fitSize = 2;
@@ -86,112 +85,100 @@ export class Demo extends std.Disposable {
   }
 
   #setup() {
-    const x0 = -this.#fitSize / 2;
-    const y0 = -this.#fitSize / 2;
-    const z0 = 0;
+    this.#plane = new tri.LineSegments(
+      geo.grid(
+        this.#numSpheres,
+        this.#numSpheres,
+        (x, y) => new tri.Vector3(x + this.#offset - 0.5, y + this.#offset - 0.5, this.#minZ),
+      ),
+      new tri.LineBasicMaterial({ color: 0, transparent: true, opacity: 0.5 }),
+    );
+    this.#plane.visible = false;
+    this.#root.add(this.#plane);
 
-    for (let y = 0; y < this.#maxGridSize; ++y) {
-      for (let x = 0; x < this.#maxGridSize; ++x) {
-        this.#z.push(this.#defaultZ(x, y));
+    this.#loRes = new tri.LineSegments(
+      geo.grid(
+        this.#numSpheres + 3,
+        this.#numSpheres + 3,
+        (x, y) => new tri.Vector3(x + this.#offset - 2, y + this.#offset - 2, 0),
+      ),
+      new tri.LineBasicMaterial({ color: this.#loResColor }),
+    );
+    this.#loRes.visible = false;
+    this.#root.add(this.#loRes);
+
+    this.#hiRes = new tri.LineSegments(
+      geo.grid(
+        (this.#numSpheres - 1) * this.#subdiv,
+        (this.#numSpheres - 1) * this.#subdiv,
+        (x, y) => new tri.Vector3(x + this.#offset, y + this.#offset, 0),
+      ),
+      new tri.LineBasicMaterial({ color: this.#hiResColor }),
+    );
+    this.#root.add(this.#hiRes);
+
+    for (let y = 0; y < this.#numSpheres; ++y) {
+      for (let x = 0; x < this.#numSpheres; ++x) {
+        const sphere = new tri.Mesh(
+          geo.sphere(1, 4),
+          new tri.MeshPhongMaterial({ color: this.#sphereColor }),
+        );
+        sphere.scale.setScalar(0.07);
+        sphere.position.set(x + this.#offset, y + this.#offset, 0);
+        this.#spheres.push(sphere);
+        this.#root.add(sphere);
       }
     }
 
-    this.#root.position.set(x0, y0, z0);
+    this.#root.scale.setScalar(this.#fitSize / this.#numSpheres);
     this.#scene.add(this.#root);
+
+    for (let y = 0; y < this.#numSpheres; ++y) {
+      for (let x = 0; x < this.#numSpheres; ++x) {
+        this.#setZ(x, y, this.#defaultZ(x, y));
+      }
+    }
 
     this.#interpolate();
   }
 
   #defaultZ(x: number, y: number) {
-    return Math.cos(x) * Math.cos(y);
+    const x0 = x + this.#offset;
+    const y0 = y + this.#offset;
+    return Math.cos(x0) * Math.cos(y0);
   }
 
   #reset(z: (x: number, y: number) => number, all: boolean = false) {
     if (all) {
-      for (let y = 0; y < this.#maxGridSize; ++y) {
-        for (let x = 0; x < this.#maxGridSize; ++x) {
+      for (let y = 0; y < this.#numSpheres; ++y) {
+        for (let x = 0; x < this.#numSpheres; ++x) {
           this.#setZ(x, y, z(x, y));
         }
       }
       this.#interpolate();
     }
-    else if (this.#group.selected) {
-      const [x, y] = this.#meshXY(this.#group.selected as tri.Mesh);
+    else if (this.#selection.selected) {
+      const [x, y] = this.#sphereXY(this.#selection.selected as tri.Mesh);
       this.#setZ(x, y, z(x, y));
       this.#interpolate();
     }
   }
 
   #interpolate() {
-    const size = this.#gridSize;
-    this.#root.scale.setScalar(this.#fitSize / size);
-
-    const grid = new Float32Array(size * size);
-    const idx = (x: number, y: number) =>
-      std.clamp(x, 0, size - 1) + std.clamp(y, 0, size - 1) * size;
-    const get = (x: number, y: number) => grid[idx(x, y)];
-    const set = (x: number, y: number, value: number) => (grid[idx(x, y)] = value);
-
-    const oldSize = Math.round(Math.sqrt(this.#meshes.length));
-    if (oldSize !== size) {
-      this.#group.selected = undefined;
-      this.#group.hovered = undefined;
-      for (const mesh of this.#meshes) {
-        this.#root.remove(mesh);
-        geo.dispose(mesh);
-      }
-      this.#meshes = [];
-      for (let y = 0; y < size; ++y) {
-        for (let x = 0; x < size; ++x) {
-          const sphere = new tri.Mesh(
-            geo.sphere(1, 4),
-            new tri.MeshPhongMaterial({ color: this.#meshColor }),
-          );
-          sphere.scale.setScalar(0.07);
-          sphere.position.set(x + 0.5, y + 0.5, this.#getZ(x, y));
-          this.#meshes.push(sphere);
-          this.#root.add(sphere);
-        }
-      }
-    }
-
-    for (let y = 0; y < size; ++y) {
-      for (let x = 0; x < size; ++x) {
-        set(x, y, this.#getZ(x, y));
-      }
-    }
-
-    if (this.#coordinateGrid) {
-      this.#root.remove(this.#coordinateGrid);
-      geo.dispose(this.#coordinateGrid);
-    }
-    this.#coordinateGrid = new tri.LineSegments(
-      geo.grid(this.#gridSize, this.#gridSize, (x, y) => new tri.Vector3(x, y, this.#minZ)),
-      new tri.LineBasicMaterial({ color: 0, transparent: true, opacity: 0.5 }),
-    );
-    this.#root.add(this.#coordinateGrid);
-
-    const visible = (this.#loRes && this.#loRes.visible) || false;
-    if (this.#loRes) {
-      this.#root.remove(this.#loRes);
-      geo.dispose(this.#loRes);
-    }
-    const g = geo.grid(
-      size + 3,
-      size + 3,
-      (x, y) => new tri.Vector3(x - 1.5, y - 1.5, get(x - 2, y - 2)),
-    );
-    this.#loRes = new tri.LineSegments(g, new tri.LineBasicMaterial({ color: this.#loResColor }));
-    this.#loRes.visible = visible;
-    this.#root.add(this.#loRes);
-
-    if (this.#hiRes) {
-      this.#root.remove(this.#hiRes);
-      geo.dispose(this.#hiRes);
-    }
-
+    const size = this.#numSpheres;
     const subdiv = this.#subdiv;
-    const h = geo.grid((size - 1) * this.#subdiv, (size - 1) * this.#subdiv, (x, y) => {
+    const idx = (x: number, y: number) => std.clamp(x, 0, size - 1) + std.clamp(y, 0, size - 1) * size;
+    const get = (x: number, y: number) => this.#z[idx(x, y)];
+
+    const lo = this.#loRes.geometry.getAttribute('position');
+    for (let y = 0; y < size + 4; ++y) {
+      for (let x = 0; x < size + 4; ++x) {
+        lo.setXYZ(x + y * (size + 4), x + this.#offset - 2, y + this.#offset - 2, get(x - 2, y - 2));
+      }
+    }
+    lo.needsUpdate = true;
+
+    const bicubic = (x: number, y: number) => {
       let dx = x / subdiv;
       let dy = y / subdiv;
       let x0 = Math.floor(dx);
@@ -206,28 +193,37 @@ export class Demo extends std.Disposable {
         --y0;
         dy = 1;
       }
-      const z = img.bicubic(dx, dy, (x, y) => get(x0 + x, y0 + y));
-      return new tri.Vector3(x / subdiv + 0.5, y / subdiv + 0.5, z);
-    });
-    this.#hiRes = new tri.LineSegments(h, new tri.LineBasicMaterial({ color: this.#hiResColor }));
-    this.#root.add(this.#hiRes);
-  }
+      return img.bicubic(dx, dy, (x, y) => get(x0 + x, y0 + y));
+    };
 
-  #getZ(x: number, y: number) {
-    return this.#z[x + y * this.#maxGridSize];
-  }
-
-  #setZ(x: number, y: number, value: number) {
-    this.#z[x + y * this.#maxGridSize] = value;
-    if (x < this.#gridSize && y < this.#gridSize) {
-      this.#meshes[x + y * this.#gridSize].position.setZ(value);
+    const hiSize = (size - 1) * subdiv;
+    const hi = this.#hiRes.geometry.getAttribute('position');
+    if (hi.count !== hiSize + hiSize) {
+      // subdiv has changed, need to recreate hi-res grid
+      this.#hiRes.geometry.dispose();
+      this.#hiRes.geometry = geo.grid(hiSize, hiSize, (x, y) => {
+        return new tri.Vector3(x / subdiv + this.#offset, y / subdiv + this.#offset, bicubic(x, y));
+      });
+    }
+    else {
+      for (let y = 0; y < hiSize; ++y) {
+        for (let x = 0; x < hiSize; ++x) {
+          hi.setZ(x + y * hiSize, bicubic(x, y));
+        }
+      }
+      hi.needsUpdate = true;
     }
   }
 
-  #meshXY(mesh: tri.Mesh): [number, number] {
-    const index = this.#meshes.findIndex(m => m === mesh);
-    const x = index % this.#gridSize;
-    const y = (index - x) / this.#gridSize;
+  #setZ(x: number, y: number, value: number) {
+    this.#z[x + y * this.#numSpheres] = value;
+    this.#spheres[x + y * this.#numSpheres].position.setZ(value);
+  }
+
+  #sphereXY(mesh: tri.Mesh): [number, number] {
+    const index = this.#spheres.findIndex(m => m === mesh);
+    const x = index % this.#numSpheres;
+    const y = (index - x) / this.#numSpheres;
     return [x, y];
   }
 
@@ -245,20 +241,20 @@ export class Demo extends std.Disposable {
     );
   }
 
-  #pick = (e: PointerEvent) => {
+  readonly #pick = (e: PointerEvent) => {
     if (!(e.buttons & 1)) {
       return;
     }
 
     const xy = this.#xyFromEvent(e);
-    const rayCast = this.#rayCast(this.#meshes, xy);
+    const rayCast = this.#rayCast(this.#spheres, xy);
     if (!rayCast) {
-      this.#group.selected = undefined;
+      this.#selection.selected = undefined;
       return;
     }
 
     const mesh = rayCast.object as tri.Mesh;
-    this.#group.selected = mesh;
+    this.#selection.selected = mesh;
 
     // save initial position to apply delta to it when dragging
     this.#dragCenter = mesh.position.clone();
@@ -267,7 +263,7 @@ export class Demo extends std.Disposable {
     mesh.updateMatrixWorld(false);
     const worldMatrix = mesh.matrixWorld;
     const worldScale = worldMatrix.getMaxScaleOnAxis();
-    const scale = worldScale / mesh.scale.x; // not count mesh own scale
+    const scale = worldScale / mesh.scale.x; // exclude mesh own scale
 
     // calculate viewport height in units, at the mesh's distance,
     // to convert pixels to units when dragging
@@ -284,11 +280,11 @@ export class Demo extends std.Disposable {
     e.stopImmediatePropagation();
   };
 
-  #drag = (e: PointerEvent) => {
+  readonly #drag = (e: PointerEvent) => {
     if (!this.#trackPointer) {
       const xy = this.#xyFromEvent(e);
-      const rayCast = this.#rayCast(this.#meshes, xy);
-      this.#group.hovered = (rayCast && rayCast.object) || undefined;
+      const rayCast = this.#rayCast(this.#spheres, xy);
+      this.#selection.hovered = (rayCast && rayCast.object) || undefined;
       return;
     }
     const { y } = std.elementOffset(this.#element!, e);
@@ -297,14 +293,14 @@ export class Demo extends std.Disposable {
     this.#reset(() => z);
   };
 
-  #drop = (e: PointerEvent) => {
+  readonly #drop = (e: PointerEvent) => {
     if (this.#trackPointer && !(e.buttons & 1)) {
       this.#element!.releasePointerCapture(e.pointerId);
       this.#trackPointer = false;
     }
   };
 
-  #keyDown = (e: KeyboardEvent) => {
+  readonly #keyDown = (e: KeyboardEvent) => {
     if (e.altKey || e.shiftKey) {
       return;
     }
@@ -321,21 +317,14 @@ export class Demo extends std.Disposable {
       case 'Digit0':
         this.#reset((x, y) => this.#defaultZ(x, y), e.ctrlKey);
         break;
+      case 'KeyG':
+        if (this.#plane) {
+          this.#plane.visible = !this.#plane.visible;
+        }
+        break;
       case 'KeyL':
         if (this.#loRes) {
           this.#loRes.visible = !this.#loRes.visible;
-        }
-        break;
-      case 'Comma':
-        if (this.#gridSize > this.#minGridSize) {
-          --this.#gridSize;
-          this.#interpolate();
-        }
-        break;
-      case 'Period':
-        if (this.#gridSize < this.#maxGridSize) {
-          ++this.#gridSize;
-          this.#interpolate();
         }
         break;
       case 'Minus':
@@ -353,6 +342,7 @@ export class Demo extends std.Disposable {
         }
         break;
       default:
+        // console.log(e.code);
         return;
     }
     e.stopImmediatePropagation();
