@@ -54,8 +54,9 @@ export class Mat {
     return new Mat(...this.elements);
   }
 
+  // source: https://drafts.csswg.org/css-transforms/#matrix-interpolation
+  // NOTE: skew is not implemented
   decompose() {
-    // source: https://drafts.csswg.org/css-transforms/#matrix-interpolation
     let x0 = this.elements[0];
     let y0 = this.elements[1];
     let x1 = this.elements[2];
@@ -83,6 +84,7 @@ export class Mat {
       y1 *= k;
     }
 
+    // Compute rotation and renormalize matrix.
     let rotation = Math.atan2(y0, x0);
     if (rotation < 0) rotation += 2 * Math.PI;
 
@@ -141,4 +143,44 @@ export function length(v: Vec) {
 export function normalize(v: Vec) {
   const k = 1 / length(v);
   return new Vec(v.x * k, v.y * k);
+}
+
+// source https://drafts.csswg.org/css-transforms/#matrix-interpolation
+// NOTE: skew is not implemented
+export function interpolate(m1: Mat, m2: Mat, k: number) {
+  const a = m1.decompose();
+  const b = m2.decompose();
+
+  if (a.rotation > Math.PI) {
+    a.rotation -= 2 * Math.PI;
+  }
+
+  if (b.rotation > Math.PI) {
+    b.rotation -= 2 * Math.PI;
+  }
+
+  if ((a.scale.x < 0 && b.scale.y < 0) || (a.scale.y < 0 && b.scale.x < 0)) {
+    a.scale.x = -a.scale.x;
+    a.scale.y = -a.scale.y;
+    a.rotation += a.rotation < 0 ? Math.PI : -Math.PI;
+  }
+
+  if (Math.abs(a.rotation - b.rotation) > Math.PI) {
+    if (a.rotation > b.rotation) {
+      a.rotation -= 2 * Math.PI;
+    }
+    else {
+      b.rotation -= 2 * Math.PI;
+    }
+  }
+
+  const t = mix(a.translation, b.translation, k);
+  const r = std.mix(a.rotation, b.rotation, k);
+  const s = mix(a.scale, b.scale, k);
+
+  const m = Mat.translation(t.x, t.y)
+    .multiply(Mat.rotation(r))
+    .multiply(Mat.scale(s.x, s.y));
+
+  return m;
 }

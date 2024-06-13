@@ -54,8 +54,10 @@ export class AppModel extends ViewModel {
       new Wrapper(a.movable, ['view margin']),
       new Wrapper(a.controls, ['view card clip shadow border']),
       new Wrapper(a.theme, ['view card']),
+      // new Wrapper(a.sandbox, ['view card clip shadow border']),
+      // new Wrapper(a.svgSandbox, ['view card clip shadow']),
     ];
-    this.index = 5;
+    this.index = 0;
   }
 
   get align() {
@@ -76,10 +78,5 @@ export class AppModel extends ViewModel {
 
   get page() {
     return this.pages[this.index];
-  }
-
-  toggle() {
-    const state = this.page.state;
-    this.page.state = state === 'full' ? 'mini' : 'full';
   }
 }

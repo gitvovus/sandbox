@@ -27,10 +27,6 @@ export interface Rotor {
   state: RotorState;
 }
 
-function use(item: Item, attributes?: Attributes) {
-  return new Item('use', { href: `#${item.attributes.id}`, ...attributes });
-}
-
 function useT(item: Item, attributes?: Attributes) {
   return new Transformable('use', { href: `#${item.attributes.id}`, ...attributes });
 }
@@ -159,22 +155,19 @@ export class Shaft implements Rotor {
   }
 
   addToScene() {
-    this.#scene.addToGround(this.#back);
-    this.#scene.addToGround(this.#base);
-    this.#scene.addToGround(this.#shaft, false);
+    this.#scene.addToLayer(0, this.#back);
+    this.#scene.addToLayer(0, this.#base);
+    this.#scene.addToLayer(0, this.#shaft);
   }
 
   removeFromScene() {
-    [this.#back, this.#base, this.#shaft].forEach((item) => {
-      this.#scene.removeRefs(item.attributes.href!);
-    });
+    [this.#back, this.#base, this.#shaft].forEach(item => item.parent!.remove(item));
   }
 }
 
 export class Gear implements Actor {
   readonly #scene: Scene;
   #refs: Transformable[];
-  #visuals: Item[];
 
   // Actor
   #radii: [number, number];
@@ -189,18 +182,12 @@ export class Gear implements Actor {
     upper: Shape,
     lowerFill: string,
     upperFill: string,
-    index: number,
   ) {
     this.#scene = scene;
 
     this.#refs = [
-      useT(lower.shape, { id: `ref:${lower.type}:${index}:0` }),
-      useT(upper.shape, { id: `ref:${upper.type}:${index}:1` }),
-    ];
-
-    this.#visuals = [
-      use(this.#refs[0], { class: `${lower.type} ${lowerFill}` }),
-      use(this.#refs[1], { class: `${upper.type} ${upperFill}` }),
+      useT(lower.shape, { class: `${lower.type} ${lowerFill}` }),
+      useT(upper.shape, { class: `${upper.type} ${upperFill}` }),
     ];
 
     this.#radii = [lower.radius, upper.radius];
@@ -257,17 +244,17 @@ export class Gear implements Actor {
   }
 
   select() {
-    this.#visuals.forEach((visual) => {
-      if (!visual.attributes.class!.includes('selected')) {
-        visual.attributes.class += ' selected';
+    this.#refs.forEach((item) => {
+      if (!item.attributes.class!.includes('selected')) {
+        item.attributes.class += ' selected';
       }
     });
   }
 
   unselect() {
-    this.#visuals.forEach((visual) => {
-      if (visual.attributes.class!.includes('selected')) {
-        visual.attributes.class = visual.attributes
+    this.#refs.forEach((item) => {
+      if (item.attributes.class!.includes('selected')) {
+        item.attributes.class = item.attributes
           .class!.split(' ')
           .filter(c => c !== 'selected')
           .join(' ');
@@ -276,34 +263,21 @@ export class Gear implements Actor {
   }
 
   addToScene() {
-    this.#scene.addDefs(...this.#refs);
-    this.#addLayers();
+    this.#refs.forEach((item, i) => this.#scene.addToLayer(i + 1, item));
   }
 
   removeFromScene() {
-    this.#refs.forEach((ref) => {
-      this.#scene.removeRefs(`#${ref.attributes.id}`);
-      this.#scene.removeDef(ref.attributes.id!);
-    });
+    this.#refs.forEach(item => item.parent!.remove(item));
   }
 
   moveToTop() {
-    this.#visuals.forEach(visual => (visual.index = -1));
+    this.#refs.forEach(item => (item.index = -1));
   }
 
   flip() {
-    this.#refs.forEach(ref => this.#scene.removeRefs(`#${ref.attributes.id}`));
     this.#refs = [this.#refs[1], this.#refs[0]];
     this.#radii = [this.#radii[1], this.#radii[0]];
     this.#types = [this.#types[1], this.#types[0]];
-    this.#visuals = [this.#visuals[1], this.#visuals[0]];
-
-    this.#addLayers();
-  }
-
-  #addLayers() {
-    for (let i = 0; i < 2; ++i) {
-      this.#scene.addToLayer(this.#visuals[i], i + 1);
-    }
+    this.addToScene();
   }
 }

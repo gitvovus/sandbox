@@ -48,7 +48,7 @@ onBeforeUnmount(() => model.unmount());
 }
 
 .shaft {
-  filter: drop-shadow(0 0 0.1px black);
+  stroke: rgb(0 0 0 / 0.5);
   &.source { fill: #209010; }
   &.mediator { fill: #e0c000; }
   &.destination { fill: #f03020; }
@@ -56,9 +56,8 @@ onBeforeUnmount(() => model.unmount());
 
 .gear,
 .stub {
-  transition: stroke 0.15s ease-in-out;
   stroke: rgb(0 0 0 / 0.5);
-  filter: drop-shadow(0 0 0.25px rgb(0 0 0 / 0.75));
+  transition: stroke 0.15s ease-in-out;
   &.selected { stroke: white; }
 }
 

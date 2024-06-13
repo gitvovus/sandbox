@@ -55,9 +55,6 @@ const { model } = defineProps<{ model: AppModel }>();
         <ui-button class="btn round" @click="model.dialog.showModal()">
           M
         </ui-button>
-        <ui-button class="btn round" @click="model.toggle()">
-          T
-        </ui-button>
         <span class="v-separator as-stretch" />
         <ui-button
           v-for="i in model.pages.length"

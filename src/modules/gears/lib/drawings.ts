@@ -13,7 +13,6 @@ export type DrawingOptions = {
   toothHeight?: number;
   shaftRadius?: number;
   baseRadius?: number;
-  teethPerUnitRadius?: number;
   margin?: number;
   shaftMargin?: number;
 };
@@ -30,7 +29,6 @@ const defaultData: DrawingData = {
   toothHeight: 0.875,
   shaftRadius: 0.375,
   baseRadius: 0.75,
-  teethPerUnitRadius,
   margin: 0.1,
   shaftMargin: 0.06,
 };

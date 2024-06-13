@@ -67,9 +67,8 @@ export class Controller implements std.IDisposable {
   #resetAnimation = new Animation();
   #resetStart = 0;
   #resetDuration = 0.5;
-  #resetPosition = new bi.Vec();
-  #resetRotation = 0;
-  #resetZoom = 1;
+  #resetFrom = bi.Mat.scale(1, 1);
+  #resetTo: bi.Mat;
 
   constructor(root: re.Item, scene: re.Item, camera: Camera, options?: Partial<Config>) {
     this.#config = Object.assign({ ...defaultConfig }, options);
@@ -77,6 +76,7 @@ export class Controller implements std.IDisposable {
     this.#scene = scene;
     this.#camera = camera;
     this.#defaultCamera = camera.clone();
+    this.#resetTo = camera.inverse;
     this.#disposer.add(() => this.#resizer.disconnect());
   }
 
@@ -115,13 +115,10 @@ export class Controller implements std.IDisposable {
 
   reset() {
     if (this.#resetAnimation.isActive()) return;
+
     this.#resetStart = time();
-    this.#resetPosition = this.#camera.position;
-    this.#resetRotation = this.#camera.rotation;
-    if (this.#resetRotation > Math.PI) {
-      this.#resetRotation -= 2 * Math.PI;
-    }
-    this.#resetZoom = this.#camera.scale.x / this.#defaultCamera.scale.x;
+    this.#resetFrom = this.#camera.inverse;
+
     this.#zoomAnimation.stop();
     this.#resetAnimation.start(this.#resetFrame);
   }
@@ -173,14 +170,11 @@ export class Controller implements std.IDisposable {
       this.#resetAnimation.stop();
       k = 1;
     }
-    this.#camera.position = new bi.Vec(
-      std.mix(this.#resetPosition.x, 0, k),
-      std.mix(this.#resetPosition.y, 0, k),
-    );
-    this.#camera.rotation = std.mix(this.#resetRotation, 0, k);
-    const zoom = std.mix(this.#resetZoom, 1, k);
-    const scale = this.#defaultCamera.scale;
-    this.#camera.scale = new bi.Vec(scale.x * zoom, scale.y * zoom);
+
+    const d = bi.Mat.inverse(bi.interpolate(this.#resetFrom, this.#resetTo, k)).decompose();
+    this.#camera.position = d.translation;
+    this.#camera.rotation = d.rotation;
+    this.#camera.scale = d.scale;
   };
 
   #setZoom(zoom: number) {

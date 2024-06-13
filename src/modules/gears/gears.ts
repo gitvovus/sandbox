@@ -14,7 +14,7 @@ import { ViewModel } from '@/modules/view-model';
 
 export class Gears extends ViewModel {
   readonly #mounted = new Disposable();
-  readonly #scene = new Scene('gb', 36.8, 36.8, 3, 0.25, false);
+  readonly #scene = new Scene('gb', 36.8, 36.8, 3);
   readonly #camera = new Camera({ scale: new Vec(1, -1) });
   readonly #controller = new Controller(this.#scene.root, this.#scene.content, this.#camera, {
     minZoom: 0.5,
@@ -29,6 +29,7 @@ export class Gears extends ViewModel {
     id: 'shaft-back',
     r: 3.5,
   });
+
   readonly #shaftBase = new Item('path', {
     'id': 'shaft-base',
     'd': drawBase(),
@@ -36,10 +37,14 @@ export class Gears extends ViewModel {
     'stroke-width': 0.25,
     'vector-effect': 'non-scaling-stroke',
   });
+
   readonly #shaftShape = new Item('path', {
-    id: 'shaft',
-    d: drawShaft(),
+    'id': 'shaft',
+    'd': drawShaft(),
+    'stroke-width': 1,
+    'vector-effect': 'non-scaling-stroke',
   });
+
   readonly #stubShapes = new Map<number, Shape>();
   readonly #gearShapes = new Map<number, Shape>();
 
@@ -80,24 +85,15 @@ export class Gears extends ViewModel {
       onElementEvent(element, 'pointerdown', this.#pick),
       onElementEvent(element, 'pointermove', this.#drag),
       onElementEvent(element, 'pointerup', this.#drop),
-      () => this.#rotationAnimation.stop(),
-      () => this.#swayAnimation.stop(),
+      // () => this.#rotationAnimation.stop(),
+      // () => this.#swayAnimation.stop(),
       () => this.#controller.dispose(),
     );
     this.#controller.mount(element);
-    // this.check();
   }
 
   unmount() {
     this.#mounted.dispose();
-  }
-
-  test() {
-    // const c = this.#camera;
-    // const d = c.transform.decompose();
-    // console.log(`original:\np: ${v2(c.position)}, r: ${c.rotation}, s: ${v2(c.scale)}`);
-    // console.log(`decomposed:\np: ${v2(d.translation)}, r: ${d.rotation}, s: ${v2(d.scale)}`);
-    // this.#shafts[0].rotation = 0.1;
   }
 
   reset() {
@@ -245,7 +241,7 @@ export class Gears extends ViewModel {
         (types[0] === 'gear' ? this.#gearShapes : this.#stubShapes).get(radii[0])!,
         (types[1] === 'gear' ? this.#gearShapes : this.#stubShapes).get(radii[1])!,
       ];
-      this.#addGear(i, shapes[0], shapes[1], fills[0], fills[1], position);
+      this.#addGear(shapes[0], shapes[1], fills[0], fills[1], position);
     });
     this.#reset(level);
   }
@@ -265,14 +261,13 @@ export class Gears extends ViewModel {
   }
 
   #addGear(
-    index: number,
     lower: Shape,
     upper: Shape,
     lowerClass: string,
     upperClass: string,
     position: Vec,
   ) {
-    const gear = new Gear(this.#scene, lower, upper, lowerClass, upperClass, index);
+    const gear = new Gear(this.#scene, lower, upper, lowerClass, upperClass);
     gear.position = gear.defaultPosition = position;
     this.#gears.push(gear);
     gear.addToScene();
