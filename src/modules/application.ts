@@ -31,10 +31,12 @@ import FlowersView from '@/modules/flowers/flowers.vue';
 import GearsView from '@/modules/gears/gears.vue';
 import LogoView from '@/modules/logo/logo.vue';
 import LoremView from '@/modules/lorem/lorem.vue';
+import MovableView from '@/modules/movable/movable.vue';
 import ResponsiveView from '@/modules/responsive/responsive.vue';
 import SandboxView from '@/modules/sandbox/sandbox.vue';
 import SvgSandboxView from '@/modules/svg-sandbox/svg-sandbox.vue';
 import ThemeView from '@/modules/theme/theme.vue';
+import WrapperView from '@/modules/wrapper/wrapper.vue';
 
 // test
 import { TestContainer, TestHeader, TestItem } from '@/modules/sandbox/sandbox';
@@ -68,10 +70,12 @@ export class Application {
       .component('gears-view', GearsView)
       .component('logo-view', LogoView)
       .component('lorem-view', LoremView)
+      .component('movable-view', MovableView)
       .component('responsive-view', ResponsiveView)
       .component('sandbox-view', SandboxView)
       .component('svg-sandbox-view', SvgSandboxView)
       .component('theme-view', ThemeView)
+      .component('wrapper-view', WrapperView)
       // properties
       .component('color-editor', ColorEditor)
       .component('text-editor', TextEditor)

@@ -63,6 +63,8 @@ export class Flowers extends ViewModel {
   constructor() {
     super('flowers-view');
 
+    this.#worker.onmessage = this.#onMessage;
+
     this.root = fromSource(scene)!;
     const content = this.root.find('images-content')!;
     this.#controller = new Controller(this.root, content, this.#camera);
@@ -75,15 +77,6 @@ export class Flowers extends ViewModel {
     this.grayscale = 0;
     this.brightness = 100;
     this.contrast = 100;
-
-    this.#worker.onmessage = (e: MessageEvent) => {
-      const data: msg.FlowerResponse = e.data;
-      this.images[data.id] = new ImageData(
-        data.radius * 2,
-        data.radius * 2,
-        img.fromImageBitmap(data.image),
-      );
-    };
 
     const image = this.root.find('image')!;
     this.#disposer.add(
@@ -191,6 +184,7 @@ export class Flowers extends ViewModel {
   generate() {
     this.selectedIndex = 0;
     this.images.length = 0;
+    this.#worker.postMessage({ type: 'stop' });
     for (let i = 0; i < this.count; ++i) {
       this.images.push(new ImageData(0, 0, ''));
       this.#worker.postMessage({
@@ -202,6 +196,21 @@ export class Flowers extends ViewModel {
       });
     }
   }
+
+  readonly #onMessage = (e: MessageEvent) => {
+    if (e.data.type !== 'flower') {
+      return;
+    }
+    const data: msg.FlowerResponse = e.data;
+    if (data.id >= this.images.length) {
+      return;
+    }
+    this.images[data.id] = new ImageData(
+      data.radius * 2,
+      data.radius * 2,
+      img.fromImageBitmap(data.image),
+    );
+  };
 
   #createStatic() {
     const back = this.root.find('images-back')!;

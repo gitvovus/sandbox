@@ -9,3 +9,7 @@ export interface FlowerRequest {
 export interface FlowerResponse extends FlowerRequest {
   image: ImageBitmap;
 }
+
+export interface StopRequest {
+  type: 'stop';
+}

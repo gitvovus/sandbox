@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref } from 'vue';
+import { type ViewState } from '@/modules/view-model';
 import { type Gears } from './gears';
 
-const { model } = defineProps<{ model: Gears }>();
+const { model } = defineProps<{
+  model: Gears;
+  state: ViewState;
+}>();
 const root = ref();
 
 onMounted(() => model.mount(root.value));
@@ -14,20 +18,23 @@ onBeforeUnmount(() => model.unmount());
     <div ref="root" class="paper clip view">
       <ui-item class="clip view" :model="model.root" />
     </div>
-    <div class="anchor top right flex gap-05 p-05">
-      <ui-button class="btn" @click="model.reset()">
-        reset
-      </ui-button>
-      <ui-button class="btn" @click="model.check()">
-        check
-      </ui-button>
-      <ui-button class="btn" @click="model.start()">
-        start
-      </ui-button>
-      <ui-button class="btn" @click="model.stop()">
-        stop
-      </ui-button>
-    </div>
+    <transition name="slow">
+      <div v-if="state === 'mini'" />
+      <div v-else class="tools top right">
+        <ui-button class="btn" @click="model.reset()">
+          reset
+        </ui-button>
+        <ui-button class="btn" @click="model.check()">
+          check
+        </ui-button>
+        <ui-button class="btn" @click="model.start()">
+          start
+        </ui-button>
+        <ui-button class="btn" @click="model.stop()">
+          stop
+        </ui-button>
+      </div>
+    </transition>
   </div>
 </template>
 

@@ -21,6 +21,7 @@ export class Theme extends ViewModel {
       (this.style as any)[item.name] = computed(() => item.toCss());
     });
     this.load();
+    this.selectedProperty = this.#properties.items[0];
   }
 
   get properties() {

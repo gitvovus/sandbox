@@ -1,8 +1,12 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue';
+import { type ViewState } from '@/modules/view-model';
 import { BinaryTree } from './binary-tree';
 
-const { model } = defineProps<{ model: BinaryTree }>();
+const { model, state } = defineProps<{
+  model: BinaryTree;
+  state: ViewState;
+}>();
 
 const root = ref();
 
@@ -30,20 +34,24 @@ function keydown(e: KeyboardEvent) {
     <div ref="root" class="paper clip view">
       <ui-item class="clip view" :model="model.root" />
     </div>
-    <div class="tools top right flex col ai-center gap-05 m-05 p-05">
-      Add/remove numbers
-      <div class="flex gap-05">
-        <input v-model="model.text" type="text" class="tree-input round px-05" @keydown="keydown">
-        <ui-button class="btn" no-focus tabindex="-1" @click="model.add()">
-          <span>+ </span>
-          <ui-hotkey>Ins</ui-hotkey>
-        </ui-button>
-        <ui-button class="btn" no-focus tabindex="-1" @click="model.remove()">
-          <span>&times; </span>
-          <ui-hotkey>Del</ui-hotkey>
-        </ui-button>
+
+    <transition name="fast">
+      <div v-if="state === 'mini'" />
+      <div v-else class="tools top right col ai-center">
+        Add/remove numbers
+        <div class="flex gap-05">
+          <input v-model="model.text" type="text" class="tree-input round px-05" @keydown="keydown">
+          <ui-button class="btn" no-focus tabindex="-1" @click="model.add()">
+            <span>+ </span>
+            <ui-hotkey>Ins</ui-hotkey>
+          </ui-button>
+          <ui-button class="btn" no-focus tabindex="-1" @click="model.remove()">
+            <span>&times; </span>
+            <ui-hotkey>Del</ui-hotkey>
+          </ui-button>
+        </div>
       </div>
-    </div>
+    </transition>
   </div>
 </template>
 

@@ -54,25 +54,28 @@ async function flower(radius: number, petals: number, t: number) {
   );
 }
 
-const context: Worker = self as any;
-
 const requests: msg.FlowerRequest[] = [];
 
+const context = self as unknown as Worker;
 context.onmessage = async (e: MessageEvent) => {
-  if (e.data.type === 'flower') {
-    const request: msg.FlowerRequest = e.data;
-    requests.push(request);
-    if (requests.length > 1) {
-      return;
-    }
-    while (requests.length > 0) {
-      const r = requests[0];
-      const image = await flower(r.radius, r.petals, r.t);
-      requests.shift();
-      context.postMessage({ ...r, image }, [image]);
-    }
-  }
-  else {
-    console.log('[image-generator] unknown request:', e.data);
+  switch (e.data.type) {
+    case 'flower':
+      requests.push(e.data);
+      if (requests.length > 1) {
+        return;
+      }
+      while (requests.length > 0) {
+        const r = requests.shift()!;
+        const image = await flower(r.radius, r.petals, r.t);
+        context.postMessage({ ...r, image }, [image]);
+      }
+      break;
+
+    case 'stop':
+      requests.length = 0;
+      break;
+
+    default:
+      console.log('[worker] unknown request:', e.data);
   }
 };

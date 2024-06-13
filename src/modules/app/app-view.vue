@@ -6,23 +6,13 @@ const { model } = defineProps<{ model: AppModel }>();
 
 <template>
   <div class="app">
-    <transition>
-      <div v-if="model.pageIndex === 0" class="view">
-        <component
-          :is="model.activePage.component"
-          v-if="model.activePage !== undefined"
-          :model="model.activePage"
-        />
-      </div>
-      <div v-else class="view-card" :data-page-index="model.pageIndex">
-        <transition>
-          <component
-            :is="model.activePage.component"
-            v-if="model.activePage !== undefined"
-            :model="model.activePage"
-          />
-        </transition>
-      </div>
+    <transition name="slow">
+      <component
+        :is="model.page.component"
+        :key="model.page.key"
+        :model="model.page"
+        :state="'full'"
+      />
     </transition>
 
     <teleport to="body">
@@ -48,10 +38,10 @@ const { model } = defineProps<{ model: AppModel }>();
     </teleport>
 
     <div class="app-bar">
-      <div :class="['spacer', { collapsed: model.toolBarAlign === Align.LEFT }]" />
+      <div :class="['spacer', { collapsed: model.align === Align.LEFT }]" />
       <div class="app-buttons">
         <ui-button
-          v-model="model.toolBarAlign"
+          v-model="model.align"
           no-focus
           tabindex="-1"
           class="btn round iconic"
@@ -59,31 +49,28 @@ const { model } = defineProps<{ model: AppModel }>();
         >
           <ui-icon class="lt" />
         </ui-button>
-        <ui-button
-          class="btn round"
-          @click="model.dialog.show()"
-        >
+        <ui-button class="btn round" @click="model.dialog.show()">
           S
         </ui-button>
-        <ui-button
-          class="btn round"
-          @click="model.dialog.showModal()"
-        >
+        <ui-button class="btn round" @click="model.dialog.showModal()">
           M
         </ui-button>
-        <span class="v-separator as-stretch" />
-        <ui-button
-          v-for="(dummy, i) in model.pages"
-          :key="i"
-          v-model="model.pageIndex"
-          class="btn round"
-          :toggle="[i]"
-        >
-          {{ i }}
+        <ui-button class="btn round" @click="model.toggle()">
+          T
         </ui-button>
         <span class="v-separator as-stretch" />
         <ui-button
-          v-model="model.toolBarAlign"
+          v-for="i in model.pages.length"
+          :key="i"
+          v-model="model.index"
+          class="btn round"
+          :toggle="[i - 1]"
+        >
+          {{ i - 1 }}
+        </ui-button>
+        <span class="v-separator as-stretch" />
+        <ui-button
+          v-model="model.align"
           no-focus
           tabindex="-1"
           class="btn round iconic"
@@ -92,7 +79,7 @@ const { model } = defineProps<{ model: AppModel }>();
           <ui-icon class="gt" />
         </ui-button>
       </div>
-      <div :class="['spacer', { collapsed: model.toolBarAlign === Align.RIGHT }]" />
+      <div :class="['spacer', { collapsed: model.align === Align.RIGHT }]" />
     </div>
   </div>
 </template>
@@ -110,7 +97,7 @@ const { model } = defineProps<{ model: AppModel }>();
 .app-buttons {
   display: flex;
   align-items: center;
-  border-radius: 4px 4px 0 0;
+  border-radius: var(--radius-small) var(--radius-small) 0 0;
   box-shadow: var(--shadow-small);
   pointer-events: auto;
   background-color: rgb(var(--surface));
@@ -118,14 +105,18 @@ const { model } = defineProps<{ model: AppModel }>();
   gap: 0.5em;
 }
 
-.view-card {
-  position: absolute;
-  inset: 0;
-  overflow: hidden;
+.border {
+  border: 1px solid rgb(var(--border));
+}
+.card {
   margin: 7vh 7vw 9vh;
-  border: 1px solid rgb(var(--line));
   border-radius: var(--radius-medium);
+}
+.shadow {
   box-shadow: var(--shadow-large);
+}
+.margin {
+  margin: 3em 3em 4em;
 }
 
 .dlg-panel {
@@ -154,7 +145,7 @@ const { model } = defineProps<{ model: AppModel }>();
   position: relative;
   flex: 1 1 auto;
   overflow: auto;
-  // pointer-events: auto;
+  pointer-events: auto;
   padding: 0 1em;
 }
 
@@ -168,12 +159,21 @@ const { model } = defineProps<{ model: AppModel }>();
   flex-grow: 0;
 }
 
-.v-enter-from,
-.v-leave-to {
+.slow-enter-from,
+.slow-leave-to {
   opacity: 0;
 }
-.v-enter-active,
-.v-leave-active {
+.slow-enter-active,
+.slow-leave-active {
   transition: opacity var(--slow);
+}
+
+.fast-enter-from,
+.fast-leave-to {
+  opacity: 0;
+}
+.fast-enter-active,
+.fast-leave-active {
+  transition: opacity var(--fast);
 }
 </style>

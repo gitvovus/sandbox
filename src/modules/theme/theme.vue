@@ -53,6 +53,10 @@ const { model } = defineProps<{ model: Theme }>();
   display: grid;
   grid-template-columns: 3fr 1fr;
   grid-template-rows: 1fr;
+  border-width: 1px;
+  border-style: solid;
+  border-radius: var(--radius-medium);
+  overflow: hidden;
 }
 .theme-content {
   padding: 0.5em;

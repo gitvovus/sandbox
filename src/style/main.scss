@@ -33,8 +33,8 @@
   --slow: 1s;
 
   --radius-small: 4px;
-  --radius-medium: 8px;
-  --radius-large: 12px;
+  --radius-medium: 6px;
+  --radius-large: 8px;
 
   --shadow-small: 0 0 5px 1px rgb(var(--shadow));
   --shadow-medium: 0 0 10px 10px rgb(var(--shadow));
@@ -78,10 +78,17 @@ p {
   box-shadow: 0 0 25vw rgb(0 0 0) inset;
 }
 
+.glass {
+  background-color: rgb(var(--glass));
+  backdrop-filter: blur(10px);
+}
+
 .tools {
   position: absolute;
-  background-color: rgb(var(--glass));
-  border-radius: 0.5em;
+  display: flex;
+  gap: 0.25em;
+  padding: 0.5em;
+  line-height: 1;
 }
 
 .surface { background-color: rgb(var(--surface)); }
