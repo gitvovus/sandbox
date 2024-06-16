@@ -38,7 +38,7 @@ const { model } = defineProps<{ model: AppModel }>();
     </teleport>
 
     <div class="app-bar">
-      <div :class="['spacer', { collapsed: model.align === Align.LEFT }]" />
+      <div :class="['animated spacer', { collapsed: model.align === Align.LEFT }]" />
       <div class="app-buttons">
         <ui-button
           v-model="model.align"
@@ -55,7 +55,7 @@ const { model } = defineProps<{ model: AppModel }>();
         <ui-button class="btn round" @click="model.dialog.showModal()">
           M
         </ui-button>
-        <span class="v-separator as-stretch" />
+        <span class="vertical separator" />
         <ui-button
           v-for="i in model.pages.length"
           :key="i"
@@ -65,7 +65,7 @@ const { model } = defineProps<{ model: AppModel }>();
         >
           {{ i - 1 }}
         </ui-button>
-        <span class="v-separator as-stretch" />
+        <span class="vertical separator" />
         <ui-button
           v-model="model.align"
           no-focus
@@ -76,7 +76,7 @@ const { model } = defineProps<{ model: AppModel }>();
           <ui-icon class="gt" />
         </ui-button>
       </div>
-      <div :class="['spacer', { collapsed: model.align === Align.RIGHT }]" />
+      <div :class="['animated spacer', { collapsed: model.align === Align.RIGHT }]" />
     </div>
   </div>
 </template>
@@ -146,14 +146,8 @@ const { model } = defineProps<{ model: AppModel }>();
   padding: 0 1em;
 }
 
-// TODO: move
-.spacer {
-  flex-grow: 1;
+.spacer.animated {
   transition: flex-grow var(--fast);
-}
-
-.spacer.collapsed {
-  flex-grow: 0;
 }
 
 .slow-enter-from,

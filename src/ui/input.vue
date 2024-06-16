@@ -1,41 +1,46 @@
 <script setup lang="ts">
 const model = defineModel<string>();
 
+type Class = string | object | Class[];
+
 withDefaults(defineProps<{
   type?: string;
   label?: string;
+  input?: Class;
+  decorator?: Class;
 }>(), {
   type: 'text',
   label: '',
+  input: '',
+  decorator: '',
 });
 </script>
 
 <template>
-  <div class="input-wrapper" :data-label="label">
-    <input v-model="model" class="input-text" :type="type">
+  <div class="input">
+    <div :class="['input-decorator', decorator]" :label="label" />
+    <input v-model="model" :type="type" :class="input">
   </div>
 </template>
 
 <style lang="scss">
-.input-wrapper {
+.input {
   position: relative;
-  padding: 0.5em;
-  border-radius: 0.25em;
-  color: inherit;
-  border: 1px solid currentColor;
-  &::after {
-    content: attr(data-label);
-    position: absolute;
-    left: 0.5em;
-    top: -0.8em;
-    background-color: inherit;
-    font-size: smaller;
-    padding: 0 3px;
+  & input {
+    position: relative;
   }
 }
-.input-text {
-  border: none;
-  background: unset;
-  color: rgb(var(--text));
+.input-decorator {
+  position: absolute;
+  inset: 0;
+  &::after {
+    content: attr(label);
+    position: absolute;
+    left: 0.5em;
+    top: -0.75em;
+    background-color: inherit;
+    font-size: 12px;
+    padding-inline: 0.25em;
+  }
 }
 </style>

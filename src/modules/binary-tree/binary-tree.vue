@@ -39,8 +39,8 @@ function keydown(e: KeyboardEvent) {
       <div v-if="state === 'mini'" />
       <div v-else class="tools top right col ai-center">
         Add/remove numbers
-        <div class="flex gap-05">
-          <input v-model="model.text" type="text" class="tree-input round px-05" @keydown="keydown">
+        <div class="flex gap-2">
+          <input v-model="model.text" type="text" class="tree-input" @keydown="keydown">
           <ui-button class="btn" no-focus tabindex="-1" @click="model.add()">
             <span>+ </span>
             <ui-hotkey>Ins</ui-hotkey>
@@ -62,7 +62,6 @@ function keydown(e: KeyboardEvent) {
 }
 .tree-input {
   width: 4em;
-  border-radius: 0.25em;
   align-self: stretch;
   flex-grow: 1;
   background-color: rgb(0 0 0 / 0.25);

@@ -1,4 +1,4 @@
-import { computed, onBeforeUnmount, onMounted, ref, watch, type Ref } from 'vue';
+import { computed, onBeforeUnmount, onMounted, ref, watch, type ModelRef, type Ref } from 'vue';
 
 import { Disposable, Mouse, clamp, mix, onElementEvent } from '@/lib/std';
 
@@ -7,12 +7,9 @@ export function useResizer(
   callback: (width: number, height: number) => void,
 ) {
   const mounted = new Disposable();
-
-  const resize = (entries: ResizeObserverEntry[]) => {
-    const { width, height } = entries[0].contentRect;
-    callback(width, height);
-  };
-  const resizer = new ResizeObserver(resize);
+  const resizer = new ResizeObserver(
+    () => callback(el.value?.clientWidth || 0, el.value?.clientHeight || 0),
+  );
 
   onMounted(() => {
     if (el.value) {
@@ -98,15 +95,15 @@ export function useHorizontal(el: Ref<HTMLElement | undefined>) {
 export function useRange(
   outer: Ref<HTMLElement | undefined>,
   inner: Ref<HTMLElement | undefined>,
-  props: { modelValue: number; min: number; max: number; step: number },
-  emit: (e: 'update:modelValue', value: number) => void,
+  model: ModelRef<number>,
+  props: { min: number; max: number; step: number },
 ) {
   const { x, y } = useClamp(outer, inner);
   const horizontal = useHorizontal(outer);
 
   const percents = computed(() => {
     const range = props.max - props.min;
-    const value = 100 * (props.modelValue - props.min);
+    const value = 100 * (model.value - props.min);
     return range > 0 ? value / range : 0;
   });
 
@@ -118,19 +115,19 @@ export function useRange(
   }
 
   function update(normalized: number) {
-    emit('update:modelValue', toRange(normalized));
+    model.value = toRange(normalized);
   }
 
   const mounted = new Disposable();
 
   onMounted(() => {
     mounted.add(
-      watch([x, y], () => {
+      watch([x, y], ([x, y]) => {
         if (horizontal.value) {
-          update(x.value);
+          update(x);
         }
         else {
-          update(1 - y.value);
+          update(1 - y);
         }
       }),
     );
@@ -139,14 +136,14 @@ export function useRange(
         onElementEvent(outer.value, 'keydown', (e: KeyboardEvent) => {
           const step = props.step || 1;
           let value: number;
-          switch (e.code) {
+          switch (e.key) {
             case 'ArrowLeft':
             case 'ArrowDown':
-              value = Math.max(props.min, props.modelValue - step);
+              value = Math.max(props.min, model.value - step);
               break;
             case 'ArrowRight':
             case 'ArrowUp':
-              value = Math.min(props.max, props.modelValue + step);
+              value = Math.min(props.max, model.value + step);
               break;
             case 'Home':
               value = props.min;
@@ -158,8 +155,8 @@ export function useRange(
               return;
           }
           e.stopPropagation();
-          if (value !== props.modelValue) {
-            emit('update:modelValue', value);
+          if (value !== model.value) {
+            model.value = value;
           }
         }),
       );

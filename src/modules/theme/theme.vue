@@ -10,10 +10,6 @@ const { model } = defineProps<{ model: Theme }>();
       <component :is="`h${i}`" v-for="i in 4" :key="i">
         Header, h{{ i }}
       </component>
-      <lorem-view :paragraphs="1" />
-      <div v-for="i in [200, 300, 400, 500, 600, 700]" :key="i" :class="['f-36', `fw-${i}`]">
-        Lorem ipsum
-      </div>
     </div>
     <div class="theme-tools">
       <div class="theme-editor">
@@ -23,20 +19,18 @@ const { model } = defineProps<{ model: Theme }>();
           :model="model.selectedProperty"
         />
       </div>
-      <div class="theme-list">
+      <div class="property-list">
         <template v-for="item in model.properties" :key="item.name">
           <div
-            :class="['theme-item', { 'selected': model.selectedProperty === item }]"
+            :class="['property-item', { 'selected': model.selectedProperty === item }]"
+            tabindex="0"
             @click="model.selectedProperty = item"
           >
             {{ item.name }}
           </div>
         </template>
       </div>
-      <div class="flex m-05 gap-05">
-        <!-- <ui-button class="btn" @click="model.clear()">
-            Clear
-          </ui-button> -->
+      <div class="flex m-2 gap-2">
         <ui-button class="btn" @click="model.save()">
           Save
         </ui-button>
@@ -73,15 +67,19 @@ const { model } = defineProps<{ model: Theme }>();
   position: relative;
   min-height: 10em;
 }
-.theme-list {
+.property-list {
   display: flex;
   flex-direction: column;
   overflow: auto;
 }
-.theme-item {
+.property-item {
   user-select: none;
   padding: 0 0.5em;
   line-height: 1.5;
+  &:hover,
+  &:focus {
+    background-color: rgb(var(--btn-bg) / 0.0625);
+  }
   &.selected {
     background-color: rgb(128 0 0 / 0.25);
   }

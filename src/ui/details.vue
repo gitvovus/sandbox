@@ -1,25 +1,21 @@
 <script setup lang="ts">
 import { computed } from 'vue';
 
+const model = defineModel<any>();
 const props = defineProps<{
-  modelValue: any;
   toggle?: undefined | '' | [any] | [any, any];
-}>();
-
-const emit = defineEmits<{
-  'update:modelValue': [any];
 }>();
 
 const expanded = computed(() => {
   const toggle = props.toggle;
   if (toggle === undefined || toggle === '') {
-    return !!props.modelValue;
+    return !!model.value;
   }
   else if (toggle.length === 1) {
-    return props.modelValue === toggle[0];
+    return model.value === toggle[0];
   }
   else if (toggle.length === 2) {
-    return props.modelValue === toggle[1];
+    return model.value === toggle[1];
   }
   return undefined;
 });
@@ -27,13 +23,13 @@ const expanded = computed(() => {
 function click(e: Event) {
   const toggle = props.toggle;
   if (toggle === undefined || toggle === '') {
-    emit('update:modelValue', !props.modelValue);
+    model.value = !model.value;
   }
   else if (toggle.length === 1) {
-    emit('update:modelValue', props.modelValue === toggle[0] ? undefined : toggle[0]);
+    model.value = model.value === toggle[0] ? undefined : toggle[0];
   }
   else if (toggle.length === 2) {
-    emit('update:modelValue', props.modelValue === toggle[0] ? toggle[1] : toggle[0]);
+    model.value = model.value === toggle[0] ? toggle[1] : toggle[0];
   }
 }
 </script>

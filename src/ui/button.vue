@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 
+const model = defineModel<any>();
+
 const props = defineProps<{
-  modelValue?: any;
   toggle?: undefined | '' | [any] | [any, any];
   noFocus?: undefined | '';
 }>();
 
 const emit = defineEmits<{
-  'click': [Event];
-  'update:modelValue': [any];
+  click: [Event];
 }>();
 
 const root = ref<HTMLElement>();
@@ -20,10 +20,10 @@ const checked = computed(() => {
   }
   else {
     if (props.toggle === '') {
-      return props.modelValue ? 'checked' : undefined;
+      return model.value ? 'checked' : undefined;
     }
     else {
-      return props.modelValue === props.toggle[0] ? 'checked' : undefined;
+      return model.value === props.toggle[0] ? 'checked' : undefined;
     }
   }
 });
@@ -33,15 +33,15 @@ function click(e: Event) {
     emit('click', e);
   }
   else if (props.toggle === '') {
-    emit('update:modelValue', !props.modelValue);
+    model.value = !model.value;
   }
   else if (props.toggle.length === 1) {
-    if (props.modelValue !== props.toggle[0]) {
-      emit('update:modelValue', props.toggle[0]);
+    if (model.value !== props.toggle[0]) {
+      model.value = props.toggle[0];
     }
   }
   else if (props.toggle.length === 2) {
-    emit('update:modelValue', props.modelValue === props.toggle[0] ? props.toggle[1] : props.toggle[0]);
+    model.value = model.value === props.toggle[0] ? props.toggle[1] : props.toggle[0];
   }
 }
 
@@ -62,24 +62,27 @@ function focus(e: FocusEvent) {
     @click="click"
     @focus="focus"
   >
-    <slot />
+    <slot v-bind="{ checked }" />
   </button>
 </template>
 
 <style lang="scss">
+// TODO: organize, move
 .btn {
-  background: rgb(255 255 255 / 0.0625);
+  height: 2.25em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  background: rgb(var(--btn-bg) / 0.0625);
   border: 1px solid transparent;
-  border-radius: 0.25em;
-  color: inherit;
-  outline: none;
+  border-radius: var(--radius-small);
   user-select: none;
-  padding: 0.5em 0.75em;
+  padding-inline: 0.75em;
   transition:
     background-color var(--fast),
     border-color var(--fast),
-    box-shadow var(--fast),
-    text-shadow var(--fast);
+    color var(--fast);
 }
 
 .btn[disabled] {
@@ -88,23 +91,23 @@ function focus(e: FocusEvent) {
 }
 
 .btn:focus {
-  border-color: rgb(255 255 255 / 0.25);
+  border-color: rgb(var(--btn-bg) / 0.25);
 }
 
 .btn[checked] {
-  background-color: rgb(255 255 255 / 0.125);
+  background-color: rgb(var(--btn-bg) / 0.125);
 }
 
 .btn:hover:not([checked]) {
-  background-color: rgb(255 255 255 / 0.125);
+  background-color: rgb(var(--btn-bg) / 0.125);
 }
 
 .btn:hover[checked] {
-  background-color: rgb(255 255 255 / 0.375);
+  background-color: rgb(var(--btn-bg) / 0.375);
 }
 
 .btn:active:hover {
-  background-color: rgb(255 255 255 / 0.625);
+  background-color: rgb(var(--btn-bg) / 0.5);
 }
 
 .btn.round {
@@ -112,11 +115,8 @@ function focus(e: FocusEvent) {
 }
 
 .btn.iconic {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 24px;
-  height: 24px;
+  width: 1.75rem;
+  height: 1.75rem;
   font-size: 1em;
   padding: unset;
 }
@@ -127,5 +127,115 @@ function focus(e: FocusEvent) {
 
 .btn.iconic:active:hover {
   font-size: 1.125em;
+}
+
+.cbx {
+  height: 2.25em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  background: rgb(var(--btn-bg) / 0.0625);
+  border: 1px solid transparent;
+  border-radius: var(--radius-small);
+  user-select: none;
+  padding-inline: 0.75em;
+  transition:
+    background-color var(--fast),
+    border-color var(--fast),
+    color var(--fast);
+}
+
+.cbx[disabled] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.cbx:focus {
+  border-color: rgb(var(--btn-bg) / 0.25);
+}
+
+.cbx[checked] {
+  background-color: rgb(var(--btn-bg) / 0.125);
+}
+
+.cbx:hover:not([checked]) {
+  background-color: rgb(var(--btn-bg) / 0.125);
+}
+
+.cbx:hover[checked] {
+  background-color: rgb(var(--btn-bg) / 0.375);
+}
+
+.cbx:active:hover {
+  background-color: rgb(var(--btn-bg) / 0.5);
+}
+
+.cbx.round {
+  border-radius: 50vh;
+}
+
+.cbx-frame {
+  display: flex;
+  align-items: center;
+  padding: 1px;
+  border: 1px solid rgb(var(--btn-bg) / 0.25);
+  border-radius: var(--radius-small);
+  box-shadow: var(--shadow-control-inset);
+}
+
+.radio {
+  height: 2.25em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  background: rgb(var(--btn-bg) / 0.0625);
+  border: 1px solid transparent;
+  border-radius: var(--radius-small);
+  user-select: none;
+  padding-inline: 0.75em;
+  transition:
+    background-color var(--fast),
+    border-color var(--fast),
+    color var(--fast);
+}
+
+.radio[disabled] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.radio:focus {
+  border-color: rgb(var(--btn-bg) / 0.25);
+}
+
+.radio[checked] {
+  background-color: rgb(var(--btn-bg) / 0.125);
+}
+
+.radio:hover:not([checked]) {
+  background-color: rgb(var(--btn-bg) / 0.125);
+}
+
+.radio:hover[checked] {
+  background-color: rgb(var(--btn-bg) / 0.375);
+}
+
+.radio:active:hover {
+  background-color: rgb(var(--btn-bg) / 0.5);
+}
+
+.radio.round {
+  border-radius: 50vh;
+}
+
+.radio-frame {
+  display: flex;
+  align-items: center;
+  padding: 1px;
+  border: 1px solid rgb(var(--btn-bg) / 0.3);
+  border-radius: 50vh;
+  box-shadow: var(--shadow-control-inset);
 }
 </style>

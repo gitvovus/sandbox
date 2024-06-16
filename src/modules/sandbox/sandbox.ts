@@ -73,6 +73,8 @@ export class Sandbox extends ViewModel {
 
   readonly #hidden = ref(false);
 
+  readonly #text = ref('text');
+
   constructor() {
     super('sandbox-view');
   }
@@ -83,6 +85,19 @@ export class Sandbox extends ViewModel {
 
   set hidden(value) {
     this.#hidden.value = value;
+  }
+
+  get text() {
+    return this.#text.value;
+  }
+
+  set text(value) {
+    this.#text.value = value;
+  }
+
+  get parsed() {
+    const lines = this.text.split(/(\n)/g);
+    return lines;
   }
 
   test() {

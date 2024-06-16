@@ -3,19 +3,22 @@ import { ref } from 'vue';
 import { useResizer } from '@/lib/use';
 import { Responsive } from './responsive';
 
-const { model } = defineProps<{ model: Responsive }>();
-const root = ref();
+defineProps<{ model: Responsive }>();
 
-useResizer(root, (width, height) => {
-  model.width = Math.round(width);
-  model.height = Math.round(height);
+const root = ref();
+const width = ref(0);
+const height = ref(0);
+
+useResizer(root, (w, h) => {
+  width.value = Math.round(w);
+  height.value = Math.round(h);
 });
 </script>
 
 <template>
   <div ref="root" class="scrollable responsive view">
     <code>
-      {{ model.width }} &times; {{ model.height }}
+      {{ width }} &times; {{ height }}
     </code>
   </div>
 </template>

@@ -3,9 +3,9 @@ import { computed, ref } from 'vue';
 
 import { useRange } from '@/lib/use';
 
-// TODO: use defineModel
+const model = defineModel<number>({ required: true });
+
 const props = withDefaults(defineProps<{
-  modelValue: number;
   min?: number;
   max?: number;
   step?: number;
@@ -15,30 +15,28 @@ const props = withDefaults(defineProps<{
   step: 1,
 });
 
-const emit = defineEmits<{ 'update:modelValue': [number] }>();
-
 const outer = ref();
 const inner = ref();
 
-const { horizontal, percents } = useRange(outer, inner, props, emit);
+const { horizontal, percents } = useRange(outer, inner, model, props);
 const orientation = computed(() => (horizontal.value ? 'horizontal' : 'vertical'));
 </script>
 
 <template>
-  <div ref="outer" :class="['range-outer', orientation]" tabindex="0">
+  <div ref="outer" :class="['range', orientation]" tabindex="0">
     <div ref="inner" class="range-inner">
-      <div :class="['range-strip', orientation]">
+      <div :class="['range-axis', orientation]">
         <div :class="['range-track', orientation]" />
         <div
           :class="['range-fill', orientation]"
           :style="
             horizontal
-              ? { width: `calc(${percents}% + 2 * var(--track-r))` }
-              : { height: `calc(${percents}% + 2 * var(--track-r))` }
+              ? { width: `calc(${percents}% + 2 * var(--track-radius))` }
+              : { height: `calc(${percents}% + 2 * var(--track-radius))` }
           "
         />
         <div
-          :class="['range-value', orientation, { hidden: min === max }]"
+          :class="['range-thumb', orientation, { hidden: min === max }]"
           :style="horizontal ? { left: `${percents}%` } : { bottom: `${percents}%` }"
         />
       </div>
@@ -47,18 +45,18 @@ const orientation = computed(() => (horizontal.value ? 'horizontal' : 'vertical'
 </template>
 
 <style lang="scss">
-$p: 0.75em;
-$v: 1em;
-$tr: 2px;
+$padding: 0.75em;
+$thumb-size: 1em;
+$track-radius: 2px;
 
-.range-outer {
-  --track-r: #{$tr};
+.range {
+  --track-radius: #{$track-radius};
   display: flex;
   &.horizontal {
-    padding: 0 $p;
+    padding: 0 $padding;
   }
   &.vertical {
-    padding: $p 0;
+    padding: $padding 0;
   }
 }
 
@@ -67,7 +65,7 @@ $tr: 2px;
   flex-grow: 1;
 }
 
-.range-strip {
+.range-axis {
   position: absolute;
   &.horizontal {
     left: 0;
@@ -83,38 +81,38 @@ $tr: 2px;
 
 .range-track {
   position: absolute;
-  left: -$tr;
-  top: -$tr;
-  right: -$tr;
-  bottom: -$tr;
-  border-radius: $tr;
-  box-shadow: 0 0 $tr black inset;
+  left: -$track-radius;
+  top: -$track-radius;
+  right: -$track-radius;
+  bottom: -$track-radius;
+  border-radius: $track-radius;
+  box-shadow: 0 0 $track-radius black inset;
 }
 
 .range-fill {
   position: absolute;
-  border-radius: $tr;
+  border-radius: $track-radius;
   background-color: rgb(var(--red) / 0.5);
-  left: -$tr;
-  bottom: -$tr;
+  left: -$track-radius;
+  bottom: -$track-radius;
   transition: background-color var(--fast);
   &.horizontal {
-    top: -$tr;
+    top: -$track-radius;
   }
   &.vertical {
-    right: -$tr;
+    right: -$track-radius;
   }
 }
 
-.range-outer:hover .range-fill,
-.range-outer:focus-within .range-fill {
+.range:hover .range-fill,
+.range:focus-within .range-fill {
   background-color: rgb(var(--red));
 }
 
-.range-value {
+.range-thumb {
   position: absolute;
-  width: $v;
-  height: $v;
+  width: $thumb-size;
+  height: $thumb-size;
   border-radius: 50vh;
   border: 2px solid rgb(var(--orange));
   filter: drop-shadow(0 0 3px rgb(var(--shadow)));

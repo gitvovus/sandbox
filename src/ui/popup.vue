@@ -1,30 +1,21 @@
 <script setup lang="ts">
-import { nextTick, onBeforeUnmount, onMounted, ref, watch, type WatchStopHandle } from 'vue';
+import { nextTick, onBeforeUnmount, onMounted, ref, watchEffect } from 'vue';
+import { Disposable } from '@/lib/std';
 
-// TODO: use defineModel
-const props = defineProps<{ modelValue: boolean }>();
-const emit = defineEmits<{ 'update:modelValue': [boolean] }>();
+const model = defineModel<boolean>({ required: true });
 const root = ref<HTMLElement>();
+const mounted = new Disposable();
 
-let unwatch: WatchStopHandle | undefined;
-
-onMounted(() => {
-  unwatch = watch(() => props.modelValue, update, { immediate: true });
-});
-
-onBeforeUnmount(() => {
-  unwatch?.();
-  unwatch = undefined;
-});
-
-const update = (visible: boolean) => {
-  if (!visible) return;
+onMounted(() => mounted.add(watchEffect(() => {
+  if (!model.value) return;
   const element = root.value!;
   nextTick(() => element.focus());
-};
+})));
+
+onBeforeUnmount(() => mounted.dispose());
 
 function close() {
-  emit('update:modelValue', false);
+  model.value = false;
 }
 
 function focusout(e: FocusEvent) {
@@ -43,7 +34,7 @@ function focusout(e: FocusEvent) {
 <template>
   <div
     ref="root"
-    :class="['popup', { show: modelValue }]"
+    :class="['popup', { visible: model }]"
     tabindex="-1"
     @focusout="focusout"
   >
@@ -53,16 +44,17 @@ function focusout(e: FocusEvent) {
 
 <style lang="scss">
 .popup {
-  position: fixed;
+  position: absolute;
   display: none;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   background-color: rgb(var(--surface));
-  border: 1px solid rgb(255 255 255 / 0.0625);
+  // border: 1px solid rgb(var(--border));
   box-shadow: var(--shadow-small);
   z-index: 1;
 }
 
-.popup.show {
+.popup.visible {
   display: block;
 }
 </style>

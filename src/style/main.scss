@@ -1,4 +1,5 @@
 @use 'reset';
+
 @use 'font';
 @use 'icons';
 @use 'cursors';
@@ -10,12 +11,6 @@
   @each $name, $value in $map {
     --#{$name}: #{$value};
   }
-}
-
-@mixin set-font($font-size, $line-height, $font-weight) {
-  font-size: $font-size;
-  line-height: $line-height;
-  font-weight: $font-weight;
 }
 
 :root {
@@ -39,6 +34,7 @@
   --shadow-small: 0 0 5px 1px rgb(var(--shadow));
   --shadow-medium: 0 0 10px 10px rgb(var(--shadow));
   --shadow-large: 0 0 20px 10px rgb(var(--shadow));
+  --shadow-control-inset: 0 0 0.5em rgb(0 0 0 / 0.25) inset;
 
   --z-app: 20;
   --z-dlg: 10;
@@ -53,12 +49,13 @@ dialog {
   color: rgb(var(--text));
 }
 
-.input {
-  background: rgb(0 0 0 / 0.0625);
-  border: none;
-  border-bottom: 1px solid rgb(255 255 255 / 0.0625);
-  color: inherit;
-  padding: 0.25em;
+input {
+  display: flex;
+  align-items: center;
+  padding-inline: 0.5em;
+  width: 8em;
+  border-radius: var(--radius-small);
+  box-shadow: var(--shadow-control-inset);
 }
 
 p {
@@ -94,26 +91,35 @@ p {
 .surface { background-color: rgb(var(--surface)); }
 .paper { background-color: rgb(var(--paper)); }
 
-.h-separator {
-  height: 1px;
+.separator {
   background-color: rgb(var(--line));
-}
-
-.v-separator {
-  width: 1px;
-  background-color: rgb(var(--line));
+  flex-grow: 1;
+  flex-shrink: 0;
+  &.horizontal {
+    height: 1px;
+  }
+  &.vertical {
+    width: 1px;
+    // TODO: consider unfication
+    align-self: stretch;
+  }
 }
 
 svg text { user-select: none; }
+
+.absolute { position: absolute; }
+.relative { position: relative; }
 
 .clip { overflow: hidden; }
 .scrollable { overflow: auto; }
 .hidden { visibility: hidden; }
 
+.spacer { flex-grow: 1; }
+.spacer.collapsed { flex-grow: 0; }
+
 .flex { display: flex; }
 .col { flex-direction: column; }
 .row { flex-direction: row; }
-.flex-right { margin-left: auto; }
 .ai-start { align-items: start; }
 .ai-center { align-items: center; }
 .as-stretch { align-self: stretch; }
@@ -125,23 +131,36 @@ svg text { user-select: none; }
 .right { right: 0; }
 .top { top: 0; }
 .bottom { bottom: 0; }
-.gap-05 { gap: 0.5em; }
-.gap-1 { gap: 1em; }
-
-.m-05 { margin: 0.5em; }
-.mx-05 { margin: 0 0.5em; }
-.my-05 { margin: 0.5em 0; }
-.m-1 { margin: 1em; }
-.mx-1 { margin: 0 1em; }
-.my-1 { margin: 1em 0; }
-
-.p-1 { padding: 1em; }
-.px-1 { padding: 0 1em; }
-.py-1 { padding: 1em 0; }
-.p-05 { padding: 0.5em; }
-.px-05 { padding: 0 0.5em; }
-.py-05 { padding: 0.5em 0; }
+.gap-2 { gap: 0.5rem; }
+.gap-4 { gap: 1rem; }
 
 .mouse { pointer-events: all; }
 .no-mouse { pointer-events: none; }
 .no-resize { resize: none; }
+
+// margins, paddings: m-2, mx-2 etc.
+@each $property, $prefix in ((margin m) (padding p)) {
+  @each $suffix, $value in ((2 0.5rem) (4 1rem)) {
+    .#{$prefix}-#{$suffix} {
+      #{$property}: #{$value};
+    }
+    .#{$prefix}x-#{$suffix} {
+      #{$property}-inline: $value;
+    }
+    .#{$prefix}y-#{$suffix} {
+      #{$property}-block: $value;
+    }
+    .#{$prefix}l-#{$suffix} {
+      #{$property}-inline-start: $value;
+    }
+    .#{$prefix}t-#{$suffix} {
+      #{$property}-block-start: $value;
+    }
+    .#{$prefix}r-#{$suffix} {
+      #{$property}-inline-end: $value;
+    }
+    .#{$prefix}b-#{$suffix} {
+      #{$property}-block-end: $value;
+    }
+  }
+}

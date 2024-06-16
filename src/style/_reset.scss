@@ -5,11 +5,16 @@
   margin: 0;
 }
 
-button, input, textarea {
+// TODO: check appearance
+button, dialog, input, option, select, textarea {
+  appearance: none;
   background: unset;
   border: unset;
   color: unset;
-  // font: unset;
+  font: unset;
+  height: unset;
+  outline: unset;
+  width: unset;
 }
 
 * {

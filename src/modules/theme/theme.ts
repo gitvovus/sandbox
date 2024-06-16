@@ -1,16 +1,56 @@
 import { computed, reactive, type CSSProperties } from 'vue';
 import { SingleSelection } from '@/lib/ui-models';
 import { ViewModel } from '@/modules/view-model';
-import { type PropertyBase } from '@/modules/theme/properties/base';
+import { type Property } from '@/modules/theme/properties/property';
 import { Color } from './properties/color';
 import { Text } from './properties/text';
+import { Var } from '@/modules/theme/properties/var';
 
+export class Section implements Property {
+  readonly key = Symbol();
+  readonly component = 'section-editor';
+  readonly name: string;
+
+  readonly #properties = new SingleSelection<Property>([]);
+
+  constructor(name: string) {
+    this.name = name;
+  }
+
+  get children() {
+    return this.#properties.items;
+  }
+
+  toCss() {
+    return 'section';
+  }
+
+  save() {}
+  load() {}
+};
+
+// TODO: add sections
 export class Theme extends ViewModel {
-  readonly #properties = new SingleSelection<PropertyBase>([
-    new Color('background-color', 0, 0, 0),
-    new Color('border-color', 128, 0, 0),
-    new Color('color', 255, 255, 255),
-    new Text('box-shadow', '0 0 10px 10px rgb(255 255 255 / 0.25)'),
+  readonly #dark: Property[] = [
+    // new Color('--back', 9, 30, 51, 0.75),
+    new Var('--surface', '24 28 36'),
+    new Var('background-color', 'rgb(var(--surface))'),
+    // new Color('--paper', 48, 60, 74),
+    // new Color('--glass', 0, 0, 0, 0.5),
+    // new Color('--text', 164, 172, 190),
+    // new Color('--border', 82, 88, 108, 0.35),
+    // new Color('--line', 82, 88, 108, 0.35),
+    // new Color('--shadow', 0, 0, 0, 0.5),
+    // new Color('--scroll-track', 29, 36, 43),
+    // new Color('--scroll-thumb', 42, 53, 63),
+  ];
+
+  readonly #properties = new SingleSelection<Property>([
+    ...this.#dark,
+    // new Color('background-color', 24, 28, 36),
+    new Color('border-color', 82, 88, 108, 0.5),
+    new Color('color', 164, 172, 190),
+    new Text('box-shadow', '0 0 20px 10px rgb(0 0 0 / 0.5)'),
   ]);
 
   readonly style = reactive({}) as CSSProperties;

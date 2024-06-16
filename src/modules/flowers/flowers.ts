@@ -42,8 +42,8 @@ export class Flowers extends ViewModel {
   readonly #radius = ref(250);
 
   readonly petalsMin = 3;
-  readonly petalsMax = 11;
-  readonly #petals = ref(7);
+  readonly petalsMax = 9;
+  readonly #petals = ref(5);
 
   readonly imagesMin = 10;
   readonly imagesMax = 100;

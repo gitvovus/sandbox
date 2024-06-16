@@ -13,6 +13,7 @@ import { Sandbox } from '@/modules/sandbox/sandbox';
 import { SvgSandbox } from '@/modules/svg-sandbox/svg-sandbox';
 import { Theme } from '@/modules/theme/theme';
 import { ViewModel } from '@/modules/view-model';
+import { WebPage } from '@/modules/web-page/web-page';
 import { Wrapper } from '@/modules/wrapper/wrapper';
 
 export const enum Align {
@@ -38,22 +39,24 @@ export class AppModel extends ViewModel {
       gears: new Gears(),
       flowers: new Flowers(),
       binaryTree: new BinaryTree(),
-      sandbox: new Sandbox(),
-      svgSandbox: new SvgSandbox(),
       controls: new Controls(),
       theme: new Theme(),
+      webPage: new WebPage(),
+      sandbox: new Sandbox(),
+      svgSandbox: new SvgSandbox(),
     };
     a.movable = new Movable([a.bicubic, a.gears, a.flowers, a.binaryTree]);
 
     this.pages = [
-      new Wrapper(a.logo, ['view']),
-      new Wrapper(a.bicubic, ['view card clip shadow']),
-      new Wrapper(a.gears, ['view card clip shadow']),
-      new Wrapper(a.flowers, ['view card clip shadow']),
-      new Wrapper(a.binaryTree, ['view card clip shadow']),
-      new Wrapper(a.movable, ['view margin']),
-      new Wrapper(a.controls, ['view card clip shadow border']),
+      // new Wrapper(a.logo, ['view']),
+      // new Wrapper(a.bicubic, ['view card clip shadow']),
+      // new Wrapper(a.gears, ['view card clip shadow']),
+      // new Wrapper(a.flowers, ['view card clip shadow']),
+      // new Wrapper(a.binaryTree, ['view card clip shadow']),
+      // new Wrapper(a.movable, ['view margin']),
+      // new Wrapper(a.controls, ['view card clip shadow border']),
       new Wrapper(a.theme, ['view card']),
+      // new Wrapper(a.webPage, ['view card clip']),
       // new Wrapper(a.sandbox, ['view card clip shadow border']),
       // new Wrapper(a.svgSandbox, ['view card clip shadow']),
     ];

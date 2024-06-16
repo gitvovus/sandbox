@@ -1,10 +1,15 @@
-@each $i in (200, 300, 400, 500, 600, 700) {
-  @font-face {
-    font-family: 'Fira Sans';
-    src: url(@/assets/font/FiraSans-#{$i}.ttf);
-    font-weight: $i;
-    font-style: normal;
-  }
+// @each $i in (200, 300, 400, 500, 600, 700) {
+//   @font-face {
+//     font-family: 'Fira Sans';
+//     src: url(@/assets/font/FiraSans-#{$i}.ttf);
+//     font-weight: $i;
+//     font-style: normal;
+//   }
 
-  .fw-#{$i} { font-weight: $i; }
+//   .fw-#{$i} { font-weight: $i; }
+// }
+
+@font-face {
+  font-family: Inter;
+  src: url(@/assets/font/inter.ttf);
 }

@@ -20,10 +20,10 @@ const icons = ['check', 'lt', 'gt', 'up', 'down', 'menu', 'quad', 'dot'];
 <template>
   <div class="scrollable surface view">
     <!-- popup -->
-    <div>
+    <div class="flex m-2 gap-2 ai-center">
       <ui-button
         v-model="model.popup"
-        class="btn m-05"
+        class="btn"
         :disabled="model.popup"
         toggle
       >
@@ -32,8 +32,7 @@ const icons = ['check', 'lt', 'gt', 'up', 'down', 'menu', 'quad', 'dot'];
       <div class="popup-anchor">
         <ui-popup v-slot="{ close }" v-model="model.popup">
           <div class="popup-content">
-            <lorem-view :paragraphs="1" />
-            <div class="flex gap-05">
+            <div class="flex gap-2">
               <ui-button
                 class="btn round"
                 @click="() => { close(); model.click('ok'); }"
@@ -47,9 +46,9 @@ const icons = ['check', 'lt', 'gt', 'up', 'down', 'menu', 'quad', 'dot'];
                 Cancel
               </ui-button>
             </div>
-            <div class="h-separator" />
-            <div class="flex py-05 gap-05">
-              <input v-model="model.text" type="text" class="input">
+            <div class="horizontal separator" />
+            <div class="flex py-2 gap-2">
+              <input v-model="model.text" type="text">
               <ui-button
                 v-for="(item, i) in model.paragraphs"
                 :key="i"
@@ -71,97 +70,31 @@ const icons = ['check', 'lt', 'gt', 'up', 'down', 'menu', 'quad', 'dot'];
       <template #header="{ expanded }">
         <div class="details-header">
           Buttons
-          <div class="spacer h-separator" />
+          <div class="horizontal separator" />
           <ui-icon :class="['gt', { r90: expanded }]" />
         </div>
       </template>
       <template #content>
-        <div class="flex col gap-05 p-1">
-          <div class="flex gap-05">
-            <input v-model="model.text" type="text" class="input">
-            <ui-button
-              class="btn"
-              @click="model.click('focusable')"
-            >
-              focusable
+        <div class="flex col gap-2 p-4">
+          <div>Push: {{ model.message }}</div>
+          <div class="flex gap-2">
+            <input v-model="model.text" type="text">
+            <ui-button class="btn" @click="model.click('ok')">
+              Ok
             </ui-button>
             <ui-button
               class="btn"
               no-focus
               tabindex="-1"
-              @click="model.click('non-focusable')"
+              @click="model.click('no-focus')"
             >
-              non-focusable
+              no-focus
             </ui-button>
-            <ui-button
-              class="btn"
-              @click="model.click('focusable')"
-            >
-              focusable
+            <ui-button class="btn" @click="model.click('cancel')">
+              Cancel
             </ui-button>
-          </div>
-          <div>
-            Radio (index): {{ model.selectedIndex }}
-          </div>
-          <div class="flex gap-05">
-            <ui-button
-              v-for="(item, i) in model.checkboxes"
-              :key="`index[${i}]`"
-              v-model="model.selectedIndex"
-              class="btn round"
-              :toggle="[i]"
-            >
-              {{ `#${i}` }}
-            </ui-button>
-          </div>
-          <div>
-            Radio (object): { name: {{ model.selectedRadio.name }}, value:
-            {{ model.selectedRadio.value }} }
-          </div>
-          <div class="flex gap-05">
-            <ui-button
-              v-for="(item, i) in model.radioItems"
-              :key="`object[${i}]`"
-              v-model="model.selectedRadio"
-              class="btn round"
-              :toggle="[model.radioItems[i]]"
-            >
-              {{ `#${i}` }}
-            </ui-button>
-          </div>
-          <div>
-            Checkbox: [&nbsp;<span
-              v-for="(item, i) in model.checkboxes"
-              :key="i + 300"
-            >{{ item }}&nbsp;</span>]
-          </div>
-          <div class="flex gap-05">
-            <ui-button
-              v-for="(item, i) in model.checkboxes"
-              :key="`checkbox[${i}]`"
-              v-model="model.checkboxes[i]"
-              class="btn round"
-              toggle
-            >
-              {{ `#${i}` }}
-            </ui-button>
-          </div>
-          <div>Push: {{ model.message }}</div>
-          <div class="flex gap-05">
             <ui-button @click="model.click('unstyled')">
               Unstyled
-            </ui-button>
-            <ui-button
-              class="btn"
-              @click="model.click('ok')"
-            >
-              Ok
-            </ui-button>
-            <ui-button
-              class="btn"
-              @click="model.click('cancel')"
-            >
-              Cancel
             </ui-button>
             <ui-button
               class="btn"
@@ -170,21 +103,80 @@ const icons = ['check', 'lt', 'gt', 'up', 'down', 'menu', 'quad', 'dot'];
             >
               Disabled
             </ui-button>
+          </div>
+          <div class="pt-2">
+            Radio (index): {{ model.selectedIndex }}
+          </div>
+          <div class="flex gap-2">
             <ui-button
-              v-model="model.selectedRadio"
-              class="btn"
-              :toggle="[model.radioItems[0]]"
-              disabled
+              v-for="(item, i) in model.checkboxes"
+              :key="`index[${i}]`"
+              v-slot="{ checked }"
+              v-model="model.selectedIndex"
+              class="radio round"
+              :toggle="[i]"
             >
-              Disabled
+              <div class="radio-frame">
+                <ui-icon
+                  class="dot"
+                  :style="{ visibility: checked ? 'visible' : 'hidden' }"
+                />
+              </div>
+              item {{ `#${i}` }}
+            </ui-button>
+          </div>
+          <div class="pt-2">
+            Radio (object): {
+            name: {{ model.selectedRadio.name }},
+            value: {{ model.selectedRadio.value }} }
+          </div>
+          <div class="flex gap-2">
+            <ui-button
+              v-for="(item, i) in model.radioItems"
+              :key="`object[${i}]`"
+              v-slot="{ checked }"
+              v-model="model.selectedRadio"
+              class="btn round"
+              :toggle="[model.radioItems[i]]"
+            >
+              <div class="radio-frame">
+                <ui-icon
+                  class="dot"
+                  :style="{ visibility: checked ? 'visible' : 'hidden' }"
+                />
+              </div>
+              item {{ `#${i}` }}
+            </ui-button>
+          </div>
+          <div class="pt-2">
+            Checkbox: [
+            <span v-for="(item, i) in model.checkboxes" :key="i + 300">&nbsp;{{ item }}</span>
+            &nbsp;]
+          </div>
+          <div class="flex gap-2">
+            <ui-button
+              v-for="(item, i) in model.checkboxes"
+              :key="`checkbox[${i}]`"
+              v-slot="{ checked }"
+              v-model="model.checkboxes[i]"
+              class="cbx round"
+              toggle
+            >
+              <div class="cbx-frame">
+                <ui-icon
+                  class="check"
+                  :style="{ visibility: checked ? 'visible' : 'hidden' }"
+                />
+              </div>
+              item {{ `#${i}` }}
             </ui-button>
           </div>
         </div>
       </template>
     </ui-details>
 
-    <!-- dynamic content -->
-    <ui-details v-model="model.expanded">
+    <!-- dynamic details -->
+    <ui-details v-model="model.showDetails">
       <template #header="{ expanded }">
         <div class="details-header">
           Details, dynamic
@@ -198,7 +190,7 @@ const icons = ['check', 'lt', 'gt', 'up', 'down', 'menu', 'quad', 'dot'];
           >
             {{ item }}
           </ui-button>
-          <div class="spacer h-separator" />
+          <div class="horizontal separator" />
           <ui-icon :class="['gt', { r90: expanded }]" />
         </div>
       </template>
@@ -210,14 +202,14 @@ const icons = ['check', 'lt', 'gt', 'up', 'down', 'menu', 'quad', 'dot'];
     </ui-details>
 
     <!-- radio details -->
-    <ui-details v-for="(item, i) in 3" :key="i" v-model="model.expandedGroup" :toggle="[i]">
+    <ui-details v-for="(item, i) in 3" :key="i" v-model="model.showRadioDetails" :toggle="[i]">
       <template #header="{ expanded }">
         <div class="details-header">
           Details, radio
-          <div class="icon-wrap">
+          <div class="radio-frame">
             <ui-icon :class="['dot', { hidden: !expanded }]" />
           </div>
-          <div class="spacer h-separator" />
+          <div class="horizontal separator" />
           <ui-icon :class="['gt', { r90: expanded }]" />
         </div>
       </template>
@@ -233,14 +225,14 @@ const icons = ['check', 'lt', 'gt', 'up', 'down', 'menu', 'quad', 'dot'];
       <template #header="{ expanded }">
         <div class="details-header">
           Icons
-          <div class="spacer h-separator" />
+          <div class="horizontal separator" />
           <ui-icon :class="['gt', { r90: expanded }]" />
         </div>
       </template>
       <template #content>
-        <div class="p-1">
-          <div class="flex gap-05 my-05">
-            <div v-for="icon in icons" :key="icon" class="flex gap-05">
+        <div class="p-4">
+          <div class="flex gap-2 my-2">
+            <div v-for="icon in icons" :key="icon" class="flex gap-2">
               <div class="icon-content">
                 <ui-icon :class="['f-72', `${icon}`]" />
                 <div class="icon-name">
@@ -263,7 +255,7 @@ const icons = ['check', 'lt', 'gt', 'up', 'down', 'menu', 'quad', 'dot'];
       <template #header="{ expanded }">
         <div class="details-header">
           Range
-          <div class="spacer h-separator" />
+          <div class="horizontal separator" />
           <ui-icon :class="['gt', { r90: expanded }]" />
         </div>
       </template>
@@ -296,16 +288,31 @@ const icons = ['check', 'lt', 'gt', 'up', 'down', 'menu', 'quad', 'dot'];
       <template #header="{ expanded }">
         <div class="details-header">
           Input
-          <div class="spacer h-separator" />
+          <div class="horizontal separator" />
           <ui-icon :class="['gt', { r90: expanded }]" />
         </div>
       </template>
       <template #content>
-        <div class="flex col gap-05 p-1 ai-start">
+        <div class="flex col gap-2 p-4">
           <span> {{ str(model.email) }} </span>
-          <ui-input v-model="model.email" type="email" title="e-mail" class="controls-input" />
-          <span> {{ str(model.password) }} </span>
-          <ui-input v-model="model.password" type="password" title="Password" class="controls-input" />
+          <div class="flex gap-2">
+            <ui-input
+              v-model="model.email"
+              type="text"
+              label="e-mail"
+              class="py-2"
+              :input="'form-input'"
+              :decorator="'form-decorator blue'"
+            />
+            <ui-input
+              v-model="model.password"
+              type="text"
+              label="password"
+              class="py-2"
+              :input="'form-input'"
+              :decorator="'form-decorator red'"
+            />
+          </div>
         </div>
       </template>
     </ui-details>
@@ -313,22 +320,22 @@ const icons = ['check', 'lt', 'gt', 'up', 'down', 'menu', 'quad', 'dot'];
 </template>
 
 <style lang="scss">
-$w: 12em;
-$h: 2em;
+$large: 8em;
+$small: 1.5em;
 .ranges {
   display: grid;
-  grid-template-columns: $h $w;
-  grid-template-rows: $w $h;
+  grid-template-columns: $small $large;
+  grid-template-rows: $large $small;
   padding: 1em;
   gap: 0.5em;
 }
 .v-range {
-  width: $h;
-  height: $w;
+  width: $small;
+  height: $large;
 }
 .h-range {
-  width: 12em;
-  height: 2em;
+  width: $large;
+  height: $small;
 }
 
 .details-header {
@@ -349,7 +356,7 @@ $h: 2em;
   gap: 0.5em;
   max-width: 25em;
   max-height: 30em;
-  padding: 0 0.5em;
+  padding: 0.5em;
 }
 
 .icon-content {
@@ -380,15 +387,19 @@ $h: 2em;
 }
 
 .btn.small {
-  width: 1em;
-  height: 1em;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  padding-inline: 0.5em;
+  height: 1.25em;
 }
 
-.controls-input {
+.form-input {
+  padding: 0.5em 0.75em 0.25em;
+  box-shadow: none;
+}
+
+.form-decorator {
+  margin-block-start: 0.25em;
+  border: 1px solid currentColor;
+  border-radius: var(--radius-small);
   background-color: rgb(var(--surface));
-  color: rgb(var(--blue));
 }
 </style>

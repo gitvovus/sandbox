@@ -1,11 +1,24 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import { Sandbox } from './sandbox';
+import { useResizer } from '@/lib/use';
 
 const { model } = defineProps<{ model: Sandbox }>();
+
+const echo = ref<HTMLElement>();
+const text = ref<HTMLElement>();
+
+const w = ref(0);
+const h = ref(0);
+
+useResizer(text, (width, height) => {
+  w.value = width;
+  h.value = height;
+});
 </script>
 
 <template>
-  <div class="scrollable surface view flex col gap-05 p-05">
+  <div class="scrollable surface view flex col gap-2 p-05">
     <!-- grid -->
     <div class="test-grid">
       <div class="test-items-grid">
@@ -42,8 +55,9 @@ const { model } = defineProps<{ model: Sandbox }>();
         </test-container>
       </div>
     </div>
-    <!-- buttons -->
-    <div class="flex gap-05">
+
+    <!-- ExplicitPromise test -->
+    <div class="flex gap-2">
       <ui-button class="btn" @click="model.test()">
         test
       </ui-button>
@@ -57,6 +71,23 @@ const { model } = defineProps<{ model: Sandbox }>();
         reject
       </ui-button>
     </div>
+
+    <!-- textarea test -->
+    <div class="test-host">
+      <div ref="echo" class="test-echo" :style="{ width: `${w}px`, height: `${h}px` }">
+        <template v-for="(line, i) in model.parsed" :key="i">
+          <span v-if="line !== '\n'">{{ line }}</span>
+          <br v-else>
+        </template>
+      </div>
+      <textarea ref="text" v-model="model.text" type="text" class="test-text" />
+    </div>
+    <!-- <div>
+      <template v-for="(line, i) in model.parsed" :key="i">
+        <span v-if="line !== '\n'">{{ line }}</span>
+        <br v-else>
+      </template>
+    </div> -->
   </div>
 </template>
 
@@ -78,5 +109,32 @@ const { model } = defineProps<{ model: Sandbox }>();
 }
 .test-selected {
   background-color: rgba(0 0 0 / 0.25);
+}
+.test-host {
+  position: relative;
+  max-height: 100vh;
+}
+.test-echo {
+  position: absolute;
+  left: 0;
+  top: 0;
+  padding: 0.5em;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  word-break: normal;
+  word-spacing: 0;
+}
+.test-highlight {
+  background-color: darkred;
+}
+.test-text {
+  position: relative;
+  resize: both;
+  background: transparent;
+  color: transparent;
+  caret-color: rgb(var(--text));
+  padding: 0.5em;
+  margin: 0;
+  font: unset;
 }
 </style>

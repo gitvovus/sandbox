@@ -13,6 +13,7 @@ import UiInput from '@/ui/input.vue';
 import UiItem from '@/ui/item.vue';
 import UiPopup from '@/ui/popup.vue';
 import UiRange from '@/ui/range.vue';
+import UiSelect from '@/ui/select.vue';
 import UiTestItem from '@/ui/test-item.vue';
 
 // directives
@@ -21,6 +22,7 @@ import { vClickStop } from '@/ui/directives';
 // property editors
 import ColorEditor from '@/modules/theme/editors/color.vue';
 import TextEditor from '@/modules/theme/editors/text.vue';
+import VarEditor from '@/modules/theme/editors/var.vue';
 
 // views
 import AppView from '@/modules/app/app-view.vue';
@@ -36,6 +38,7 @@ import ResponsiveView from '@/modules/responsive/responsive.vue';
 import SandboxView from '@/modules/sandbox/sandbox.vue';
 import SvgSandboxView from '@/modules/svg-sandbox/svg-sandbox.vue';
 import ThemeView from '@/modules/theme/theme.vue';
+import WebPageView from '@/modules/web-page/web-page.vue';
 import WrapperView from '@/modules/wrapper/wrapper.vue';
 
 // test
@@ -59,6 +62,7 @@ export class Application {
       .component('ui-item', UiItem)
       .component('ui-popup', UiPopup)
       .component('ui-range', UiRange)
+      .component('ui-select', UiSelect)
       .component('ui-test-item', UiTestItem)
       // directives
       .directive('click-stop', vClickStop)
@@ -75,10 +79,12 @@ export class Application {
       .component('sandbox-view', SandboxView)
       .component('svg-sandbox-view', SvgSandboxView)
       .component('theme-view', ThemeView)
+      .component('web-page-view', WebPageView)
       .component('wrapper-view', WrapperView)
       // properties
       .component('color-editor', ColorEditor)
       .component('text-editor', TextEditor)
+      .component('var-editor', VarEditor)
       // test
       .component('test-container', TestContainer)
       .component('test-header', TestHeader)

@@ -8,7 +8,7 @@ export class Controls extends ViewModel {
   readonly paragraphs = [1, 2, 3, 4];
 
   // buttons
-  readonly #showButtons = ref(false);
+  readonly #showButtons = ref(true);
   readonly #selectedIndex = ref(3);
   readonly radioItems = shallowReactive(
     [...Array(4)].map((item, i) => ({
@@ -25,15 +25,15 @@ export class Controls extends ViewModel {
   readonly #text = ref('text');
 
   // accordions
-  readonly #expanded = ref(false);
-  readonly #expandedGroup = ref<number | undefined>();
+  readonly #showDetails = ref(false);
+  readonly #showRadioDetails = ref<number | undefined>();
 
   // icons
   readonly #showIcons = ref(false);
 
   // range
   readonly #showRange = ref(false);
-  readonly #rangeValue = ref(24);
+  readonly #rangeValue = ref(50);
   readonly rangeMin = 0;
   readonly rangeMax = 100;
   readonly rangeStep = 2;
@@ -99,20 +99,20 @@ export class Controls extends ViewModel {
     this.message = message;
   }
 
-  get expanded() {
-    return this.#expanded.value;
+  get showDetails() {
+    return this.#showDetails.value;
   }
 
-  set expanded(value) {
-    this.#expanded.value = value;
+  set showDetails(value) {
+    this.#showDetails.value = value;
   }
 
-  get expandedGroup() {
-    return this.#expandedGroup.value;
+  get showRadioDetails() {
+    return this.#showRadioDetails.value;
   }
 
-  set expandedGroup(value) {
-    this.#expandedGroup.value = value;
+  set showRadioDetails(value) {
+    this.#showRadioDetails.value = value;
   }
 
   get showIcons() {

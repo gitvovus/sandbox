@@ -27,7 +27,7 @@ onBeforeUnmount(() => {
     <transition name="fast">
       <div v-if="state === 'mini'" />
       <div v-else>
-        <div class="tools left top col">
+        <div class="tools top left col">
           count: {{ model.count }}
           <ui-range
             v-model="model.count"

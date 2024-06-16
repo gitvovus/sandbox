@@ -1,12 +1,13 @@
 import { ref } from 'vue';
 
-import type { PropertyBase } from '@/modules/theme/properties/base';
+import { type Property } from '@/modules/theme/properties/property';
 import { allPropsExist, hexByte, stringify } from '@/modules/theme/properties/lib';
 
-export class Color implements PropertyBase {
+export class Color implements Property {
   readonly key = Symbol();
   readonly component = 'color-editor';
   readonly name: string;
+  readonly children: Property[] = [];
 
   readonly #r = ref(0);
   readonly #g = ref(0);
