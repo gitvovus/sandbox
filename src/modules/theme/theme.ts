@@ -1,10 +1,11 @@
 import { computed, reactive, type CSSProperties } from 'vue';
 import { SingleSelection } from '@/lib/ui-models';
 import { ViewModel } from '@/modules/view-model';
-import { type Property } from '@/modules/theme/properties/property';
+import { type Property } from './properties/property';
 import { Color } from './properties/color';
-import { Text } from './properties/text';
-import { Var } from '@/modules/theme/properties/var';
+import { Shadow } from './properties/shadow';
+// import { Text } from './properties/text';
+import { Var } from './properties/var';
 
 export class Section implements Property {
   readonly key = Symbol();
@@ -34,7 +35,7 @@ export class Theme extends ViewModel {
   readonly #dark: Property[] = [
     // new Color('--back', 9, 30, 51, 0.75),
     new Var('--surface', '24 28 36'),
-    new Var('background-color', 'rgb(var(--surface))'),
+    // new Var('background-color', 'rgb(var(--surface))'),
     // new Color('--paper', 48, 60, 74),
     // new Color('--glass', 0, 0, 0, 0.5),
     // new Color('--text', 164, 172, 190),
@@ -47,10 +48,11 @@ export class Theme extends ViewModel {
 
   readonly #properties = new SingleSelection<Property>([
     ...this.#dark,
-    // new Color('background-color', 24, 28, 36),
+    new Color('background-color', 24, 28, 36),
     new Color('border-color', 82, 88, 108, 0.5),
     new Color('color', 164, 172, 190),
-    new Text('box-shadow', '0 0 20px 10px rgb(0 0 0 / 0.5)'),
+    // new Text('box-shadow', '0 0 20px 10px rgb(0 0 0 / 0.5)'),
+    new Shadow('box-shadow', '0 0 20 10 rgb(82 88 108 / 0.5)'),
   ]);
 
   readonly style = reactive({}) as CSSProperties;

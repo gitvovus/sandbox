@@ -16,10 +16,10 @@ model.use();
       <h5>Web page</h5>
       <h6>Web page</h6>
       <div class="flex col gap-2">
-        <div v-for="i in 10" :key="i" class="high surface" />
+        <div v-for="i in 10" :key="i" class="high paper" />
       </div>
     </div>
-    <div class="glass tools top right m-2 p-05">
+    <div class="glass tools top right m-2 p-2">
       {{ model.text || ':' }}
     </div>
   </div>
@@ -28,10 +28,9 @@ model.use();
 <style lang="scss">
 .web-page {
   position: absolute;
-  inset: 0 -2em 0 0;
-  padding: 0.5em 2.5em 0.5em 0.5em;
-  overflow-x: hidden;
-  overflow-y: auto;
+  inset: 0;
+  padding: 0.5em;
+  overflow: auto;
 }
 .high {
   flex-shrink: 0;

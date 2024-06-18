@@ -19,6 +19,7 @@ import { Disposable } from '@/lib/std';
 import { ViewModel } from '@/modules/view-model';
 import { ExplicitPromise } from '@/lib/async';
 import { SingleSelection } from '@/lib/ui-models';
+import { Parser } from './tests/parser';
 
 function wait(ms: number) {
   let t: number;
@@ -70,6 +71,7 @@ export class TestData {
 export class Sandbox extends ViewModel {
   readonly #data = [new TestData('one', 1), new TestData('two', 2), new TestData('three', 3)];
   readonly single = new SingleSelection(this.#data);
+  readonly parser = new Parser();
 
   readonly #hidden = ref(false);
 

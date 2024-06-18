@@ -41,4 +41,15 @@ export class Wrapper extends ViewModel {
       this.classes.splice(index, 1);
     }
   }
+
+  toggleClass(a: string, b: string) {
+    if (this.classes.findIndex(item => item === a) === -1) {
+      this.addClass(a);
+      this.removeClass(b);
+    }
+    else {
+      this.removeClass(a);
+      this.addClass(b);
+    }
+  }
 }

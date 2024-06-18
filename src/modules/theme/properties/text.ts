@@ -1,16 +1,11 @@
-import { type Property } from '@/modules/theme/properties/property';
 import { ref } from 'vue';
+import { PropertyBase } from './property';
 
-export class Text implements Property {
-  readonly key = Symbol();
-  readonly component = 'text-editor';
-  readonly name: string;
-  readonly children: Property[] = [];
-
+export class Text extends PropertyBase {
   readonly #text = ref('');
 
   constructor(name: string, text: string = '') {
-    this.name = name;
+    super('text-editor', name);
     this.text = text;
   }
 

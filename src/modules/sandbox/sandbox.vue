@@ -18,7 +18,7 @@ useResizer(text, (width, height) => {
 </script>
 
 <template>
-  <div class="scrollable surface view flex col gap-2 p-05">
+  <div class="scrollable surface view flex col gap-2 p-2">
     <!-- grid -->
     <div class="test-grid">
       <div class="test-items-grid">
@@ -82,12 +82,18 @@ useResizer(text, (width, height) => {
       </div>
       <textarea ref="text" v-model="model.text" type="text" class="test-text" />
     </div>
-    <!-- <div>
-      <template v-for="(line, i) in model.parsed" :key="i">
-        <span v-if="line !== '\n'">{{ line }}</span>
-        <br v-else>
-      </template>
-    </div> -->
+
+    <!-- parser test -->
+    <div class="flex gap-4 ai-center">
+      <input v-model="model.parser.text" :style="{ width: '20em' }">
+      <ui-button class="btn" @click="model.parser.parseShadow()">
+        parse shadow
+      </ui-button>
+      <ui-button class="btn" @click="model.parser.parseLength()">
+        parse length
+      </ui-button>
+      <span>{{ model.parser.parsed }}</span>
+    </div>
   </div>
 </template>
 

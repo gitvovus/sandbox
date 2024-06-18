@@ -1,16 +1,20 @@
-.f-36 { font-size: 36px; }
-.f-72 { font-size: 72px; }
-
 :root {
   --red: 160 0 0;
   --orange: 255 128 0;
   --blue: 30 100 200;
 }
 
-.red { color: rgb(var(--red)); }
-.orange { color: rgb(var(--orange)); }
-.blue { color: rgb(var(--blue)); }
+@each $size in (16 18 24 36 48 72) {
+  .f-#{$size} {
+    font-size: #{$size}px;
+  }
+}
 
-.bg-red { background-color: rgb(var(--red)); }
-.bg-orange { background-color: rgb(var(--orange)); }
-.bg-blue { background-color: rgb(var(--blue)); }
+@each $color in (red, orange, blue) {
+  .#{"" + $color} {
+    color: rgb(var(--#{$color}));
+  }
+  .bg-#{"" + $color} {
+    background-color: rgb(var(--#{$color}));
+  }
+}

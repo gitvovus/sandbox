@@ -238,4 +238,64 @@ function focus(e: FocusEvent) {
   border-radius: 50vh;
   box-shadow: var(--shadow-control-inset);
 }
+
+.flat {
+  // height: 2.25em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5em;
+  background-color: rgb(var(--btn-bg) / 0);
+  // border-radius: var(--radius-small);
+  user-select: none;
+  // padding-inline: 0.75em;
+  transition:
+    background-color var(--fast),
+    border-color var(--fast),
+    color var(--fast);
+}
+
+.flat[disabled] {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.flat:focus {
+  background-color: rgb(var(--btn-bg) / 0.625);
+}
+
+.flat[checked] {
+  background-color: rgb(var(--btn-bg) / 0.125);
+}
+
+.flat:hover:not([checked]) {
+  background-color: rgb(var(--btn-bg) / 0.125);
+}
+
+.flat:hover[checked] {
+  background-color: rgb(var(--btn-bg) / 0.375);
+}
+
+.flat:active:hover {
+  background-color: rgb(var(--btn-bg) / 0.5);
+}
+
+.flat.round {
+  border-radius: 50vh;
+}
+
+.flat.iconic {
+  width: 1.75rem;
+  height: 1.75rem;
+  font-size: 1em;
+  padding: unset;
+}
+
+.flat.iconic:hover {
+  font-size: 1.25em;
+}
+
+.flat.iconic:active:hover {
+  font-size: 1.125em;
+}
 </style>

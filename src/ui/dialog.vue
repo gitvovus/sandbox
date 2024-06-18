@@ -48,12 +48,10 @@ onBeforeUnmount(() => model.unmount());
 
 <style lang="scss">
 .dialog {
+  --resizer: 12px;
   position: fixed;
   inset: unset;
-  border: unset;
-  background: unset;
   overflow: unset;
-  border-radius: var(--radius-small);
   z-index: var(--z-dlg);
 
   &::backdrop {
@@ -67,21 +65,18 @@ onBeforeUnmount(() => model.unmount());
 }
 
 .dialog-layout {
-  display: grid;
   position: absolute;
-  inset: 0;
-  margin: calc(-1 * var(--radius-medium));
-  grid-template-columns: calc(var(--radius-medium) * 2) auto calc(var(--radius-medium) * 2);
-  grid-template-rows: calc(var(--radius-medium) * 2) auto calc(var(--radius-medium) * 2);
+  inset: calc(-0.5 * var(--resizer));
+  display: grid;
+  grid-template-columns: var(--resizer) auto var(--resizer);
+  grid-template-rows: var(--resizer) auto var(--resizer);
 }
 
 .dialog-content {
-  box-shadow: var(--shadow-large);
-  z-index: 1;
-  margin: calc(-1 * var(--radius-medium));
-  border-radius: var(--radius-small);
-  overflow: hidden;
+  position: relative;
+  margin: calc(-0.5 * var(--resizer));
   cursor: auto;
+  z-index: 1;
 }
 
 .dialog-animation {

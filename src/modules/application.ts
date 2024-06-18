@@ -15,13 +15,16 @@ import UiPopup from '@/ui/popup.vue';
 import UiRange from '@/ui/range.vue';
 import UiSelect from '@/ui/select.vue';
 import UiTestItem from '@/ui/test-item.vue';
+import UiZoom from '@/ui/zoom.vue';
 
 // directives
 import { vClickStop } from '@/ui/directives';
 
 // property editors
 import ColorEditor from '@/modules/theme/editors/color.vue';
+import LengthEditor from '@/modules/theme/editors/length.vue';
 import TextEditor from '@/modules/theme/editors/text.vue';
+import ShadowEditor from '@/modules/theme/editors/shadow.vue';
 import VarEditor from '@/modules/theme/editors/var.vue';
 
 // views
@@ -34,7 +37,6 @@ import GearsView from '@/modules/gears/gears.vue';
 import LogoView from '@/modules/logo/logo.vue';
 import LoremView from '@/modules/lorem/lorem.vue';
 import MovableView from '@/modules/movable/movable.vue';
-import ResponsiveView from '@/modules/responsive/responsive.vue';
 import SandboxView from '@/modules/sandbox/sandbox.vue';
 import SvgSandboxView from '@/modules/svg-sandbox/svg-sandbox.vue';
 import ThemeView from '@/modules/theme/theme.vue';
@@ -64,6 +66,7 @@ export class Application {
       .component('ui-range', UiRange)
       .component('ui-select', UiSelect)
       .component('ui-test-item', UiTestItem)
+      .component('ui-zoom', UiZoom)
       // directives
       .directive('click-stop', vClickStop)
       // views
@@ -75,7 +78,6 @@ export class Application {
       .component('logo-view', LogoView)
       .component('lorem-view', LoremView)
       .component('movable-view', MovableView)
-      .component('responsive-view', ResponsiveView)
       .component('sandbox-view', SandboxView)
       .component('svg-sandbox-view', SvgSandboxView)
       .component('theme-view', ThemeView)
@@ -83,7 +85,9 @@ export class Application {
       .component('wrapper-view', WrapperView)
       // properties
       .component('color-editor', ColorEditor)
+      .component('length-editor', LengthEditor)
       .component('text-editor', TextEditor)
+      .component('shadow-editor', ShadowEditor)
       .component('var-editor', VarEditor)
       // test
       .component('test-container', TestContainer)

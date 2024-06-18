@@ -7,9 +7,9 @@ const { model } = defineProps<{ model: Theme }>();
 <template>
   <div class="theme view" :style="model.style">
     <div class="theme-content">
-      <component :is="`h${i}`" v-for="i in 4" :key="i">
+      <!-- <component :is="`h${i}`" v-for="i in 4" :key="i">
         Header, h{{ i }}
-      </component>
+      </component> -->
     </div>
     <div class="theme-tools">
       <div class="theme-editor">
@@ -19,6 +19,9 @@ const { model } = defineProps<{ model: Theme }>();
           :model="model.selectedProperty"
         />
       </div>
+      <code class="p-1">
+        {{ model.selectedProperty?.toCss() }}
+      </code>
       <div class="property-list">
         <template v-for="item in model.properties" :key="item.name">
           <div
@@ -61,13 +64,15 @@ const { model } = defineProps<{ model: Theme }>();
   display: grid;
   grid-template-columns: 1fr;
   overflow: auto;
-  grid-template-rows: min-content minmax(0, 1fr) min-content;
+  grid-template-rows: 15em 3em minmax(0, 1fr) min-content;
 }
 .theme-editor {
   position: relative;
-  min-height: 10em;
+  padding: 0.5em;
+  border-bottom: 1px solid rgb(var(--line));
 }
 .property-list {
+  border-top: 1px solid rgb(var(--line));
   display: flex;
   flex-direction: column;
   overflow: auto;

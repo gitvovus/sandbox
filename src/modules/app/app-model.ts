@@ -8,7 +8,6 @@ import { Gears } from '@/modules/gears/gears';
 import { Flowers } from '@/modules/flowers/flowers';
 import { Logo } from '@/modules/logo/logo';
 import { Movable } from '@/modules/movable/movable';
-import { Responsive } from '@/modules/responsive/responsive';
 import { Sandbox } from '@/modules/sandbox/sandbox';
 import { SvgSandbox } from '@/modules/svg-sandbox/svg-sandbox';
 import { Theme } from '@/modules/theme/theme';
@@ -28,37 +27,34 @@ export class AppModel extends ViewModel {
 
   readonly pages: Wrapper[];
   readonly dialog = new Dialog({ resizable: true });
-  readonly layout = new Responsive();
+
+  readonly logo = new Logo();
+  readonly bicubic = new Bicubic();
+  readonly gears = new Gears();
+  readonly flowers = new Flowers();
+  readonly binaryTree = new BinaryTree();
+  readonly controls = new Controls();
+  readonly theme = new Theme();
+  readonly webPage = new WebPage();
+  readonly sandbox = new Sandbox();
+  readonly svgSandbox = new SvgSandbox();
+  readonly movable = new Movable([this.bicubic, this.gears, this.flowers, this.binaryTree]);
 
   constructor() {
     super('app-view');
 
-    const a: Record<string, ViewModel> = {
-      logo: new Logo(),
-      bicubic: new Bicubic(),
-      gears: new Gears(),
-      flowers: new Flowers(),
-      binaryTree: new BinaryTree(),
-      controls: new Controls(),
-      theme: new Theme(),
-      webPage: new WebPage(),
-      sandbox: new Sandbox(),
-      svgSandbox: new SvgSandbox(),
-    };
-    a.movable = new Movable([a.bicubic, a.gears, a.flowers, a.binaryTree]);
-
     this.pages = [
-      // new Wrapper(a.logo, ['view']),
-      // new Wrapper(a.bicubic, ['view card clip shadow']),
-      // new Wrapper(a.gears, ['view card clip shadow']),
-      // new Wrapper(a.flowers, ['view card clip shadow']),
-      // new Wrapper(a.binaryTree, ['view card clip shadow']),
-      // new Wrapper(a.movable, ['view margin']),
-      // new Wrapper(a.controls, ['view card clip shadow border']),
-      new Wrapper(a.theme, ['view card']),
-      // new Wrapper(a.webPage, ['view card clip']),
-      // new Wrapper(a.sandbox, ['view card clip shadow border']),
-      // new Wrapper(a.svgSandbox, ['view card clip shadow']),
+      new Wrapper(this.logo, ['view']),
+      new Wrapper(this.bicubic, ['view card clip shadow']),
+      new Wrapper(this.gears, ['view card clip shadow']),
+      new Wrapper(this.flowers, ['view card clip shadow']),
+      new Wrapper(this.binaryTree, ['view card clip shadow']),
+      new Wrapper(this.movable, ['view margin']),
+      new Wrapper(this.controls, ['view card clip shadow border']),
+      new Wrapper(this.theme, ['view card']),
+      // new Wrapper(this.webPage, ['view card clip']),
+      // new Wrapper(this.sandbox, ['view card clip shadow border']),
+      // new Wrapper(this.svgSandbox, ['view card clip shadow']),
     ];
     this.index = 0;
   }

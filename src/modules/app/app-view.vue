@@ -18,13 +18,23 @@ const { model } = defineProps<{ model: AppModel }>();
     <teleport to="body">
       <ui-dialog :model="model.dialog">
         <div class="dlg-panel">
-          <div class="dlg-header">
-            Draggable/resizable
+          <div class="f-18 flex p-2 ai-center">
+            Dialog
+            <div class="spacer" />
+            <ui-button class="f-24 flat mouse" @click="model.dialog.closeAsync('transform')">
+              <div>&times;</div>
+            </ui-button>
           </div>
           <div class="dlg-content">
-            <responsive-view :model="model.layout" />
+            <ui-zoom :scale="0.64">
+              <component
+                :is="model.webPage.component"
+                :model="model.webPage"
+              />
+            </ui-zoom>
           </div>
-          <div class="dlg-footer">
+          <div class="flex p-2 ai-center">
+            <div class="spacer" />
             <ui-button
               class="btn mouse"
               autofocus
@@ -122,28 +132,16 @@ const { model } = defineProps<{ model: AppModel }>();
   display: flex;
   flex-direction: column;
   pointer-events: none;
+  border-radius: var(--radius-large);
   background-color: rgb(var(--surface));
-}
-
-.dlg-header,
-.dlg-footer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.dlg-header {
-  margin: 1em;
-}
-.dlg-footer {
-  margin: 0.5em;
+  box-shadow: var(--shadow-large);
 }
 
 .dlg-content {
   position: relative;
   flex: 1 1 auto;
-  overflow: auto;
   pointer-events: auto;
-  padding: 0 1em;
+  overflow: hidden;
 }
 
 .spacer.animated {
