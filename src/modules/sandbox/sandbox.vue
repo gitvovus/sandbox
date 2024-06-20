@@ -94,6 +94,15 @@ useResizer(text, (width, height) => {
       </ui-button>
       <span>{{ model.parser.parsed }}</span>
     </div>
+
+    <!-- clone test -->
+    <div class="flex gap-2">
+      <clone-item>
+        <ui-button class="btn" @click="model.text = 'yes i am!'">
+          am i cloned?!
+        </ui-button>
+      </clone-item>
+    </div>
   </div>
 </template>
 

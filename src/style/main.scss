@@ -141,6 +141,9 @@ svg text { user-select: none; }
 .mouse { pointer-events: all; }
 .no-mouse { pointer-events: none; }
 .no-resize { resize: none; }
+.centered {
+  transform: translateX(50%) translateY(50%);
+}
 
 // margins, paddings: m-2, mx-2 etc.
 @each $suffix in (1 2 3 4) {
@@ -170,5 +173,8 @@ svg text { user-select: none; }
   }
   .gap-#{$suffix} {
     gap: $value;
+  }
+  .r-#{$suffix} {
+    border-radius: $value;
   }
 }

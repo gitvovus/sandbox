@@ -123,7 +123,6 @@ useArrowNavigation(list, { cycle: true });
   padding: 0 0.5em;
   line-height: 1.5;
   text-align: unset;
-  font-size: unset;
   &:hover,
   &:focus {
     background-color: rgb(var(--btn-bg) / 0.0625);

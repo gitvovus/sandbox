@@ -22,9 +22,9 @@ const icons = ['check', 'close', 'lt', 'gt', 'up', 'down', 'menu', 'quad', 'dot'
 
 <template>
   <div class="scrollable surface view">
+    <!-- popup -->
     <div class="flex m-2 gap-2 ai-center">
       <div class="flex gap-2">
-        <!-- popup -->
         <ui-button
           v-model="model.popup"
           class="btn"
@@ -128,10 +128,7 @@ const icons = ['check', 'close', 'lt', 'gt', 'up', 'down', 'menu', 'quad', 'dot'
               :toggle="[i]"
             >
               <div class="radio-frame">
-                <ui-icon
-                  class="dot"
-                  :style="{ visibility: checked ? 'visible' : 'hidden' }"
-                />
+                <ui-icon :class="['dot', { hidden: !checked }]" />
               </div>
               item {{ `#${i}` }}
             </ui-button>
@@ -147,22 +144,17 @@ const icons = ['check', 'close', 'lt', 'gt', 'up', 'down', 'menu', 'quad', 'dot'
               :key="`object[${i}]`"
               v-slot="{ checked }"
               v-model="model.selectedRadio"
-              class="btn round"
+              class="radio round"
               :toggle="[model.radioItems[i]]"
             >
               <div class="radio-frame">
-                <ui-icon
-                  class="dot"
-                  :style="{ visibility: checked ? 'visible' : 'hidden' }"
-                />
+                <ui-icon :class="['dot', { hidden: !checked }]" />
               </div>
               item {{ `#${i}` }}
             </ui-button>
           </div>
           <div class="pt-2">
-            Checkbox: [
-            <span v-for="(item, i) in model.checkboxes" :key="i + 300">&nbsp;{{ item }}</span>
-            &nbsp;]
+            Checkbox: [ {{ model.checkboxes.join(' ') }} ]
           </div>
           <div class="flex gap-2">
             <ui-button

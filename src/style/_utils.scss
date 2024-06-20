@@ -4,7 +4,7 @@
   --blue: 30 100 200;
 }
 
-@each $size in (16 18 24 36 48 72) {
+@each $size in (12 16 18 24 36 48 72) {
   .f-#{$size} {
     font-size: #{$size}px;
   }

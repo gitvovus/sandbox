@@ -58,7 +58,7 @@ function keydown(e: KeyboardEvent) {
 <style lang="scss">
 .tree-text {
   fill: white;
-  font-size: 0.025em;
+  font-size: 0.025em; // TODO: change to px
 }
 .tree-input {
   width: 4em;

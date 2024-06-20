@@ -46,7 +46,7 @@ import WebPageView from '@/modules/web-page/web-page.vue';
 import WrapperView from '@/modules/wrapper/wrapper.vue';
 
 // test
-import { TestContainer, TestHeader, TestItem } from '@/modules/sandbox/sandbox';
+import { CloneItem, TestContainer, TestHeader, TestItem } from '@/modules/sandbox/sandbox';
 
 export class Application {
   readonly #appModel = new AppModel();
@@ -94,6 +94,7 @@ export class Application {
       .component('shadow-editor', ShadowEditor)
       .component('var-editor', VarEditor)
       // test
+      .component('clone-item', CloneItem)
       .component('test-container', TestContainer)
       .component('test-header', TestHeader)
       .component('test-item', TestItem);

@@ -69,7 +69,8 @@ function focus(e: FocusEvent) {
 <style lang="scss">
 // TODO: organize, move
 .btn {
-  height: 2.25em;
+  font-size: 13px;
+  height: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -117,7 +118,6 @@ function focus(e: FocusEvent) {
 .btn.iconic {
   width: 1.75rem;
   height: 1.75rem;
-  font-size: 1em;
   padding: unset;
 }
 
@@ -240,6 +240,8 @@ function focus(e: FocusEvent) {
 }
 
 .flat {
+  height: 1.25em;
+  min-width: 1.25em;
   display: flex;
   align-items: center;
   justify-content: center;

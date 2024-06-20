@@ -1,11 +1,11 @@
 import { onBeforeUnmount, onMounted, ref } from 'vue';
-import { Disposable, onElementEvent } from '@/lib/std';
+import { Disposable } from '@/lib/std';
 import { ViewModel } from '@/modules/view-model';
 
 export class WebPage extends ViewModel {
   readonly root = ref<HTMLElement>();
   readonly #mounted = new Disposable();
-  readonly #text = ref('');
+  readonly #menu = ref(false);
 
   constructor() {
     super('web-page-view');
@@ -16,25 +16,17 @@ export class WebPage extends ViewModel {
     onBeforeUnmount(() => this.unmount());
   }
 
-  mount() {
-    this.#mounted.add(
-      onElementEvent(this.root.value!, 'scroll', this.#scroll),
-    );
-  }
+  mount() {}
 
   unmount() {
     this.#mounted.dispose();
   }
 
-  get text() {
-    return this.#text.value;
+  get menu() {
+    return this.#menu.value;
   }
 
-  set text(value) {
-    this.#text.value = value;
+  set menu(value) {
+    this.#menu.value = value;
   }
-
-  readonly #scroll = (e: Event) => {
-    this.text = (e.target as HTMLElement).scrollTop.toString();
-  };
 }
