@@ -1,7 +1,7 @@
 import { f3, x3, y3 } from '@/lib/helpers';
 import { type ShapeType } from '@/modules/gears/lib/shapes';
 
-export const teethPerUnitRadius = 4;
+export const teethPerUnitRadius = 3;
 
 export type DrawingOptions = {
   radius: number;

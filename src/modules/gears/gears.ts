@@ -190,7 +190,7 @@ export class Gears extends ViewModel {
 
     [
       new Shape('gear', { radius: 2, innerRadius: 0.9, offset: 0, spokes: 4 }),
-      new Shape('gear', { radius: 3, innerRadius: 0.84, offset: Math.PI / 6, spokes: 3 }),
+      new Shape('gear', { radius: 3, innerRadius: 0.84, offset: Math.PI / 3, spokes: 3 }),
       new Shape('gear', { radius: 4, innerRadius: 0.78, offset: Math.PI / 4, spokes: 4 }),
       new Shape('gear', { radius: 5, innerRadius: 0.72, offset: Math.PI / 10, spokes: 5 }),
     ].forEach(item => this.#gearShapes.set(item.radius, item));

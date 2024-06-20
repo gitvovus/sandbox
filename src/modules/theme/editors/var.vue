@@ -16,7 +16,7 @@ const { model } = defineProps<{ model: Var }>();
         </ui-button>
       </template>
       <template #popup="{ select, selected }">
-        <div class="var-popup">
+        <div class="dropdown-list">
           <div
             v-for="(item, i) in model.types"
             :key="i"
@@ -41,11 +41,4 @@ const { model } = defineProps<{ model: Var }>();
   padding: 0.25em;
   gap: 0.25em;
 }
-.var-popup {
-  display: flex;
-  flex-direction: column;
-  // max-height: 8em;
-  overflow: auto;
-}
-
 </style>
