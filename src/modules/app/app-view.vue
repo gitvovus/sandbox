@@ -19,29 +19,18 @@ const { model } = defineProps<{ model: AppModel }>();
       <ui-dialog :model="model.dialog">
         <div class="dlg-panel">
           <div class="f-18 flex p-2 ai-center">
-            Dialog
             <div class="spacer" />
             <ui-button class="f-24 flat mouse" @click="model.dialog.closeAsync('transform')">
-              <div>&times;</div>
+              <ui-icon class="close" />
             </ui-button>
           </div>
           <div class="dlg-content">
-            <ui-zoom :scale="0.64">
+            <ui-zoom :scale="0.8">
               <component
-                :is="model.webPage.component"
-                :model="model.webPage"
+                :is="model.dialogContent.component"
+                :model="model.dialogContent"
               />
             </ui-zoom>
-          </div>
-          <div class="flex p-2 ai-center">
-            <div class="spacer" />
-            <ui-button
-              class="btn mouse"
-              autofocus
-              @click="model.dialog.closeAsync('transform')"
-            >
-              Close
-            </ui-button>
           </div>
         </div>
       </ui-dialog>
@@ -133,8 +122,10 @@ const { model } = defineProps<{ model: AppModel }>();
   flex-direction: column;
   pointer-events: none;
   border-radius: var(--radius-large);
+  border: 1px solid rgb(var(--border));
   background-color: rgb(var(--surface));
   box-shadow: var(--shadow-large);
+  overflow: hidden;
 }
 
 .dlg-content {

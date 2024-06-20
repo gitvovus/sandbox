@@ -12,7 +12,7 @@ const emit = defineEmits<{
   click: [Event];
 }>();
 
-const root = ref<HTMLElement>();
+const root = ref<HTMLElement>(undefined!);
 
 const checked = computed(() => {
   if (props.toggle === undefined) {
@@ -48,7 +48,7 @@ function click(e: Event) {
 function focus(e: FocusEvent) {
   if (props.noFocus !== undefined) {
     e.preventDefault();
-    root.value?.blur();
+    root.value.blur();
     (e.relatedTarget as HTMLElement)?.focus?.();
   }
 }
@@ -103,11 +103,11 @@ function focus(e: FocusEvent) {
 }
 
 .btn:hover[checked] {
-  background-color: rgb(var(--btn-bg) / 0.375);
+  background-color: rgb(var(--btn-bg) / 0.25);
 }
 
 .btn:active:hover {
-  background-color: rgb(var(--btn-bg) / 0.5);
+  background-color: rgb(var(--btn-bg) / 0.375);
 }
 
 .btn.round {
@@ -164,11 +164,11 @@ function focus(e: FocusEvent) {
 }
 
 .cbx:hover[checked] {
-  background-color: rgb(var(--btn-bg) / 0.375);
+  background-color: rgb(var(--btn-bg) / 0.25);
 }
 
 .cbx:active:hover {
-  background-color: rgb(var(--btn-bg) / 0.5);
+  background-color: rgb(var(--btn-bg) / 0.375);
 }
 
 .cbx.round {
@@ -219,11 +219,11 @@ function focus(e: FocusEvent) {
 }
 
 .radio:hover[checked] {
-  background-color: rgb(var(--btn-bg) / 0.375);
+  background-color: rgb(var(--btn-bg) / 0.25);
 }
 
 .radio:active:hover {
-  background-color: rgb(var(--btn-bg) / 0.5);
+  background-color: rgb(var(--btn-bg) / 0.375);
 }
 
 .radio.round {
@@ -240,15 +240,13 @@ function focus(e: FocusEvent) {
 }
 
 .flat {
-  // height: 2.25em;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0.5em;
   background-color: rgb(var(--btn-bg) / 0);
-  // border-radius: var(--radius-small);
+  border-radius: var(--radius-small);
   user-select: none;
-  // padding-inline: 0.75em;
   transition:
     background-color var(--fast),
     border-color var(--fast),
@@ -261,23 +259,15 @@ function focus(e: FocusEvent) {
 }
 
 .flat:focus {
-  background-color: rgb(var(--btn-bg) / 0.625);
+  background-color: rgb(var(--btn-bg) / 0.0625);
 }
 
-.flat[checked] {
+.flat:hover {
   background-color: rgb(var(--btn-bg) / 0.125);
-}
-
-.flat:hover:not([checked]) {
-  background-color: rgb(var(--btn-bg) / 0.125);
-}
-
-.flat:hover[checked] {
-  background-color: rgb(var(--btn-bg) / 0.375);
 }
 
 .flat:active:hover {
-  background-color: rgb(var(--btn-bg) / 0.5);
+  background-color: rgb(var(--btn-bg) / 0.25);
 }
 
 .flat.round {

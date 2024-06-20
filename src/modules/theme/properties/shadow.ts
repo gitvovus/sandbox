@@ -35,7 +35,6 @@ export class Shadow extends PropertyBase {
     for (const v of values) {
       const match = v.match(/(-?\d+\.?\d*|-?\.\d+)($|px$|em$|rem$)/);
       if (!match || match.length !== 3) continue;
-      console.log(match);
       ls.push({ value: Number(match[1]), unit: match[2] });
       if (ls.length === 4) break;
     }
@@ -62,6 +61,15 @@ export class Shadow extends PropertyBase {
       if (ns.length > 4) {
         this.color.a = Number(ns[4]);
       }
+      break;
+    }
+
+    // get inset
+    for (const v of values) {
+      const inset = v.match(/^(inset)$/);
+      if (inset?.length !== 2) continue;
+      this.inset = 'inset';
+      break;
     }
   }
 

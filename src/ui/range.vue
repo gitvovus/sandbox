@@ -15,8 +15,8 @@ const props = withDefaults(defineProps<{
   step: 1,
 });
 
-const outer = ref();
-const inner = ref();
+const outer = ref<HTMLElement>(undefined!);
+const inner = ref<HTMLElement>(undefined!);
 
 const { horizontal, percents } = useRange(outer, inner, model, props);
 const orientation = computed(() => (horizontal.value ? 'horizontal' : 'vertical'));

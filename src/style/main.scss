@@ -80,6 +80,7 @@ p {
   backdrop-filter: blur(10px);
 }
 
+// TODO: rename (or not)
 .tools {
   position: absolute;
   display: flex;
@@ -90,6 +91,10 @@ p {
 
 .surface { background-color: rgb(var(--surface)); }
 .paper { background-color: rgb(var(--paper)); }
+
+.shadow-small { box-shadow: var(--shadow-small); }
+.shadow-medium { box-shadow: var(--shadow-medium); }
+.shadow-large { box-shadow: var(--shadow-large); }
 
 .separator {
   background-color: rgb(var(--line));
@@ -113,6 +118,7 @@ svg text { user-select: none; }
 .clip { overflow: hidden; }
 .scrollable { overflow: auto; }
 .hidden { visibility: hidden; }
+.none { display: none; }
 
 .spacer { flex-grow: 1; }
 .spacer.collapsed { flex-grow: 0; }

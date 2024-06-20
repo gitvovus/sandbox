@@ -18,6 +18,13 @@ button, dialog, input, option, select, textarea {
   width: unset;
 }
 
+:popover-open {
+  color: unset;
+  border: unset;
+  background: unset;
+  overflow: unset;
+}
+
 * {
   scrollbar-width: thin;
   scrollbar-color: rgb(var(--scroll-thumb)) rgb(var(--scroll-track));

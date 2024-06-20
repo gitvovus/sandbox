@@ -25,7 +25,7 @@ const { model } = defineProps<{ model: Color }>();
   gap: 0.125em;
 }
 .color-range {
-  width: 12em;
+  width: 10em;
   height: 1.5em;
 }
 </style>

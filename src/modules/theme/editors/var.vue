@@ -12,11 +12,11 @@ const { model } = defineProps<{ model: Var }>();
         <ui-button :class="['slct', { 'no-mouse': expanded }]" @click="toggle()">
           {{ model.type.type }}
           <div class="spacer" />
-          <ui-icon :class="['down', { r180: expanded }]" />
+          <ui-icon :class="['gt', { r90: expanded }]" />
         </ui-button>
       </template>
       <template #popup="{ select, selected }">
-        <div class="property-list">
+        <div class="var-popup">
           <div
             v-for="(item, i) in model.types"
             :key="i"
@@ -44,7 +44,8 @@ const { model } = defineProps<{ model: Var }>();
 .var-popup {
   display: flex;
   flex-direction: column;
-  margin: 0.25em;
+  // max-height: 8em;
+  overflow: auto;
 }
 
 </style>

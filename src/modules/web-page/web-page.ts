@@ -1,12 +1,11 @@
 import { onBeforeUnmount, onMounted, ref } from 'vue';
-import { ViewModel } from '@/modules/view-model';
 import { Disposable, onElementEvent } from '@/lib/std';
+import { ViewModel } from '@/modules/view-model';
 
 export class WebPage extends ViewModel {
-  root = ref<HTMLElement>();
-
-  #mounted = new Disposable();
-  #text = ref('');
+  readonly root = ref<HTMLElement>();
+  readonly #mounted = new Disposable();
+  readonly #text = ref('');
 
   constructor() {
     super('web-page-view');

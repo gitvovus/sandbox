@@ -3,6 +3,7 @@ import { ref } from 'vue';
 
 const model = defineModel<any>();
 
+const anchor = ref<HTMLElement>(undefined!);
 const expanded = ref(false);
 
 function toggle() {
@@ -20,12 +21,12 @@ function select(value: any) {
 </script>
 
 <template>
-  <div class="select">
-    <slot name="button" v-bind="{ expanded, toggle }" />
-    <div class="popup-anchor">
-      <ui-popup v-model="expanded" class="select-popup">
+  <div ref="anchor" class="select">
+    <slot name="button" v-bind="{ expanded, toggle }" class="relative" />
+    <div class="relative">
+      <ui-dropdown v-model="expanded" class="select-dropdown mt-1">
         <slot name="popup" v-bind="{ select, selected }" />
-      </ui-popup>
+      </ui-dropdown>
     </div>
   </div>
 </template>
@@ -35,10 +36,12 @@ function select(value: any) {
   display: flex;
   flex-direction: column;
 }
-.select-popup {
+
+.select-dropdown {
   left: 0;
   right: 0;
-  margin: 0.25em;
+  background-color: rgb(var(--surface));
+  box-shadow: var(--shadow-small);
 }
 
 // TODO: move
@@ -46,7 +49,6 @@ function select(value: any) {
   height: 2.25em;
   display: flex;
   align-items: center;
-  // justify-content: center;
   gap: 0.5em;
   background: rgb(var(--btn-bg) / 0.0625);
   border: 1px solid transparent;
@@ -77,12 +79,8 @@ function select(value: any) {
 }
 
 .slct:hover[checked] {
-  background-color: rgb(var(--btn-bg) / 0.375);
+  background-color: rgb(var(--btn-bg) / 0.25);
 }
-
-// .slct:active:hover {
-//   background-color: rgb(var(--btn-bg) / 0.5);
-// }
 
 .slct.round {
   border-radius: 50vh;

@@ -32,7 +32,7 @@ export class Controls extends ViewModel {
   readonly #showIcons = ref(false);
 
   // range
-  readonly #showRange = ref(false);
+  readonly #showRanges = ref(false);
   readonly #rangeValue = ref(50);
   readonly rangeMin = 0;
   readonly rangeMax = 100;
@@ -45,6 +45,15 @@ export class Controls extends ViewModel {
 
   constructor() {
     super('controls-view');
+  }
+
+  showAll(value: boolean) {
+    this.showButtons = value;
+    this.showDetails = value;
+    this.showRadioDetails = value ? 0 : undefined;
+    this.showIcons = value;
+    this.showRanges = value;
+    this.showInputs = value;
   }
 
   get showButtons() {
@@ -123,12 +132,12 @@ export class Controls extends ViewModel {
     this.#showIcons.value = value;
   }
 
-  get showRange() {
-    return this.#showRange.value;
+  get showRanges() {
+    return this.#showRanges.value;
   }
 
-  set showRange(value) {
-    this.#showRange.value = value;
+  set showRanges(value) {
+    this.#showRanges.value = value;
   }
 
   get rangeValue() {

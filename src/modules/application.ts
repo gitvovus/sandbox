@@ -7,6 +7,7 @@ import UiButton from '@/ui/button.vue';
 import UiCollapse from '@/ui/collapse.vue';
 import UiDetails from '@/ui/details.vue';
 import UiDialog from '@/ui/dialog.vue';
+import UiDropdown from '@/ui/dropdown.vue';
 import UiHotkey from '@/ui/hotkey.vue';
 import UiIcon from '@/ui/icon.vue';
 import UiInput from '@/ui/input.vue';
@@ -40,6 +41,7 @@ import MovableView from '@/modules/movable/movable.vue';
 import SandboxView from '@/modules/sandbox/sandbox.vue';
 import SvgSandboxView from '@/modules/svg-sandbox/svg-sandbox.vue';
 import ThemeView from '@/modules/theme/theme.vue';
+import TransformsView from '@/modules/transforms/transforms.vue';
 import WebPageView from '@/modules/web-page/web-page.vue';
 import WrapperView from '@/modules/wrapper/wrapper.vue';
 
@@ -58,6 +60,7 @@ export class Application {
       .component('ui-collapse', UiCollapse)
       .component('ui-details', UiDetails)
       .component('ui-dialog', UiDialog)
+      .component('ui-dropdown', UiDropdown)
       .component('ui-hotkey', UiHotkey)
       .component('ui-icon', UiIcon)
       .component('ui-input', UiInput)
@@ -81,6 +84,7 @@ export class Application {
       .component('sandbox-view', SandboxView)
       .component('svg-sandbox-view', SvgSandboxView)
       .component('theme-view', ThemeView)
+      .component('transforms-view', TransformsView)
       .component('web-page-view', WebPageView)
       .component('wrapper-view', WrapperView)
       // properties

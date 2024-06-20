@@ -1,5 +1,7 @@
 import { ref } from 'vue';
 
+import { ViewModel } from '@/modules/view-model';
+
 import { Bicubic } from '@/modules/bicubic/bicubic';
 import { BinaryTree } from '@/modules/binary-tree/binary-tree';
 import { Controls } from '@/modules/controls/controls';
@@ -11,7 +13,7 @@ import { Movable } from '@/modules/movable/movable';
 import { Sandbox } from '@/modules/sandbox/sandbox';
 import { SvgSandbox } from '@/modules/svg-sandbox/svg-sandbox';
 import { Theme } from '@/modules/theme/theme';
-import { ViewModel } from '@/modules/view-model';
+import { Transforms } from '@/modules/transforms/transforms';
 import { WebPage } from '@/modules/web-page/web-page';
 import { Wrapper } from '@/modules/wrapper/wrapper';
 
@@ -28,14 +30,17 @@ export class AppModel extends ViewModel {
   readonly pages: Wrapper[];
   readonly dialog = new Dialog({ resizable: true });
 
+  readonly dialogContent = new WebPage();
+
   readonly logo = new Logo();
   readonly bicubic = new Bicubic();
   readonly gears = new Gears();
   readonly flowers = new Flowers();
   readonly binaryTree = new BinaryTree();
+  readonly webPage = new WebPage();
   readonly controls = new Controls();
   readonly theme = new Theme();
-  readonly webPage = new WebPage();
+  readonly transforms = new Transforms();
   readonly sandbox = new Sandbox();
   readonly svgSandbox = new SvgSandbox();
   readonly movable = new Movable([this.bicubic, this.gears, this.flowers, this.binaryTree]);
@@ -51,12 +56,12 @@ export class AppModel extends ViewModel {
       new Wrapper(this.binaryTree, ['view card clip shadow']),
       new Wrapper(this.movable, ['view margin']),
       new Wrapper(this.controls, ['view card clip shadow border']),
-      new Wrapper(this.theme, ['view card']),
-      // new Wrapper(this.webPage, ['view card clip']),
+      // new Wrapper(this.theme, ['view card']),
+      // new Wrapper(this.webPage, ['view card clip shadow border']),
       // new Wrapper(this.sandbox, ['view card clip shadow border']),
       // new Wrapper(this.svgSandbox, ['view card clip shadow']),
+      // new Wrapper(this.transforms, ['view card']),
     ];
-    this.index = 0;
   }
 
   get align() {

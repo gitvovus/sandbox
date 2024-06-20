@@ -1,6 +1,6 @@
 :root {
-  --red: 160 0 0;
-  --orange: 255 128 0;
+  --red: 140 0 0;
+  --orange: 200 100 0;
   --blue: 30 100 200;
 }
 
@@ -16,5 +16,20 @@
   }
   .bg-#{"" + $color} {
     background-color: rgb(var(--#{$color}));
+  }
+  .border-#{"" + $color} {
+    border-color: rgb(var(--#{$color}));
+  }
+}
+
+@each $size in (100 200) {
+  .box-#{$size} {
+    width: #{$size}px;
+    height: #{$size}px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    border-radius: var(--radius-medium);
   }
 }

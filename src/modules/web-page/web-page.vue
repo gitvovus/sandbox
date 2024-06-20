@@ -7,21 +7,26 @@ model.use();
 </script>
 
 <template>
-  <div class="view">
+  <div class="surface view">
     <div :ref="model.root" class="web-page">
-      <h1>Web page</h1>
-      <h2>Web page</h2>
-      <h3>Web page</h3>
-      <h4>Web page</h4>
-      <h5>Web page</h5>
-      <h6>Web page</h6>
-      <div class="flex col gap-2">
-        <div v-for="i in 10" :key="i" class="high paper" />
+      <div class="web-aside">
+        <div v-for="i in 1" :key="i" class="box-200 m-1" />
+      </div>
+      <div class="web-main">
+        <div class="web-header">
+          header
+        </div>
+        <div class="web-content">
+          <h1>Welcome</h1>
+          <div class="flex col gap-2">
+            <div v-for="i in 10" :key="i" class="box-200" />
+          </div>
+        </div>
       </div>
     </div>
-    <div class="glass tools top right m-2 p-2">
+    <!-- <div class="tools top right m-2 p-2">
       {{ model.text || ':' }}
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -29,11 +34,32 @@ model.use();
 .web-page {
   position: absolute;
   inset: 0;
-  padding: 0.5em;
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  grid-template-columns: min-content 1fr;
+}
+.web-header {
+  position: sticky;
+  top: 0;
+  background-color: rgb(0 0 0 / 0.75);
+  backdrop-filter: blur(5px);
+  display: flex;
+  padding: 1em;
+}
+.web-main {
+  position: relative;
+  overflow: auto;
+  // display: grid;
+  // grid-template-rows: 1fr;
+  // grid-template-columns: min-content 1fr;
+}
+.web-aside {
+  width: 16em;
+  display: flex;
+  flex-direction: column;
   overflow: auto;
 }
-.high {
-  flex-shrink: 0;
-  height: 200px;
+.web-content {
+  overflow: auto;
 }
 </style>

@@ -2,6 +2,7 @@ export const f0 = (x: number) => x.toFixed(0);
 export const f1 = (x: number) => x.toFixed(1);
 export const f2 = (x: number) => x.toFixed(2);
 export const f3 = (x: number) => x.toFixed(3);
+export const fn = (x: number, n: number) => x.toFixed(n);
 
 export const x0 = (r: number, a: number) => f0(r * Math.cos(a));
 export const x1 = (r: number, a: number) => f1(r * Math.cos(a));

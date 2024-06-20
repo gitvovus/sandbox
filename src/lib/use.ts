@@ -1,6 +1,7 @@
 import { computed, onBeforeUnmount, onMounted, ref, watch, type ModelRef, type Ref } from 'vue';
 
 import { Disposable, Mouse, clamp, mix, onElementEvent } from '@/lib/std';
+import { focusNextChild, focusPrevChild, type FocusOptions } from '@/lib/dom';
 
 export function useResizer(
   el: Ref<HTMLElement | undefined>,
@@ -93,8 +94,8 @@ export function useHorizontal(el: Ref<HTMLElement | undefined>) {
 }
 
 export function useRange(
-  outer: Ref<HTMLElement | undefined>,
-  inner: Ref<HTMLElement | undefined>,
+  outer: Ref<HTMLElement>,
+  inner: Ref<HTMLElement>,
   model: ModelRef<number>,
   props: { min: number; max: number; step: number },
 ) {
@@ -131,39 +132,67 @@ export function useRange(
         }
       }),
     );
-    if (outer.value) {
-      mounted.add(
-        onElementEvent(outer.value, 'keydown', (e: KeyboardEvent) => {
-          const step = props.step || 1;
-          let value: number;
-          switch (e.key) {
-            case 'ArrowLeft':
-            case 'ArrowDown':
-              value = Math.max(props.min, model.value - step);
-              break;
-            case 'ArrowRight':
-            case 'ArrowUp':
-              value = Math.min(props.max, model.value + step);
-              break;
-            case 'Home':
-              value = props.min;
-              break;
-            case 'End':
-              value = props.max;
-              break;
-            default:
-              return;
-          }
-          e.stopPropagation();
-          if (value !== model.value) {
-            model.value = value;
-          }
-        }),
-      );
-    }
+    mounted.add(
+      onElementEvent(outer.value, 'keydown', (e: KeyboardEvent) => {
+        const step = props.step || 1;
+        let value: number;
+        switch (e.key) {
+          case 'ArrowLeft':
+          case 'ArrowDown':
+            value = Math.max(props.min, model.value - step);
+            break;
+          case 'ArrowRight':
+          case 'ArrowUp':
+            value = Math.min(props.max, model.value + step);
+            break;
+          case 'Home':
+            value = props.min;
+            break;
+          case 'End':
+            value = props.max;
+            break;
+          default:
+            return;
+        }
+        e.stopPropagation();
+        if (value !== model.value) {
+          model.value = value;
+        }
+      }),
+    );
   });
 
   onBeforeUnmount(() => mounted.dispose());
 
   return { horizontal, percents };
+}
+
+export function useArrowNavigation(
+  root: Ref<HTMLElement>,
+  options?: FocusOptions,
+) {
+  const mounted = new Disposable();
+
+  onMounted(() => {
+    mounted.add(
+      onElementEvent(root.value, 'keydown', (e) => {
+        switch (e.key) {
+          case 'ArrowUp':
+          case 'ArrowLeft':
+            focusPrevChild(root.value, options);
+            break;
+          case 'ArrowDown':
+          case 'ArrowRight':
+            focusNextChild(root.value, options);
+            break;
+          default:
+            return;
+        }
+        e.stopPropagation();
+        e.preventDefault();
+      }),
+    );
+  });
+
+  onBeforeUnmount(() => mounted.dispose());
 }

@@ -1,6 +1,9 @@
 <script setup lang="ts">
+import { ref } from 'vue';
 import { type Controls } from './controls';
 defineProps<{ model: Controls }>();
+
+const anchor = ref<HTMLElement>(undefined!);
 
 function str(s?: string) {
   if (s === undefined) {
@@ -14,54 +17,62 @@ function str(s?: string) {
   }
 }
 
-const icons = ['check', 'lt', 'gt', 'up', 'down', 'menu', 'quad', 'dot'];
+const icons = ['check', 'close', 'lt', 'gt', 'up', 'down', 'menu', 'quad', 'dot'];
 </script>
 
 <template>
   <div class="scrollable surface view">
-    <!-- popup -->
     <div class="flex m-2 gap-2 ai-center">
-      <ui-button
-        v-model="model.popup"
-        class="btn"
-        :disabled="model.popup"
-        toggle
-      >
-        Popup
-      </ui-button>
-      <div class="popup-anchor">
-        <ui-popup v-slot="{ close }" v-model="model.popup">
-          <div class="popup-content">
-            <div class="flex gap-2">
-              <ui-button
-                class="btn round"
-                @click="() => { close(); model.click('ok'); }"
-              >
-                Ok
-              </ui-button>
-              <ui-button
-                class="btn round"
-                @click="() => { close(); model.click('cancel'); }"
-              >
-                Cancel
-              </ui-button>
+      <div class="flex gap-2">
+        <!-- popup -->
+        <ui-button
+          v-model="model.popup"
+          class="btn"
+          :disabled="model.popup"
+          toggle
+        >
+          Popup
+        </ui-button>
+        <div ref="anchor">
+          <ui-popup v-slot="{ close }" v-model="model.popup" :anchor="anchor">
+            <div class="popup-content surface shadow-small">
+              <div class="flex gap-2">
+                <ui-button
+                  class="btn round"
+                  @click="() => { close(); model.click('ok'); }"
+                >
+                  Ok
+                </ui-button>
+                <ui-button
+                  class="btn round"
+                  @click="() => { close(); model.click('cancel'); }"
+                >
+                  Cancel
+                </ui-button>
+              </div>
+              <div class="horizontal separator" />
+              <div class="flex py-2 gap-2">
+                <input v-model="model.text" type="text">
+                <ui-button
+                  v-for="(item, i) in model.paragraphs"
+                  :key="i"
+                  v-model="model.lorem.paragraphs"
+                  class="btn round"
+                  :toggle="[item]"
+                >
+                  {{ item }}
+                </ui-button>
+              </div>
+              <lorem-view :model="model.lorem" />
             </div>
-            <div class="horizontal separator" />
-            <div class="flex py-2 gap-2">
-              <input v-model="model.text" type="text">
-              <ui-button
-                v-for="(item, i) in model.paragraphs"
-                :key="i"
-                v-model="model.lorem.paragraphs"
-                class="btn round"
-                :toggle="[item]"
-              >
-                {{ item }}
-              </ui-button>
-            </div>
-            <lorem-view :model="model.lorem" />
-          </div>
-        </ui-popup>
+          </ui-popup>
+        </div>
+        <ui-button class="btn" @click="model.showAll(true)">
+          Show all
+        </ui-button>
+        <ui-button class="btn" @click="model.showAll(false)">
+          Hide all
+        </ui-button>
       </div>
     </div>
 
@@ -251,7 +262,7 @@ const icons = ['check', 'lt', 'gt', 'up', 'down', 'menu', 'quad', 'dot'];
     </ui-details>
 
     <!-- range -->
-    <ui-details v-model="model.showRange">
+    <ui-details v-model="model.showRanges">
       <template #header="{ expanded }">
         <div class="details-header">
           Range
@@ -293,9 +304,9 @@ const icons = ['check', 'lt', 'gt', 'up', 'down', 'menu', 'quad', 'dot'];
         </div>
       </template>
       <template #content>
-        <div class="flex col gap-2 p-4">
-          <span> {{ str(model.email) }} </span>
-          <div class="flex gap-2">
+        <div class="flex gap-2 p-4">
+          <div class="flex col gap-2">
+            <span> {{ str(model.email) }} </span>
             <ui-input
               v-model="model.email"
               type="text"
@@ -304,6 +315,9 @@ const icons = ['check', 'lt', 'gt', 'up', 'down', 'menu', 'quad', 'dot'];
               :input="'form-input'"
               :decorator="'form-decorator blue'"
             />
+          </div>
+          <div class="flex col gap-2">
+            <span> {{ str(model.password) }} </span>
             <ui-input
               v-model="model.password"
               type="text"
@@ -346,10 +360,6 @@ $small: 1.5em;
   user-select: none;
 }
 
-.popup-anchor {
-  display: inline flow-root;
-}
-
 .popup-content {
   display: flex;
   flex-direction: column;
@@ -357,6 +367,7 @@ $small: 1.5em;
   max-width: 25em;
   max-height: 30em;
   padding: 0.5em;
+  overflow-y: auto;
 }
 
 .icon-content {

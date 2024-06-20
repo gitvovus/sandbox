@@ -51,8 +51,7 @@ export class Theme extends ViewModel {
     new Color('background-color', 24, 28, 36),
     new Color('border-color', 82, 88, 108, 0.5),
     new Color('color', 164, 172, 190),
-    // new Text('box-shadow', '0 0 20px 10px rgb(0 0 0 / 0.5)'),
-    new Shadow('box-shadow', '0 0 20 10 rgb(82 88 108 / 0.5)'),
+    new Shadow('box-shadow', '0 0 20px 10px rgb(82 88 108 / 0.5)'),
   ]);
 
   readonly style = reactive({}) as CSSProperties;
