@@ -1,5 +1,4 @@
 import {
-  Fragment,
   computed,
   defineComponent,
   h,
@@ -206,17 +205,6 @@ export const TestItem = defineComponent(
     },
     slots: Object as SlotsType<{
       default({ selected }: { selected: boolean }): any;
-    }>,
-  },
-);
-
-export const CloneItem = defineComponent(
-  (props, { slots }) => {
-    return () => h(Fragment, undefined, [slots.default(), slots.default()]);
-  },
-  {
-    slots: Object as SlotsType<{
-      default(): any;
     }>,
   },
 );

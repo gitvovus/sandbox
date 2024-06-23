@@ -110,10 +110,14 @@ p {
   }
 }
 
-svg text { user-select: none; }
+svg text,
+svg image {
+  user-select: none; 
+}
 
 .absolute { position: absolute; }
 .relative { position: relative; }
+.inset { inset: 0; }
 
 .clip { overflow: hidden; }
 .scrollable { overflow: auto; }
@@ -130,6 +134,7 @@ svg text { user-select: none; }
 .ai-center { align-items: center; }
 .as-stretch { align-self: stretch; }
 .jc-center { justify-content: center; }
+.jc-between { justify-content: space-between; }
 
 .round { border-radius: 50vh; }
 .anchor { position: absolute; }

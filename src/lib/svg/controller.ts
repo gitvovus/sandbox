@@ -1,4 +1,4 @@
-import { shallowReactive, watchEffect } from 'vue';
+import { shallowRef, watchEffect } from 'vue';
 
 import * as re from '@/lib/reactive';
 import * as std from '@/lib/std';
@@ -22,6 +22,8 @@ export type Config = {
   rotate: boolean;
   minZoom: number;
   maxZoom: number;
+  width: number;
+  height: number;
 };
 
 const defaultConfig: Config = {
@@ -30,6 +32,8 @@ const defaultConfig: Config = {
   rotate: true,
   minZoom: 0.5,
   maxZoom: 2,
+  width: 2,
+  height: 2,
 };
 
 export class Controller implements std.IDisposable {
@@ -37,21 +41,21 @@ export class Controller implements std.IDisposable {
   #mounted = new std.Disposable();
   #disposer = new std.Disposable();
 
-  #cw = 0;
-  #ch = 0;
-  #vw = 2;
-  #vh = 2;
-  #resizer = new ResizeObserver(() => this.#update());
-  #viewBox = shallowReactive<ViewBox>({ left: -1, top: -1, width: 2, height: 2 });
-
-  #element?: HTMLElement;
   #root: re.Item;
   #scene: re.Item;
   #camera: Camera;
   #defaultCamera: Camera;
+  #resizer = new ResizeObserver(() => this.#resize());
+
+  // host element and it's size
+  #element?: HTMLElement;
+  #clientWidth = 0;
+  #clientHeight = 0;
+
+  // viewBox will be changed to fit #config.width and #config.height into client size
+  #viewBox = shallowRef<ViewBox>({ left: -1, top: -1, width: 2, height: 2 });
 
   #gesture = Gesture.NONE;
-  #pickedOffset = { x: 0, y: 0 };
   #pickedPoint = new bi.Vec();
   #pickedPosition = new bi.Vec();
   #pickedRotation = 0;
@@ -77,15 +81,13 @@ export class Controller implements std.IDisposable {
     this.#camera = camera;
     this.#defaultCamera = camera.clone();
     this.#resetTo = camera.inverse;
-    this.#disposer.add(() => this.#resizer.disconnect());
+    this.#disposer.add(
+      () => this.#resizer.disconnect(),
+      () => this.#mounted.dispose(),
+    );
   }
 
-  get viewBox() {
-    return this.#viewBox;
-  }
-
-  dispose(): void {
-    this.#mounted.dispose();
+  dispose() {
     this.#disposer.dispose();
   }
 
@@ -113,6 +115,10 @@ export class Controller implements std.IDisposable {
     this.#mounted.dispose();
   }
 
+  get viewBox() {
+    return this.#viewBox.value;
+  }
+
   reset() {
     if (this.#resetAnimation.isActive()) return;
 
@@ -124,54 +130,56 @@ export class Controller implements std.IDisposable {
   }
 
   resize(width: number, height: number) {
-    this.#vw = width;
-    this.#vh = height;
+    this.#config.width = width;
+    this.#config.height = height;
+    if (this.#element) this.#resize();
   }
 
   toCamera(e: MouseEvent) {
     const { x, y } = std.elementOffset(this.#element!, e);
+    const viewBox = this.#viewBox.value;
     return new bi.Vec(
-      this.#viewBox.left + (this.#viewBox.width * x) / this.#cw,
-      this.#viewBox.top + (this.#viewBox.height * y) / this.#ch,
+      viewBox.left + (viewBox.width * x) / this.#clientWidth,
+      viewBox.top + (viewBox.height * y) / this.#clientHeight,
     );
   }
 
-  readonly #update = () => {
-    const width = this.#element!.clientWidth;
-    const height = this.#element!.clientHeight;
-    if (width === this.#cw && height === this.#ch) {
-      return;
-    }
+  #resize() {
+    if (!this.#element) return;
 
-    this.#cw = width;
-    this.#ch = height;
+    const width = this.#element.clientWidth;
+    const height = this.#element.clientHeight;
+
+    this.#clientWidth = width;
+    this.#clientHeight = height;
     if (width === 0 || height === 0) {
       return;
     }
 
-    const widthScale = width / this.#vw;
-    const heightScale = height / this.#vh;
+    const widthScale = width / this.#config.width;
+    const heightScale = height / this.#config.height;
     let w, h;
     if (widthScale < heightScale) {
-      w = this.#vw;
-      h = (this.#vh * heightScale) / widthScale;
+      w = this.#config.width;
+      h = (this.#config.height * heightScale) / widthScale;
     }
     else {
-      w = (this.#vw * widthScale) / heightScale;
-      h = this.#vh;
+      w = (this.#config.width * widthScale) / heightScale;
+      h = this.#config.height;
     }
-    this.#viewBox = { left: -w / 2, top: -h / 2, width: w, height: h };
-    this.#root.attributes.viewBox = `${this.#viewBox.left} ${this.#viewBox.top} ${w} ${h}`;
-  };
 
-  #resetFrame = (dt: number) => {
-    let k = (time() - this.#resetStart) / this.#resetDuration;
-    if (k >= 1) {
+    this.#viewBox.value = { left: -w / 2, top: -h / 2, width: w, height: h };
+    this.#root.attributes.viewBox = `${-w / 2} ${-h / 2} ${w} ${h}`;
+  }
+
+  #resetFrame = () => {
+    let t = std.smoothStep(0, 1, (time() - this.#resetStart) / this.#resetDuration);
+    if (t >= 1) {
       this.#resetAnimation.stop();
-      k = 1;
+      t = 1;
     }
 
-    const d = bi.Mat.inverse(bi.interpolate(this.#resetFrom, this.#resetTo, k)).decompose();
+    const d = bi.Mat.inverse(bi.interpolate(this.#resetFrom, this.#resetTo, t)).decompose();
     this.#camera.position = d.translation;
     this.#camera.rotation = d.rotation;
     this.#camera.scale = d.scale;
@@ -196,13 +204,13 @@ export class Controller implements std.IDisposable {
     this.#camera.scale = newScale;
   }
 
-  readonly #zoomFrame = (dt: number) => {
-    let k = (std.time() - this.#zoomStart) / this.#zoomDuration;
-    if (k >= 1) {
-      k = 1;
+  readonly #zoomFrame = () => {
+    let t = (std.time() - this.#zoomStart) / this.#zoomDuration;
+    if (t >= 1) {
       this.#zoomAnimation.stop();
+      t = 1;
     }
-    const zoom = std.mix(this.#zoomFrom, this.#zoomTo, k);
+    const zoom = std.mix(this.#zoomFrom, this.#zoomTo, t);
     this.#setZoom(zoom);
   };
 
@@ -220,7 +228,6 @@ export class Controller implements std.IDisposable {
         return;
     }
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
-    this.#pickedOffset = std.elementOffset(this.#element!, e);
     this.#pickedPosition = this.#camera.position;
     this.#pickedRotation = this.#camera.rotation;
     this.#pickedTransform = this.#camera.transform;
@@ -228,7 +235,6 @@ export class Controller implements std.IDisposable {
   };
 
   readonly #drag = (e: PointerEvent) => {
-    if (this.#gesture === Gesture.NONE) return;
     if (this.#gesture === Gesture.DRAG) {
       const point = this.#pickedTransform.transform(this.toCamera(e));
       const delta = new bi.Vec(point.x - this.#pickedPoint.x, point.y - this.#pickedPoint.y);
@@ -237,10 +243,15 @@ export class Controller implements std.IDisposable {
         this.#pickedPosition.y - delta.y,
       );
     }
-    else {
-      const offset = std.elementOffset(this.#element!, e);
-      const delta = (2 * Math.PI * (offset.x - this.#pickedOffset.x)) / this.#element!.clientWidth;
-      this.#camera.rotation = std.mod(this.#pickedRotation - delta, 2 * Math.PI);
+    else if (this.#gesture === Gesture.ROTATE) {
+      const a = Math.atan2(this.#pickedPoint.y, this.#pickedPoint.x);
+      const point = this.#pickedTransform.transform(this.toCamera(e));
+
+      if (Math.hypot(point.x, point.y) < 0.001) return;
+
+      const b = Math.atan2(point.y, point.x);
+      // const delta = std.mod(Math.atan2(point.y, point.x) - this.#pickedRotation, 2 * Math.PI);
+      this.#camera.rotation = std.mod(this.#pickedRotation + a - b, 2 * Math.PI);
     }
   };
 

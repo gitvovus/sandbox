@@ -14,11 +14,13 @@ onBeforeUnmount(() => model.unmount());
     <div ref="root" class="paper clip view">
       <ui-item class="clip view" :model="model.root" />
     </div>
-    <div class="tools top right">
-      <ui-range v-model="model.rotation" class="h-range" :min="0" :max="6.28" :step="0.1" />
+    <div class="top right anchor flex col p-2 gap-2">
       <ui-button class="btn" @click="model.test()">
         test
       </ui-button>
     </div>
   </div>
 </template>
+
+<style lang="scss">
+</style>

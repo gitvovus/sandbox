@@ -27,15 +27,23 @@ export class Item {
   #element?: HTMLElement;
   #parent?: Item;
 
-  constructor(tag: string, data?: Attributes | string) {
+  constructor(tag: string, data?: Attributes | string | Item[], children?: Item[]) {
     this.tag = tag;
     if (data) {
-      if (typeof data === 'string') {
+      if (Array.isArray(data)) {
+        if (data.length > 0) {
+          this.add(...data);
+        }
+      }
+      else if (typeof data === 'string') {
         this.text = data;
       }
       else {
         Object.assign(this.attributes, data);
       }
+    }
+    if (children) {
+      this.add(...children);
     }
   }
 
@@ -208,19 +216,26 @@ export class Item {
   }
 }
 
-export function fromElement(node: Node) {
+export function fromElement(
+  node: Node,
+  createItem?: (tag: string, data: Attributes | string) => Item,
+) {
+  if (!createItem) {
+    createItem = (tag, data) => new Item(tag, data);
+  }
+
   if (node.nodeType === node.TEXT_NODE) {
     const text = (node.nodeValue || '').trim();
-    return text.length > 0 ? new Item(node.nodeName, text) : undefined;
+    return text.length > 0 ? createItem(node.nodeName, text) : undefined;
   }
   else if (node instanceof Element) {
     const attributes: Attributes = {};
     for (const attr of node.attributes) {
       attributes[attr.name] = attr.value;
     }
-    const item = new Item(node.nodeName, attributes);
+    const item = createItem(node.nodeName, attributes);
     for (const child of node.childNodes) {
-      const childItem = fromElement(child);
+      const childItem = fromElement(child, createItem);
       if (childItem) {
         item.add(childItem);
       }
@@ -231,8 +246,11 @@ export function fromElement(node: Node) {
   return undefined;
 }
 
-export function fromSource(text: string) {
+export function fromSource(
+  text: string,
+  createItem?: (tag: string, data: Attributes | string) => Item,
+) {
   const parser = new DOMParser();
   const document = parser.parseFromString(text, 'image/svg+xml');
-  return fromElement(document.documentElement);
+  return fromElement(document.documentElement, createItem);
 }

@@ -34,6 +34,11 @@ export function smoothStep(a: number, b: number, x: number) {
   return t * t * (3 - 2 * t);
 }
 
+export function smootherStep(a: number, b: number, x: number) {
+  const t = clamp((x - a) / (b - a), 0, 1);
+  return t * t * t * (t * (6 * t - 15) + 10);
+}
+
 export interface Point {
   x: number;
   y: number;

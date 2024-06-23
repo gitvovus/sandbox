@@ -26,11 +26,11 @@ model.use();
           </ui-button>
         </div>
         <div class="web-content">
-          <h1 class="mirror">
+          <div class="mirror">
             <clone-item>
-              <h1>Welcome</h1>
+              <h1>Welcome!</h1>
             </clone-item>
-          </h1>
+          </div>
           <div class="flex col gap-2">
             <div v-for="i in 10" :key="i" class="box-200" />
           </div>
@@ -85,17 +85,22 @@ model.use();
 .mirror {
   display: flex;
   flex-direction: column;
-  padding-block-start: 0.125em;
+  padding-top: 0.125em;
   line-height: 1;
-  & > * {
-    background: darkred;
-    background-clip: text;
+  color: rgb(var(--red));
+  & > :first-child {
+    z-index: 1;
   }
   & > :last-child {
-    color: transparent;
+    position: relative;
     transform-origin: 50% 40%;
-    transform: scaleY(-0.5);
-    mask-image: linear-gradient(rgb(255 255 255 / 0.35) 0%, rgb(255 255 255 / 0.7) 100%);
+    transform: translateY(-10%) scaleY(-0.5);
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: linear-gradient(rgb(var(--surface) / 1) 25%, rgb(var(--surface) / 0.75) 100%);
+    }
   }
 }
 

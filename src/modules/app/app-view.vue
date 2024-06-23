@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type AppModel, Align } from '@/modules/app/app-model';
+import { type AppModel, Align } from './app-model';
 
 const { model } = defineProps<{ model: AppModel }>();
 </script>
@@ -55,6 +55,10 @@ const { model } = defineProps<{ model: AppModel }>();
           M
         </ui-button>
         <span class="vertical separator" />
+        <div v-for="i in 3" :key="i" class="pic">
+          <img src="@/assets/pics/pic.svg">
+        </div>
+        <span class="vertical separator" />
         <ui-button
           v-for="i in model.pages.length"
           :key="i"
@@ -81,6 +85,11 @@ const { model } = defineProps<{ model: AppModel }>();
 </template>
 
 <style lang="scss">
+$pic: 48px;
+.pic {
+  width: $pic;
+  height: $pic;
+}
 .app-bar {
   position: absolute;
   width: 100%;

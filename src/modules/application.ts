@@ -39,14 +39,18 @@ import LogoView from '@/modules/logo/logo.vue';
 import LoremView from '@/modules/lorem/lorem.vue';
 import MovableView from '@/modules/movable/movable.vue';
 import SandboxView from '@/modules/sandbox/sandbox.vue';
+import SvgEditorView from '@/modules/svg-editor/svg-editor.vue';
 import SvgSandboxView from '@/modules/svg-sandbox/svg-sandbox.vue';
 import ThemeView from '@/modules/theme/theme.vue';
 import TransformsView from '@/modules/transforms/transforms.vue';
 import WebPageView from '@/modules/web-page/web-page.vue';
 import WrapperView from '@/modules/wrapper/wrapper.vue';
 
+// utils
+import { CloneItem } from '@/ui/utils';
+
 // test
-import { CloneItem, TestContainer, TestHeader, TestItem } from '@/modules/sandbox/sandbox';
+import { TestContainer, TestHeader, TestItem } from '@/modules/sandbox/sandbox';
 
 export class Application {
   readonly #appModel = new AppModel();
@@ -70,6 +74,8 @@ export class Application {
       .component('ui-select', UiSelect)
       .component('ui-test-item', UiTestItem)
       .component('ui-zoom', UiZoom)
+      // utils
+      .component('clone-item', CloneItem)
       // directives
       .directive('click-stop', vClickStop)
       // views
@@ -82,6 +88,7 @@ export class Application {
       .component('lorem-view', LoremView)
       .component('movable-view', MovableView)
       .component('sandbox-view', SandboxView)
+      .component('svg-editor-view', SvgEditorView)
       .component('svg-sandbox-view', SvgSandboxView)
       .component('theme-view', ThemeView)
       .component('transforms-view', TransformsView)
@@ -94,7 +101,6 @@ export class Application {
       .component('shadow-editor', ShadowEditor)
       .component('var-editor', VarEditor)
       // test
-      .component('clone-item', CloneItem)
       .component('test-container', TestContainer)
       .component('test-header', TestHeader)
       .component('test-item', TestItem);
