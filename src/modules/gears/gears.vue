@@ -25,7 +25,7 @@ onBeforeUnmount(() => model.unmount());
           gears
         </div>
         <div class="view-subtitle">
-          rotate them!
+          flip, drag, drop, rotate!
         </div>
       </div>
     </transition>

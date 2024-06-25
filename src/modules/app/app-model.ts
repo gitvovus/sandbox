@@ -11,7 +11,7 @@ import { Flowers } from '@/modules/flowers/flowers';
 import { Logo } from '@/modules/logo/logo';
 import { Movable } from '@/modules/movable/movable';
 import { Sandbox } from '@/modules/sandbox/sandbox';
-import { SvgEditor } from '@/modules/svg-editor/svg-editor';
+import { SvgFilters } from '@/modules/svg-filters/svg-filters';
 import { SvgSandbox } from '@/modules/svg-sandbox/svg-sandbox';
 import { Theme } from '@/modules/theme/theme';
 import { Transforms } from '@/modules/transforms/transforms';
@@ -43,9 +43,9 @@ export class AppModel extends ViewModel {
   readonly theme = new Theme();
   readonly transforms = new Transforms();
   readonly sandbox = new Sandbox();
-  readonly svgEditor = new SvgEditor();
+  readonly svgFilters = new SvgFilters();
   readonly svgSandbox = new SvgSandbox();
-  readonly movable = new Movable([this.bicubic, this.gears, this.flowers, this.binaryTree]);
+  readonly movable = new Movable([this.bicubic, this.gears, this.flowers, this.svgFilters]);
 
   constructor() {
     super('app-view');
@@ -55,10 +55,10 @@ export class AppModel extends ViewModel {
       new Wrapper(this.bicubic, ['view card clip shadow']),
       new Wrapper(this.gears, ['view card clip shadow']),
       new Wrapper(this.flowers, ['view card clip shadow']),
-      new Wrapper(this.binaryTree, ['view card clip shadow']),
+      new Wrapper(this.svgFilters, ['view card clip shadow']),
       new Wrapper(this.movable, ['view margin']),
-      new Wrapper(this.svgEditor, ['view card clip shadow']),
       new Wrapper(this.controls, ['view card clip shadow border']),
+      // new Wrapper(this.binaryTree, ['view card clip shadow']),
       // new Wrapper(this.theme, ['view card']),
       // new Wrapper(this.svgSandbox, ['view card clip shadow']),
       // new Wrapper(this.sandbox, ['view card clip shadow border']),

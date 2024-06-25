@@ -1,14 +1,10 @@
 import { Vec } from '@/lib/bi';
-import { Item, type Attributes } from '@/lib/reactive';
+import { it } from '@/lib/reactive';
 import { Disposable } from '@/lib/std';
 import { Camera } from '@/lib/svg/camera';
 import { Controller } from '@/lib/svg/controller';
 import { prettyGrid } from '@/lib/svg/utils';
 import { ViewModel } from '@/modules/view-model';
-
-function it(tag: string, data?: string | Attributes | Item[], children?: Item[]) {
-  return new Item(tag, data, children);
-}
 
 export class SvgSandbox extends ViewModel {
   readonly #mounted = new Disposable();

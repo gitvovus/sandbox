@@ -117,7 +117,7 @@ onBeforeUnmount(() => {
         </div>
       </div>
 
-      <div class="image-container">
+      <div class="clip">
         <img
           v-if="model.image && model.image.source"
           class="fit-contain"
@@ -162,16 +162,7 @@ $tool-width: 18em;
   overflow: auto;
 }
 
-.lh-1 {
-  line-height: 1;
-}
-
-.image-container {
-  overflow: hidden;
-}
-.fit-contain {
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
+.flowers-background {
+  fill: rgb(0 0 0 / 0.125);
 }
 </style>

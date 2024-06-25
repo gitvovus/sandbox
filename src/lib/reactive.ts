@@ -216,6 +216,10 @@ export class Item {
   }
 }
 
+export function it(tag: string, data?: string | Attributes | Item[], children?: Item[]) {
+  return new Item(tag, data, children);
+}
+
 export function fromElement(
   node: Node,
   createItem?: (tag: string, data: Attributes | string) => Item,

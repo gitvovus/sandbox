@@ -6,7 +6,7 @@ import { Item, fromSource } from '@/lib/reactive';
 import { Disposable } from '@/lib/std';
 import { Camera } from '@/lib/svg/camera';
 import { Controller } from '@/lib/svg/controller';
-import { prettyGrid } from '@/lib/svg/utils';
+import { prettyComb } from '@/lib/svg/utils';
 import { ViewModel } from '@/modules/view-model';
 
 import * as msg from './lib/messages';
@@ -49,7 +49,7 @@ export class Flowers extends ViewModel {
   readonly countMin = 10;
   readonly countMax = 100;
   readonly countStep = 5;
-  readonly #count = ref(25);
+  readonly #count = ref(10);
 
   readonly #todo = ref(0);
   #wait?: ExplicitPromise;
@@ -102,6 +102,7 @@ export class Flowers extends ViewModel {
     );
 
     this.#createStatic();
+    this.generate();
   }
 
   mount(element: HTMLElement) {
@@ -249,10 +250,8 @@ export class Flowers extends ViewModel {
 
   #createStatic() {
     const back = this.root.find('images-back')!;
-    const step = Math.round(this.#size / 250) * 10;
     back.add(
-      prettyGrid(this.#size / 2, this.#size / 4, step, 1, '#00000018'),
-      prettyGrid(this.#size / 2, this.#size / 4, step * 5, 1, '#00000040'),
+      prettyComb(this.#size / 2, this.#size / 10, undefined, { class: 'flowers-background' }),
     );
   }
 }

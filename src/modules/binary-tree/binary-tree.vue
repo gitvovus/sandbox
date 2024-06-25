@@ -37,6 +37,18 @@ function keydown(e: KeyboardEvent) {
 
     <transition name="delayed">
       <div v-if="state === 'mini'" />
+      <div v-else class="view-header">
+        <div class="view-title">
+          binary tree
+        </div>
+        <div class="view-subtitle">
+          pretty balanced
+        </div>
+      </div>
+    </transition>
+
+    <transition name="delayed">
+      <div v-if="state === 'mini'" />
       <div v-else class="tool-box top right col ai-center">
         Add/remove numbers
         <div class="flex gap-2">
@@ -66,19 +78,14 @@ function keydown(e: KeyboardEvent) {
   flex-grow: 1;
   background-color: rgb(0 0 0 / 0.25);
 }
-.tree-node {
+.tree-leaf {
   fill: rgb(var(--blue));
   stroke: rgb(var(--orange));
   stroke-width: 2;
   vector-effect: non-scaling-stroke;
 }
-.tree-line {
+.tree-branch {
   stroke: rgb(0 0 0 / 0.5);
   stroke-width: 0.2px;
-}
-.tree-comb {
-  fill: rgb(0 0 0 / 0.125);
-  stroke: rgb(255 255 255 / 0.125);
-  vector-effect: non-scaling-stroke;
 }
 </style>

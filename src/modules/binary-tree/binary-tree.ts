@@ -4,31 +4,38 @@ import { Item } from '@/lib/reactive';
 import { Disposable } from '@/lib/std';
 import { Camera } from '@/lib/svg/camera';
 import { Controller } from '@/lib/svg/controller';
-import { comb, prettyComb } from '@/lib/svg/utils';
+import { comb, prettyGrid } from '@/lib/svg/utils';
 import { type Node, Tree, height } from '@/lib/tree';
 import { ViewModel } from '@/modules/view-model';
 
 const less = (a: number, b: number) => a < b;
 
 export class BinaryTree extends ViewModel {
-  readonly root = new Item('svg');
-  readonly #content = new Item('g');
-  readonly #branches = new Item('g');
-  readonly #leaves = new Item('g');
-
   readonly #mounted = new Disposable();
   readonly #size = 22.5;
+
+  readonly #branches = new Item('g');
+  readonly #leaves = new Item('g');
+  readonly #content = new Item('g', [
+    prettyGrid(this.#size / 2, this.#size / 4, 1, 1, '#00000018'),
+    prettyGrid(this.#size / 2, this.#size / 4, 5, 1, '#00000040'),
+    this.#branches,
+    this.#leaves,
+  ]);
+  readonly root = new Item('svg', [this.#content]);
+
   readonly #camera = new Camera();
-  readonly #controller = new Controller(this.root, this.#content, this.#camera);
+  readonly #controller = new Controller(
+    this.root, this.#content, this.#camera,
+    { width: this.#size, height: this.#size },
+  );
 
   readonly #tree = new Tree<number>(less);
   readonly #text = ref('');
 
   constructor() {
     super('binary-tree-view');
-    this.#controller.resize(this.#size, this.#size);
-    this.root.add(this.#content);
-    this.#createStatic();
+    [...Array(7)].forEach((item, i) => this.#tree.insert(i + 1));
     this.#drawTree(this.#tree);
   }
 
@@ -65,14 +72,6 @@ export class BinaryTree extends ViewModel {
       this.#drawTree(this.#tree);
     }
     this.text = '';
-  }
-
-  #createStatic() {
-    this.#content.add(
-      prettyComb(this.#size / 2, 1, undefined, { class: 'tree-comb' }),
-      this.#branches,
-      this.#leaves,
-    );
   }
 
   #drawTree(tree: Tree<number>) {
@@ -114,12 +113,12 @@ export class BinaryTree extends ViewModel {
     if (node.parent) {
       const x2 = node === node.parent.left ? dx : -dx;
       this.#branches.add(new Item('line', {
-        class: 'tree-line', x1: 0, y1: 0, x2: x2, y2: -dy,
+        class: 'tree-branch', x1: 0, y1: 0, x2: x2, y2: -dy,
         transform: `translate(${x} ${y})`,
       }));
     }
     const g = new Item('g', { transform: `translate(${x} ${y})` });
-    g.add(comb(nodeR, { class: 'tree-node' }), text);
+    g.add(comb(nodeR, { class: 'tree-leaf' }), text);
     this.#leaves.add(g);
 
     this.#drawNode(node.left, x - dx / 2, y + dy, dx / 2, dy);

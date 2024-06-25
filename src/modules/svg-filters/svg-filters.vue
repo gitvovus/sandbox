@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount, ref } from 'vue';
 import { type ViewState } from '@/modules/view-model';
-import { SvgEditor } from './svg-editor';
+import { SvgFilters } from './svg-filters';
 
 const { model } = defineProps<{
-  model: SvgEditor;
+  model: SvgFilters;
   state: ViewState;
 }>();
 
@@ -148,7 +148,7 @@ onBeforeUnmount(() => model.unmount());
           filters
         </div>
         <div class="view-subtitle">
-          lorem
+          light it up!
         </div>
       </div>
     </transition>

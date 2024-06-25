@@ -1,18 +1,12 @@
 import { Vec } from '@/lib/bi';
-import { Item, type Attributes } from '@/lib/reactive';
+import { Item, it } from '@/lib/reactive';
 import { Disposable } from '@/lib/std';
 import { Camera } from '@/lib/svg/camera';
 import { Controller } from '@/lib/svg/controller';
 import { prettyGrid } from '@/lib/svg/utils';
 import { ViewModel } from '@/modules/view-model';
 
-// import iconUrl from '@/assets/icons/lt.svg';
-
-function it(tag: string, data?: string | Attributes | Item[], children?: Item[]) {
-  return new Item(tag, data, children);
-}
-
-export class SvgEditor extends ViewModel {
+export class SvgFilters extends ViewModel {
   readonly #mounted = new Disposable();
 
   blur = it('feGaussianBlur', { in: 'SourceAplha', stdDeviation: 2, result: 'blur' });
@@ -127,7 +121,7 @@ export class SvgEditor extends ViewModel {
   );
 
   constructor() {
-    super('svg-editor-view');
+    super('svg-filters-view');
   }
 
   get content() {
@@ -152,26 +146,5 @@ export class SvgEditor extends ViewModel {
     this.#mounted.dispose();
   }
 
-  test() {
-    // try {
-    //   const r = await fetch(iconUrl);
-    //   const b = await r.blob();
-    //   const t = await b.text();
-    //   const icon = fromSource(t)?.items[0];
-    //   if (icon) {
-    //     let index = -1;
-    //     if (this.#icon) {
-    //       index = this.#icon.index;
-    //       this.#content.remove(this.#icon);
-    //     }
-    //     icon.attributes.fill = 'grey';
-    //     this.#content.add(icon);
-    //     icon.index = index;
-    //     this.#icon = icon;
-    //   }
-    // }
-    // catch (e) {
-    //   console.log(e);
-    // }
-  }
+  test() {}
 }

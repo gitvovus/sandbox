@@ -39,7 +39,7 @@ import LogoView from '@/modules/logo/logo.vue';
 import LoremView from '@/modules/lorem/lorem.vue';
 import MovableView from '@/modules/movable/movable.vue';
 import SandboxView from '@/modules/sandbox/sandbox.vue';
-import SvgEditorView from '@/modules/svg-editor/svg-editor.vue';
+import SvgFiltersView from '@/modules/svg-filters/svg-filters.vue';
 import SvgSandboxView from '@/modules/svg-sandbox/svg-sandbox.vue';
 import ThemeView from '@/modules/theme/theme.vue';
 import TransformsView from '@/modules/transforms/transforms.vue';
@@ -88,7 +88,7 @@ export class Application {
       .component('lorem-view', LoremView)
       .component('movable-view', MovableView)
       .component('sandbox-view', SandboxView)
-      .component('svg-editor-view', SvgEditorView)
+      .component('svg-filters-view', SvgFiltersView)
       .component('svg-sandbox-view', SvgSandboxView)
       .component('theme-view', ThemeView)
       .component('transforms-view', TransformsView)

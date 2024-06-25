@@ -85,8 +85,6 @@ export class Gears extends ViewModel {
       onElementEvent(element, 'pointerdown', this.#pick),
       onElementEvent(element, 'pointermove', this.#drag),
       onElementEvent(element, 'pointerup', this.#drop),
-      // () => this.#rotationAnimation.stop(),
-      // () => this.#swayAnimation.stop(),
       () => this.#controller.dispose(),
     );
     this.#controller.mount(element);
@@ -104,9 +102,7 @@ export class Gears extends ViewModel {
     this.#solver.clear();
     this.#shafts.forEach(shaft => this.#solver.addRotor(shaft));
 
-    // let ok = true;
     this.#solver.solve((failure) => {
-      // ok = false;
       // console.log('check failed:', failure.type);
     });
   }
