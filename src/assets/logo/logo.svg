@@ -56,5 +56,7 @@
   <g clip-path="url(#logo-blue-clip)">
     <use href="#logo" fill="#00000020" x="2" y="2" />
   </g>
+
+  <!-- text -->
   <use href="#logo" fill="#d0d0d0" />
 </svg>

@@ -13,6 +13,7 @@ import * as msg from './lib/messages';
 import Worker from './lib/worker?worker';
 
 import scene from '@/assets/flowers/scene.svg?raw';
+import { ExplicitPromise } from '@/lib/async';
 
 export class ImageData {
   readonly width: number;
@@ -30,7 +31,7 @@ export class Flowers extends ViewModel {
   readonly images = shallowReactive<ImageData[]>([]);
   readonly root: Item;
 
-  #selectedIndex = ref(0);
+  readonly #selectedIndex = ref(0);
 
   readonly #size = 500;
   readonly #camera = new Camera({ scale: new Vec(1, 1) });
@@ -45,20 +46,24 @@ export class Flowers extends ViewModel {
   readonly petalsMax = 9;
   readonly #petals = ref(5);
 
-  readonly imagesMin = 10;
-  readonly imagesMax = 100;
+  readonly countMin = 10;
+  readonly countMax = 100;
+  readonly countStep = 5;
   readonly #count = ref(25);
 
-  #grayscaleFilter: Item;
-  #brightnessFilter: Item;
-  #contrastFilter: Item;
-  #grayscale = ref(0);
-  #brightness = ref(0);
-  #contrast = ref(0);
+  readonly #todo = ref(0);
+  #wait?: ExplicitPromise;
 
-  #worker = new Worker();
-  #disposer = new Disposable();
-  #mounted = new Disposable();
+  readonly #grayscaleFilter: Item;
+  readonly #brightnessFilter: Item;
+  readonly #contrastFilter: Item;
+  readonly #grayscale = ref(0);
+  readonly #brightness = ref(0);
+  readonly #contrast = ref(0);
+
+  readonly #worker = new Worker();
+  readonly #disposer = new Disposable();
+  readonly #mounted = new Disposable();
 
   constructor() {
     super('flowers-view');
@@ -114,6 +119,10 @@ export class Flowers extends ViewModel {
 
   set selectedIndex(value) {
     this.#selectedIndex.value = value;
+  }
+
+  get image() {
+    return this.images[this.selectedIndex];
   }
 
   get grayscale() {
@@ -181,10 +190,18 @@ export class Flowers extends ViewModel {
     this.#count.value = value;
   }
 
-  generate() {
+  get todo() {
+    return this.#todo.value;
+  }
+
+  async generate() {
+    if (this.todo) return;
+
     this.selectedIndex = 0;
     this.images.length = 0;
-    this.#worker.postMessage({ type: 'stop' });
+    await this.stop();
+
+    this.#todo.value = this.count;
     for (let i = 0; i < this.count; ++i) {
       this.images.push(new ImageData(0, 0, ''));
       this.#worker.postMessage({
@@ -197,19 +214,37 @@ export class Flowers extends ViewModel {
     }
   }
 
-  readonly #onMessage = (e: MessageEvent) => {
-    if (e.data.type !== 'flower') {
-      return;
+  async stop() {
+    if (!this.#wait) {
+      this.#worker.postMessage({ type: 'stop' });
+      this.#wait = new ExplicitPromise(() => {});
     }
-    const data: msg.FlowerResponse = e.data;
-    if (data.id >= this.images.length) {
-      return;
+    await this.#wait;
+    this.#wait = undefined;
+    this.#todo.value = 0;
+  }
+
+  readonly #onMessage = (e: MessageEvent<msg.FlowerResponse | msg.StopResponse>) => {
+    const r = e.data;
+    switch (r.type) {
+      case 'stop':
+        if (this.#wait) {
+          this.#wait.resolve();
+        }
+        break;
+
+      case 'flower':
+        if (r.id >= this.images.length) {
+          break;
+        }
+        this.images[r.id] = new ImageData(
+          r.radius * 2,
+          r.radius * 2,
+          img.fromImageBitmap(r.image),
+        );
+        --this.#todo.value;
+        break;
     }
-    this.images[data.id] = new ImageData(
-      data.radius * 2,
-      data.radius * 2,
-      img.fromImageBitmap(data.image),
-    );
   };
 
   #createStatic() {

@@ -7,7 +7,7 @@ defineProps<{ model: Transforms }>();
 <template>
   <div class="transforms view flex ai-center jc-center">
     <div
-      class="bg-red box-200 f-72"
+      class="bg-red box-200 fs-72"
       :style="{ transform: `${model.matrix3d}` }"
     >
       Text

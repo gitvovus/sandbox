@@ -35,14 +35,14 @@ function keydown(e: KeyboardEvent) {
       <ui-item class="clip view" :model="model.root" />
     </div>
 
-    <transition name="fast">
+    <transition name="delayed">
       <div v-if="state === 'mini'" />
-      <div v-else class="tools top right col ai-center">
+      <div v-else class="tool-box top right col ai-center">
         Add/remove numbers
         <div class="flex gap-2">
           <input v-model="model.text" type="text" class="tree-input" @keydown="keydown">
           <ui-button class="btn" no-focus tabindex="-1" @click="model.add()">
-            <span>+ </span>
+            <span>+</span>
             <ui-hotkey>Ins</ui-hotkey>
           </ui-button>
           <ui-button class="btn" no-focus tabindex="-1" @click="model.remove()">

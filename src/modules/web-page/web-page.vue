@@ -9,7 +9,7 @@ model.use();
   <div class="surface view web-page-container">
     <div :ref="model.root" class="web-page" :class="{ menu : model.menu }">
       <div class="web-aside">
-        <div v-for="i in 1" :key="i" class="box-200 m-1" />
+        <div v-for="i in 10" :key="i" class="box-200 border m-1" />
       </div>
       <div class="web-main">
         <div class="web-header">
@@ -18,7 +18,7 @@ model.use();
           <ui-button v-model="model.menu" toggle class="flat relative">
             <ui-icon class="menu" />
             <div
-              class="absolute f-12 bg-blue centered round bottom right flex p-1"
+              class="absolute fs-12 bg-blue centered round bottom right flex p-1"
               :class="{ hidden: !model.menu }"
             >
               <ui-icon class="check" />
@@ -32,25 +32,40 @@ model.use();
             </clone-item>
           </div>
           <div class="flex col gap-2">
-            <div v-for="i in 10" :key="i" class="box-200" />
+            <div v-for="i in 10" :key="i" class="box-200 border" />
           </div>
         </div>
       </div>
     </div>
-    <!-- <div class="tools top right m-2 p-2">
+    <!-- <div class="tool-box top right m-2 p-2">
       {{ model.text || ':' }}
     </div> -->
   </div>
 </template>
 
 <style lang="scss">
+.web-page-container {
+  container-type: size;
+  container-name: web-page;
+}
+
+@container web-page (width < 720px) {
+  .web-page {
+    margin-left: -16em;
+    &.menu > .web-aside {
+      transform: translateX(100%);
+    }
+  }
+}
+
 .web-page {
   position: absolute;
   inset: 0;
   display: grid;
   grid-template-rows: minmax(0, 1fr);
   grid-template-columns: min-content 1fr;
-  transition: margin-left var(--fast) ease-in-out;
+  transition:
+    margin-left var(--fast) ease-in-out;
 }
 .web-header {
   position: sticky;
@@ -63,6 +78,7 @@ model.use();
   padding-inline: 0.5em;
   gap: 0.5em;
   font-size: 20px;
+  z-index: 5;
 }
 .web-main {
   grid-column: 2 / 3;
@@ -74,8 +90,10 @@ model.use();
   display: flex;
   flex-direction: column;
   overflow: auto;
-  background-color: rgb(0 0 0 / 0.25);
-  z-index: 1;
+  background-color: rgb(0 0 0 / 0.5);
+  backdrop-filter: blur(3px);
+  z-index: 10;
+  transform: translateX(0%);
   transition: transform var(--fast) ease-in-out;
 }
 .web-content {
@@ -87,10 +105,9 @@ model.use();
   flex-direction: column;
   padding-top: 0.125em;
   line-height: 1;
-  color: rgb(var(--red));
-  & > :first-child {
-    z-index: 1;
-  }
+  // & > :first-child {
+  //   z-index: 1;
+  // }
   & > :last-child {
     position: relative;
     transform-origin: 50% 40%;
@@ -100,20 +117,6 @@ model.use();
       position: absolute;
       inset: 0;
       background-image: linear-gradient(rgb(var(--surface) / 1) 25%, rgb(var(--surface) / 0.75) 100%);
-    }
-  }
-}
-
-.web-page-container {
-  container-type: size;
-  container-name: web-page;
-}
-
-@container web-page (width < 720px) {
-  .web-page {
-    margin-left: -16em;
-    &.menu > .web-aside {
-      transform: translateX(100%);
     }
   }
 }

@@ -13,3 +13,6 @@ export interface FlowerResponse extends FlowerRequest {
 export interface StopRequest {
   type: 'stop';
 }
+
+export interface StopResponse extends StopRequest {
+}

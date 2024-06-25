@@ -8,7 +8,7 @@ export class Bicubic extends ViewModel {
   readonly #disposer = new std.Disposable();
   readonly #mounted = new std.Disposable();
 
-  readonly #demo: Demo;
+  readonly demo: Demo;
   readonly #scene: tri.Scene;
   readonly #camera: tri.PerspectiveCamera;
   #renderer!: tri.WebGLRenderer;
@@ -28,9 +28,9 @@ export class Bicubic extends ViewModel {
     this.#scene.add(new tri.AmbientLight(0x404040));
     this.#scene.add(this.#camera);
 
-    this.#demo = new Demo(this.#scene, this.#camera);
+    this.demo = new Demo(this.#scene, this.#camera);
 
-    this.#disposer.add(() => this.#demo.dispose());
+    this.#disposer.add(() => this.demo.dispose());
   }
 
   dispose() {
@@ -44,14 +44,13 @@ export class Bicubic extends ViewModel {
     this.#height = 0;
 
     const bg = new tri.Color(getComputedStyle(this.#element).backgroundColor);
-    bg.multiplyScalar(5 / 4);
     this.#renderer = new tri.WebGLRenderer({ canvas, antialias: true });
     this.#renderer.setClearColor(bg);
     this.#renderer.setPixelRatio(window.devicePixelRatio);
-    this.#demo.mount(element);
+    this.demo.mount(element);
 
     this.#mounted.add(std.onAnimationFrame(this.#render), () => {
-      this.#demo.unmount();
+      this.demo.unmount();
       this.#renderer.dispose();
       this.#element = undefined;
     });
@@ -63,7 +62,7 @@ export class Bicubic extends ViewModel {
 
   readonly #render = () => {
     this.#resize();
-    this.#demo.update();
+    this.demo.update();
     this.#renderer.render(this.#scene, this.#camera);
   };
 

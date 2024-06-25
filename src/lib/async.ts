@@ -4,7 +4,7 @@ export type PromiseRejector = (reason?: any) => void;
 
 export type PromiseExecutor<T> = (resolve: PromiseResolver<T>, reject: PromiseRejector) => void;
 
-export class ExplicitPromise<T> extends Promise<T> {
+export class ExplicitPromise<T = void> extends Promise<T> {
   readonly #resolver: PromiseResolver<T>;
   readonly #rejector: PromiseRejector;
 

@@ -1,12 +1,12 @@
 import { Vec } from '@/lib/bi';
-import { Item, fromSource, type Attributes } from '@/lib/reactive';
+import { Item, type Attributes } from '@/lib/reactive';
 import { Disposable } from '@/lib/std';
 import { Camera } from '@/lib/svg/camera';
 import { Controller } from '@/lib/svg/controller';
 import { prettyGrid } from '@/lib/svg/utils';
 import { ViewModel } from '@/modules/view-model';
 
-import iconUrl from '@/assets/icons/lt.svg';
+// import iconUrl from '@/assets/icons/lt.svg';
 
 function it(tag: string, data?: string | Attributes | Item[], children?: Item[]) {
   return new Item(tag, data, children);
@@ -17,40 +17,37 @@ export class SvgEditor extends ViewModel {
 
   blur = it('feGaussianBlur', { in: 'SourceAplha', stdDeviation: 2, result: 'blur' });
 
-  pointLight = it('fePointLight', {
-    x: 0,
+  specPointLight = it('fePointLight', {
+    x: -15,
     y: -20,
     z: 30,
-  });
-
-  specDistantLight = it('feDistantLight', {
-    azimuth: -115,
-    elevation: 40,
   });
 
   specular = it('feSpecularLighting', {
     'in': 'blur',
     'result': 'spec',
-    'surfaceScale': 1,
+    'surfaceScale': 2,
     'specularConstant': 1.4,
     'specularExponent': 16,
-    'lighting-color': '#800000',
+    'lighting-color': '#ffffff',
   }, [
-    this.pointLight,
+    this.specPointLight,
   ]);
 
-  diffDistantLight = it('feDistantLight', {
-    azimuth: -115,
-    elevation: 40,
+  diffPointLight = it('fePointLight', {
+    x: -15,
+    y: -20,
+    z: 30,
   });
+
   diffuse = it('feDiffuseLighting', {
     'in': 'blur',
     'result': 'diff',
     'surfaceScale': 2,
-    'diffuseConstant': 0.1,
-    'lighting-color': '#707070',
+    'diffuseConstant': 0.3,
+    'lighting-color': '#ffffff',
   }, [
-    this.diffDistantLight,
+    this.diffPointLight,
   ]);
 
   compose = it('feComposite', {
@@ -59,22 +56,22 @@ export class SvgEditor extends ViewModel {
     result: 'composed',
     operator: 'arithmetic',
     k1: 0,
-    k2: 1,
-    k3: 1,
+    k2: 0.5,
+    k3: 0.5,
     k4: 0,
   });
 
   lit = it('feComposite', {
-    in: 'SourceAlpha',
-    in2: 'spec',
+    in: 'SourceGraphic',
+    in2: 'composed',
     result: 'lit',
     operator: 'arithmetic',
-    k1: 0,
-    k2: 1,
-    k3: 1,
+    k1: 2,
+    k2: 0,
+    k3: 0,
     k4: 0,
   });
-  clip = it('feComposite', { in: 'lit', in2: 'SourceAlpha', operator: 'in' });
+  clip = it('feComposite', { in: 'lit', in2: 'SourceGraphic', operator: 'in' });
 
   filter = new Item('filter', { id: 'lightjs' }, [
     this.blur,
@@ -100,10 +97,20 @@ export class SvgEditor extends ViewModel {
     fill: 'darkred',
   });
 
+  readonly front = it('path', {
+    d: `
+    M 1 19 A 18 18 0 1 1 33.4 29.8 L 36 31 L 44 39
+    A 3.5 3.5 0 0 1 39 44 L 31 36 L 29.8 33.4 A 18 18 0 0 1 1 19 z
+    M 6 19 A 13 13 0 0 0 32 19 A 13 13 0 0 0 6 19 z`,
+    fill: 'orange',
+    transform: 'scale(0.25) translate(-24 -24)',
+  });
+
   readonly #content = it('g', {
     filter: `url(#${this.filter.attributes.id})`,
   }, [
     this.back,
+    this.front,
   ]);
 
   readonly root = it('svg', [
@@ -112,7 +119,7 @@ export class SvgEditor extends ViewModel {
     this.#content,
   ]);
 
-  #icon?: Item;
+  // #icon?: Item;
 
   readonly #controller = new Controller(
     this.root, this.#content, this.#camera,
@@ -145,26 +152,26 @@ export class SvgEditor extends ViewModel {
     this.#mounted.dispose();
   }
 
-  async test() {
-    try {
-      const r = await fetch(iconUrl);
-      const b = await r.blob();
-      const t = await b.text();
-      const icon = fromSource(t)?.items[0];
-      if (icon) {
-        let index = -1;
-        if (this.#icon) {
-          index = this.#icon.index;
-          this.#content.remove(this.#icon);
-        }
-        icon.attributes.fill = 'grey';
-        this.#content.add(icon);
-        icon.index = index;
-        this.#icon = icon;
-      }
-    }
-    catch (e) {
-      console.log(e);
-    }
+  test() {
+    // try {
+    //   const r = await fetch(iconUrl);
+    //   const b = await r.blob();
+    //   const t = await b.text();
+    //   const icon = fromSource(t)?.items[0];
+    //   if (icon) {
+    //     let index = -1;
+    //     if (this.#icon) {
+    //       index = this.#icon.index;
+    //       this.#content.remove(this.#icon);
+    //     }
+    //     icon.attributes.fill = 'grey';
+    //     this.#content.add(icon);
+    //     icon.index = index;
+    //     this.#icon = icon;
+    //   }
+    // }
+    // catch (e) {
+    //   console.log(e);
+    // }
   }
 }

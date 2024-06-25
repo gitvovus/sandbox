@@ -34,6 +34,23 @@ export class SvgSandbox extends ViewModel {
 
   constructor() {
     super('svg-sandbox-view');
+    // const p = [
+    //   [0, -10], [8, -10], [10, -8],
+    //   [10, 0], [10, 8], [8, 10],
+    //   [0, 10], [-8, 10], [-10, 8],
+    //   [-10, 0], [-10, -8], [-8, -10],
+    //   [0, -10],
+    // ];
+    // const path = [`M ${v2(bezier(p, 0))}`];
+    // for (let i = 1; i <= 100; ++i) {
+    //   path.push(` ${v2(bezier(p, 0.01 * i))}`);
+    // }
+    // this.#content.add(it('path', {
+    //   'd': path.join(' '),
+    //   'stroke': 'black',
+    //   'stroke-width': 0.1,
+    //   'fill': 'none',
+    // }));
   }
 
   mount(element: HTMLElement) {

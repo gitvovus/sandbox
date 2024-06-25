@@ -1,7 +1,7 @@
 import { Animation } from '@/lib/animation';
-import { Vec } from '@/lib/bi';
+import { Mat, Vec } from '@/lib/bi';
 import { Item, fromSource } from '@/lib/reactive';
-import { mix, time } from '@/lib/std';
+import { cubicBezier, time } from '@/lib/std';
 import { Transformable } from '@/lib/svg/transformable';
 import { ViewModel } from '@/modules/view-model';
 
@@ -11,27 +11,17 @@ function find(root: Item, id: string) {
   return root.find(id) as Transformable;
 }
 
-// function parabola(x0: number, x1: number, height: number, x: number) {
-//   const t = 2 * (x - x0) / (x1 - x0) - 1;
-//   return height * (1 - t * t);
-// }
-
-export function bezier(p: number[][], t: number) {
-  const a = (1 - t) ** 3;
-  const b = (1 - t) ** 2 * t;
-  const c = (1 - t) * t ** 2;
-  const d = t ** 3;
-
-  const x = a * p[0][0] + b * p[1][0] + c * p[2][0] + d * p[3][0];
-  const y = a * p[0][1] + b * p[1][1] + c * p[2][1] + d * p[3][1];
-
-  return new Vec(x, y);
+function compose(item: Transformable, position: Vec, scale: Vec) {
+  const x = Number.parseFloat(item.attributes.x as string);
+  const y = Number.parseFloat(item.attributes.y as string);
+  return Mat.translation(x + position.x, y + position.y)
+    .multiply(Mat.scale(scale.x, scale.y))
+    .multiply(Mat.translation(-x, -y));
 }
 
 export class Logo extends ViewModel {
   readonly root = fromSource(logo, (tag, data) => {
     const lookup: (string | undefined)[] = [
-      'logo',
       'logo-title',
       'logo-ext',
       'logo-vue',
@@ -53,57 +43,62 @@ export class Logo extends ViewModel {
   readonly #map: {
     [key: string]: {
       item: Transformable;
-      animation: (t: number) => Vec;
+      animation: (item: Transformable, t: number) => Mat;
     };
   } = {
 
-      // logo: {
-      //   item: find(this.root, 'logo'),
+      title: {
+        item: find(this.root, 'logo-title'),
+        animation: (item, t) => {
+          // const position = new Vec();
+          const position = new Vec(...cubicBezier([
+            [0, -30], [0, -1], [0, 0],
+            [0, 0],
+          ], t));
+          // const scale = new Vec(1, 1);
+          const scale = new Vec(...cubicBezier([
+            [1, 1], [1, 5], [1, 2],
+            // [1, 2.5], [1, 1], [1, 0.8],
+            [1, 1],
+          ], t));
+          return compose(item, position, scale);
+        },
+      },
+
+      // ext: {
+      //   item: find(this.root, 'logo-ext'),
       //   animation: (t) => {
-      //     if (t < 0 || 1 < t) return new Vec(0, 0);
-      //     return new Vec(0, 40 * (1 - t));
+      //     const scale = new Vec(1, 1);
+      //     let position = new Vec(0, 0);
+      //     if (0 <= t && t <= 1) {
+      //       position = new Vec(...cubicBezier([
+      //         [0, 0], [20, 0], [30, 0],
+      //         [0, 0],
+      //       ], t));
+      //     }
+      //     return compose(position, scale);
       //   },
       // },
 
-      title: {
-        item: find(this.root, 'logo-title'),
-        animation: (t) => {
-          if (t < 0.5) return new Vec(-100, 0);
-          return new Vec(mix(-200, 0, t), 0);
-        },
-      },
+      // yellow: {
+      //   item: find(this.root, 'logo-yellow'),
+      //   animation: (t) => {
+      //     if (t < 0 || 0.5 < t) return new Vec(0, 0);
+      //     const k = -40;
+      //     const y = k * Math.sin(2 * Math.PI * t);
+      //     return new Vec(0, y);
+      //   },
+      // },
 
-      ext: {
-        item: find(this.root, 'logo-ext'),
-        animation: (t) => {
-          if (t < 0 || 1 < t) return new Vec(0, 0);
-          const x0 = 20;
-          const y0 = -10;
-          const x1 = x0;
-          const y1 = -y0;
-          return bezier([[0, 0], [x0, y0], [x1, y1], [0, 0]], t);
-        },
-      },
-
-      yellow: {
-        item: find(this.root, 'logo-yellow'),
-        animation: (t) => {
-          if (t < 0 || 0.5 < t) return new Vec(0, 0);
-          const k = -40;
-          const y = k * Math.sin(2 * Math.PI * t);
-          return new Vec(0, y);
-        },
-      },
-
-      blue: {
-        item: find(this.root, 'logo-blue'),
-        animation: (t) => {
-          if (t < 0 || 1 < t) return new Vec(0, 0);
-          const k = 40;
-          const y = k * Math.sin(Math.PI * t);
-          return new Vec(0, y);
-        },
-      },
+      // blue: {
+      //   item: find(this.root, 'logo-blue'),
+      //   animation: (t) => {
+      //     if (t < 0 || 1 < t) return new Vec(0, 0);
+      //     const k = 40;
+      //     const y = k * Math.sin(Math.PI * t);
+      //     return new Vec(0, y);
+      //   },
+      // },
     };
 
   constructor() {
@@ -134,7 +129,7 @@ export class Logo extends ViewModel {
 
       for (const i in this.#map) {
         const item = this.#map[i];
-        item.item.position = item.animation(dt / duration);
+        item.item.transform = item.animation(item.item, dt / duration);
       }
     });
   }

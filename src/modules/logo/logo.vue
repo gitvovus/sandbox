@@ -8,7 +8,7 @@ onBeforeUnmount(() => model.unmount());
 </script>
 
 <template>
-  <div class="logo" @dblclick="model.animate()">
+  <div class="logo ff-header fw-header" @dblclick="model.animate()">
     <ui-item :model="model.root" />
   </div>
 </template>
@@ -22,6 +22,5 @@ onBeforeUnmount(() => model.unmount());
   justify-content: center;
   align-items: center;
   user-select: none;
-  font-family: Impact;
 }
 </style>

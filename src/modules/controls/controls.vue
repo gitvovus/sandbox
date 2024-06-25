@@ -165,6 +165,7 @@ const icons = ['check', 'close', 'lt', 'gt', 'up', 'down', 'menu', 'quad', 'dot'
               class="cbx round"
               toggle
             >
+              <!-- TODO: change hidden to class -->
               <div class="cbx-frame">
                 <ui-icon
                   class="check"
@@ -237,7 +238,7 @@ const icons = ['check', 'close', 'lt', 'gt', 'up', 'down', 'menu', 'quad', 'dot'
           <div class="flex gap-2 my-2">
             <div v-for="icon in icons" :key="icon" class="flex gap-2">
               <div class="icon-content">
-                <ui-icon :class="['f-72', `${icon}`]" />
+                <ui-icon :class="['fs-72', `${icon}`]" />
                 <div class="icon-name">
                   {{ icon }}
                 </div>

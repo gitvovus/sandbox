@@ -39,6 +39,27 @@ export function smootherStep(a: number, b: number, x: number) {
   return t * t * t * (t * (6 * t - 15) + 10);
 }
 
+export function cubicBezier(p: number[][], t: number) {
+  t = clamp(t, 0, 1);
+  const segments = Math.floor(p.length - 1) / 3;
+  const interval = 1 / segments;
+  let n = Math.floor(t / interval);
+  if (n === segments) --n;
+  const dt = t - interval * n;
+  t = dt / interval;
+
+  const a = (1 - t) ** 3;
+  const b = 3 * (1 - t) ** 2 * t;
+  const c = 3 * (1 - t) * t ** 2;
+  const d = t ** 3;
+
+  const i = n * 3;
+  const x = a * p[i + 0][0] + b * p[i + 1][0] + c * p[i + 2][0] + d * p[i + 3][0];
+  const y = a * p[i + 0][1] + b * p[i + 1][1] + c * p[i + 2][1] + d * p[i + 3][1];
+
+  return [x, y];
+}
+
 export interface Point {
   x: number;
   y: number;

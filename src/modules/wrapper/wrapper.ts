@@ -1,16 +1,34 @@
 import { ref, shallowReactive, type ShallowReactive } from 'vue';
 import { ViewModel, type ViewState } from '@/modules/view-model';
+import { getFocusableChildren } from '@/lib/dom';
 
 export class Wrapper extends ViewModel {
   readonly content: ViewModel;
   readonly classes: ShallowReactive<string[]>;
   readonly #state = ref<ViewState>('full');
+  readonly #root = ref<HTMLElement>(undefined!);
 
   constructor(content: ViewModel, classes: string[] = [], state: ViewState = 'full') {
     super('wrapper-view');
     this.content = content;
     this.classes = shallowReactive(classes);
     this.state = state;
+  }
+
+  mount(root: HTMLElement) {
+    this.#root.value = root;
+  }
+
+  unmount() {
+    this.#root.value = undefined!;
+  }
+
+  focus() {
+    if (!this.#root.value) return;
+    const children = getFocusableChildren(this.#root.value);
+    if (children.length > 0) {
+      children[0].focus();
+    }
   }
 
   get state() {

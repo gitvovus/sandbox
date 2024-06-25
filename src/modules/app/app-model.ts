@@ -59,9 +59,9 @@ export class AppModel extends ViewModel {
       new Wrapper(this.movable, ['view margin']),
       new Wrapper(this.svgEditor, ['view card clip shadow']),
       new Wrapper(this.controls, ['view card clip shadow border']),
-      new Wrapper(this.theme, ['view card']),
-      // new Wrapper(this.sandbox, ['view card clip shadow border']),
+      // new Wrapper(this.theme, ['view card']),
       // new Wrapper(this.svgSandbox, ['view card clip shadow']),
+      // new Wrapper(this.sandbox, ['view card clip shadow border']),
       // new Wrapper(this.transforms, ['view card']),
     ];
   }

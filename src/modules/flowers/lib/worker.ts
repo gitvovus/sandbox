@@ -54,28 +54,50 @@ async function flower(radius: number, petals: number, t: number) {
   );
 }
 
-const requests: msg.FlowerRequest[] = [];
+const requests: (msg.FlowerRequest | msg.StopRequest)[] = [];
 
 const context = self as unknown as Worker;
 context.onmessage = async (e: MessageEvent) => {
-  switch (e.data.type) {
+  const r = e.data;
+  switch (r.type) {
     case 'flower':
-      requests.push(e.data);
-      if (requests.length > 1) {
-        return;
-      }
-      while (requests.length > 0) {
-        const r = requests.shift()!;
-        const image = await flower(r.radius, r.petals, r.t);
-        context.postMessage({ ...r, image }, [image]);
-      }
+      requests.push(r);
       break;
 
     case 'stop':
       requests.length = 0;
+      requests.push({ type: 'stop' });
       break;
 
     default:
-      console.log('[worker] unknown request:', e.data);
+      console.log('[worker] unknown request:', r);
+  }
+
+  if (requests.length === 1) {
+    setTimeout(processMessages);
   }
 };
+
+async function processMessages() {
+  if (requests.length === 0) {
+    return;
+  }
+  const r = requests.shift()!;
+  switch (r.type) {
+    case 'stop':
+      requests.length = 0;
+      context.postMessage({ type: 'stop' });
+      break;
+
+    case 'flower':
+      {
+        const image = await flower(r.radius, r.petals, r.t);
+        context.postMessage({ ...r, image }, [image]);
+      }
+      break;
+  }
+
+  if (requests.length > 0) {
+    setTimeout(processMessages);
+  }
+}

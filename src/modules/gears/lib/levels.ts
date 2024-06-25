@@ -47,36 +47,36 @@ export const levels: LevelData[] = [
   {
     /* eslint-disable */
     shafts: [
-      { type: 'source',      position: v(-3, 9) },
-      { type: 'mediator',    position: v(-3, 1) },
-      { type: 'destination', position: v( 4, 1) },
-      { type: 'destination', position: v( 4, 9) },
+      { type: 'source',      position: v(-3,  7) },
+      { type: 'mediator',    position: v(-3, -1) },
+      { type: 'destination', position: v( 4, -1) },
+      { type: 'destination', position: v( 4,  7) },
     ],
     /* eslint-enable */
     gears: [
       {
-        position: v(-12, -6),
+        position: v(-12, -8),
         shapes: [
           { type: 'gear', radius: 5, fill: 'fill-5' },
           { type: 'stub', radius: 3, fill: 'fill-3' },
         ],
       },
       {
-        position: v(4, -10),
+        position: v(4, -12),
         shapes: [
           { type: 'gear', radius: 5, fill: 'fill-4' },
           { type: 'gear', radius: 3, fill: 'fill-2' },
         ],
       },
       {
-        position: v(-5, -12),
+        position: v(-5, -14),
         shapes: [
           { type: 'gear', radius: 3, fill: 'fill-0' },
           { type: 'gear', radius: 2, fill: 'fill-7' },
         ],
       },
       {
-        position: v(13, -6),
+        position: v(13, -8),
         shapes: [
           { type: 'gear', radius: 4, fill: 'fill-1' },
           { type: 'gear', radius: 2, fill: 'fill-6' },

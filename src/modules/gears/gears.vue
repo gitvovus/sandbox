@@ -18,9 +18,20 @@ onBeforeUnmount(() => model.unmount());
     <div ref="root" class="paper clip view">
       <ui-item class="clip view" :model="model.root" />
     </div>
-    <transition name="slow">
+    <transition name="delayed">
       <div v-if="state === 'mini'" />
-      <div v-else class="tools top right">
+      <div v-else class="view-header">
+        <div class="view-title">
+          gears
+        </div>
+        <div class="view-subtitle">
+          rotate them!
+        </div>
+      </div>
+    </transition>
+    <transition name="delayed">
+      <div v-if="state === 'mini'" />
+      <div v-else class="tool-box top right col">
         <ui-button class="btn" @click="model.reset()">
           reset
         </ui-button>

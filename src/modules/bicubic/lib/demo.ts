@@ -1,3 +1,4 @@
+import { ref } from 'vue';
 import * as tri from 'three';
 
 import * as geo from '@/lib/geometry';
@@ -30,7 +31,9 @@ export class Demo extends std.Disposable {
   #dragScale = 1;
 
   readonly #offset = -0.5 * (this.#numSpheres - 1);
-  #subdiv = 10;
+  #subdiv = ref(10);
+  #showGrid = ref(false);
+  #showLoRes = ref(false);
 
   readonly #minSubdiv = 2;
   readonly #maxSubdiv = 16;
@@ -84,34 +87,65 @@ export class Demo extends std.Disposable {
     this.#controller.update(this.#camera);
   }
 
+  get showGrid() {
+    return this.#showGrid.value;
+  }
+
+  set showGrid(value) {
+    this.#showGrid.value = value;
+    this.#plane.visible = value;
+  }
+
+  get showLoRes() {
+    return this.#showLoRes.value;
+  }
+
+  set showLoRes(value) {
+    this.#showLoRes.value = value;
+    this.#loRes.visible = value;
+  }
+
+  get subdiv() {
+    return this.#subdiv.value;
+  }
+
+  set subdiv(value) {
+    if (value !== this.#subdiv.value) {
+      this.#subdiv.value = value;
+      this.#interpolate();
+    }
+  }
+
   #setup() {
+    const subdiv = this.subdiv;
+    const offset = this.#offset;
     this.#plane = new tri.LineSegments(
       geo.grid(
         this.#numSpheres,
         this.#numSpheres,
-        (x, y) => new tri.Vector3(x + this.#offset - 0.5, y + this.#offset - 0.5, this.#minZ),
+        (x, y) => new tri.Vector3(x + offset - 0.5, y + offset - 0.5, this.#minZ),
       ),
       new tri.LineBasicMaterial({ color: 0, transparent: true, opacity: 0.5 }),
     );
-    this.#plane.visible = false;
+    this.showGrid = false;
     this.#root.add(this.#plane);
 
     this.#loRes = new tri.LineSegments(
       geo.grid(
         this.#numSpheres + 3,
         this.#numSpheres + 3,
-        (x, y) => new tri.Vector3(x + this.#offset - 2, y + this.#offset - 2, 0),
+        (x, y) => new tri.Vector3(x + offset - 2, y + offset - 2, 0),
       ),
       new tri.LineBasicMaterial({ color: this.#loResColor }),
     );
-    this.#loRes.visible = false;
+    this.showLoRes = false;
     this.#root.add(this.#loRes);
 
     this.#hiRes = new tri.LineSegments(
       geo.grid(
-        (this.#numSpheres - 1) * this.#subdiv,
-        (this.#numSpheres - 1) * this.#subdiv,
-        (x, y) => new tri.Vector3(x + this.#offset, y + this.#offset, 0),
+        (this.#numSpheres - 1) * subdiv,
+        (this.#numSpheres - 1) * subdiv,
+        (x, y) => new tri.Vector3(x / subdiv + offset, y / subdiv + offset, 0),
       ),
       new tri.LineBasicMaterial({ color: this.#hiResColor }),
     );
@@ -124,7 +158,7 @@ export class Demo extends std.Disposable {
           new tri.MeshPhongMaterial({ color: this.#sphereColor }),
         );
         sphere.scale.setScalar(0.07);
-        sphere.position.set(x + this.#offset, y + this.#offset, 0);
+        sphere.position.set(x + offset, y + offset, 0);
         this.#spheres.push(sphere);
         this.#root.add(sphere);
       }
@@ -166,7 +200,7 @@ export class Demo extends std.Disposable {
 
   #interpolate() {
     const size = this.#numSpheres;
-    const subdiv = this.#subdiv;
+    const subdiv = this.subdiv;
     const idx = (x: number, y: number) => std.clamp(x, 0, size - 1) + std.clamp(y, 0, size - 1) * size;
     const get = (x: number, y: number) => this.#z[idx(x, y)];
 
@@ -198,7 +232,8 @@ export class Demo extends std.Disposable {
 
     const hiSize = (size - 1) * subdiv;
     const hi = this.#hiRes.geometry.getAttribute('position');
-    if (hi.count !== hiSize + hiSize) {
+    if (hi.count !== (hiSize + 1) * (hiSize + 1)) {
+      // console.log('subdiv', subdiv, 'hisize', hiSize, 'count', hi.count);
       // subdiv has changed, need to recreate hi-res grid
       this.#hiRes.geometry.dispose();
       this.#hiRes.geometry = geo.grid(hiSize, hiSize, (x, y) => {
@@ -206,9 +241,9 @@ export class Demo extends std.Disposable {
       });
     }
     else {
-      for (let y = 0; y < hiSize; ++y) {
-        for (let x = 0; x < hiSize; ++x) {
-          hi.setZ(x + y * hiSize, bicubic(x, y));
+      for (let y = 0; y <= hiSize; ++y) {
+        for (let x = 0; x <= hiSize; ++x) {
+          hi.setZ(x + y * (hiSize + 1), bicubic(x, y));
         }
       }
       hi.needsUpdate = true;
@@ -319,25 +354,25 @@ export class Demo extends std.Disposable {
         break;
       case 'KeyG':
         if (this.#plane) {
-          this.#plane.visible = !this.#plane.visible;
+          this.showGrid = !this.showGrid;
         }
         break;
       case 'KeyL':
         if (this.#loRes) {
-          this.#loRes.visible = !this.#loRes.visible;
+          this.showLoRes = !this.showLoRes;
         }
         break;
       case 'Minus':
       case 'NumpadSubtract':
-        if (this.#subdiv > this.#minSubdiv) {
-          --this.#subdiv;
+        if (this.subdiv > this.#minSubdiv) {
+          --this.subdiv;
           this.#interpolate();
         }
         break;
       case 'Equal':
       case 'NumpadAdd':
-        if (this.#subdiv < this.#maxSubdiv) {
-          ++this.#subdiv;
+        if (this.subdiv < this.#maxSubdiv) {
+          ++this.subdiv;
           this.#interpolate();
         }
         break;

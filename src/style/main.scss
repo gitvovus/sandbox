@@ -75,13 +75,77 @@ p {
   box-shadow: 0 0 25vw rgb(0 0 0) inset;
 }
 
+.view-header {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  flex-direction: column;
+  margin: 1em;
+  pointer-events: none;
+  user-select: none;
+}
+
+.view-title {
+  font-family: var(--ff-header);
+  font-weight: var(--fw-header);
+  font-size: 72px;
+  line-height: 1;
+  text-shadow: 0 0 5px rgb(0 0 0 / 0.5);
+}
+
+.view-subtitle {
+  font-family: var(--ff-normal);
+  font-weight: var(--fw-normal);
+  font-size: 13px;
+  color: rgb(var(--orange));
+  text-shadow: 0 0 5px rgb(0 0 0);
+  padding-left: 0.25em;
+  background: linear-gradient(to right, rgb(0 0 0 / 1), rgb(0 0 0 / 0.1), rgb(0 0 0 / 0));
+}
+
+.properties {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25em;
+  padding: 0.25em;
+  overflow: auto;
+}
+
+.section {
+  display: grid;
+  grid-template-columns: 7em 1fr;
+  grid-auto-rows: min-content;
+  padding: 0.5em 0.5em;
+  gap: 0.25em 0.5em;
+  border-radius: var(--radius-small);
+  background-color: rgb(255 255 255 / 0.1);
+}
+
+.section-header {
+  grid-column: 1 / 3;
+  font-size: 13px;
+  color: rgb(var(--orange));
+}
+
+.section-span {
+  grid-column: 1 / 3;
+}
+
+.muted {
+  opacity: 0.75;
+}
+
+.tiny {
+  font-size: 13px;
+}
+
 .glass {
   background-color: rgb(var(--glass));
   backdrop-filter: blur(10px);
 }
 
-// TODO: rename (or not)
-.tools {
+.tool-box {
   position: absolute;
   display: flex;
   gap: 0.25em;

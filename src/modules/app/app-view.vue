@@ -18,19 +18,17 @@ const { model } = defineProps<{ model: AppModel }>();
     <teleport to="body">
       <ui-dialog :model="model.dialog">
         <div class="dlg-panel">
-          <div class="f-18 flex p-2 ai-center">
+          <div class="fs-18 flex p-2 ai-center">
             <div class="spacer" />
-            <ui-button class="f-24 flat mouse" @click="model.dialog.closeAsync('transform')">
+            <ui-button class="fs-24 flat mouse" @click="model.dialog.closeAsync('transform')">
               <ui-icon class="close" />
             </ui-button>
           </div>
           <div class="dlg-content">
-            <ui-zoom :scale="0.8">
-              <component
-                :is="model.dialogContent.component"
-                :model="model.dialogContent"
-              />
-            </ui-zoom>
+            <component
+              :is="model.dialogContent.component"
+              :model="model.dialogContent"
+            />
           </div>
         </div>
       </ui-dialog>
@@ -55,7 +53,7 @@ const { model } = defineProps<{ model: AppModel }>();
           M
         </ui-button>
         <span class="vertical separator" />
-        <div v-for="i in 3" :key="i" class="pic">
+        <div v-for="i in 1" :key="i" class="pic">
           <img src="@/assets/pics/pic.svg">
         </div>
         <span class="vertical separator" />
@@ -163,6 +161,17 @@ $pic: 48px;
 }
 .fast-enter-active,
 .fast-leave-active {
+  transition: opacity var(--fast);
+}
+
+.delayed-enter-from,
+.delayed-leave-to {
+  opacity: 0;
+}
+.delayed-enter-active {
+  transition: opacity var(--fast) calc(var(--slow) - var(--fast));
+}
+.delayed-leave-active {
   transition: opacity var(--fast);
 }
 </style>
