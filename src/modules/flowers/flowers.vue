@@ -27,7 +27,7 @@ onBeforeUnmount(() => {
       <div class="properties">
         <div class="section">
           <div class="section-header">
-            Generation parameters
+            generation parameters
           </div>
           <div class="flex jc-between">
             <span class="muted tiny">count</span>
@@ -58,6 +58,76 @@ onBeforeUnmount(() => {
             :min="model.petalsMin"
             :max="model.petalsMax"
           />
+
+          <div class="section-header flex ai-center gap-2">
+            <div
+              class="flower-color"
+              :style="{ backgroundColor: `rgb(${model.bottom.r} ${model.bottom.g} ${model.bottom.b})` }"
+            />
+            <span>bottom color</span>
+          </div>
+          <div class="flex jc-between">
+            <span class="muted tiny">r</span>
+            {{ model.bottom.r }}
+          </div>
+          <ui-range v-model="model.bottom.r" :min="0" :max="255" :step="5" />
+          <div class="flex jc-between">
+            <span class="muted tiny">g</span>
+            {{ model.bottom.g }}
+          </div>
+          <ui-range v-model="model.bottom.g" :min="0" :max="255" :step="5" />
+          <div class="flex jc-between">
+            <span class="muted tiny">b</span>
+            {{ model.bottom.b }}
+          </div>
+          <ui-range v-model="model.bottom.b" :min="0" :max="255" :step="5" />
+
+          <div class="section-header flex ai-center gap-2">
+            <div
+              class="flower-color"
+              :style="{ backgroundColor: `rgb(${model.middle.r} ${model.middle.g} ${model.middle.b})` }"
+            />
+            <span>middle color</span>
+          </div>
+          <div class="flex jc-between">
+            <span class="muted tiny">r</span>
+            {{ model.middle.r }}
+          </div>
+          <ui-range v-model="model.middle.r" :min="0" :max="255" :step="5" />
+          <div class="flex jc-between">
+            <span class="muted tiny">g</span>
+            {{ model.middle.g }}
+          </div>
+          <ui-range v-model="model.middle.g" :min="0" :max="255" :step="5" />
+          <div class="flex jc-between">
+            <span class="muted tiny">b</span>
+            {{ model.middle.b }}
+          </div>
+          <ui-range v-model="model.middle.b" :min="0" :max="255" :step="5" />
+
+          <div class="section-header flex ai-center gap-2">
+            <div
+              class="flower-color"
+              :style="{ backgroundColor: `rgb(${model.top.r} ${model.top.g} ${model.top.b})` }"
+            />
+            <span>top color</span>
+          </div>
+          <div class="flex jc-between">
+            <span class="muted tiny">r</span>
+            {{ model.top.r }}
+          </div>
+          <ui-range v-model="model.top.r" :min="0" :max="255" :step="5" />
+          <div class="flex jc-between">
+            <span class="muted tiny">g</span>
+            {{ model.top.g }}
+          </div>
+          <ui-range v-model="model.top.g" :min="0" :max="255" :step="5" />
+          <div class="flex jc-between">
+            <span class="muted tiny">b</span>
+            {{ model.top.b }}
+          </div>
+          <ui-range v-model="model.top.b" :min="0" :max="255" :step="5" />
+
           <ui-button v-if="model.todo === 0" class="btn mt-2" @click="model.generate()">
             Generate
           </ui-button>
@@ -70,9 +140,10 @@ onBeforeUnmount(() => {
             </div>
           </div>
         </div>
+
         <div class="section">
           <div class="section-header">
-            Images
+            images
           </div>
           <div class="flex jc-between">
             <span class="muted tiny">index</span>
@@ -141,7 +212,7 @@ onBeforeUnmount(() => {
 </template>
 
 <style lang="scss">
-$tool-width: 18em;
+$tool-width: 16em;
 .flowers {
   display: grid;
   grid-template-columns: 1fr $tool-width;
@@ -164,5 +235,12 @@ $tool-width: 18em;
 
 .flowers-background {
   fill: rgb(0 0 0 / 0.125);
+}
+
+.flower-color {
+  width: 1em;
+  height: 1em;
+  border: 1px solid rgb(var(--border));
+  border-radius: var(--radius-small);
 }
 </style>

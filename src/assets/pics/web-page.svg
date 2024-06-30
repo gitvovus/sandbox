@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-24 -24 48 48">
+  <path
+    fill="rgb(80 120 144)"
+    stroke="black"
+    stroke-width="2"
+    d="M 9,-23 c 3,0 5,2 5,5 v 36 c 0,3 -2,5 -5,5 h -18 c -3,0 -5,-2 -5,-5 v -36 c 0,-3 2,-5 5,-5 z"
+  />
+  <path
+    fill="rgb(100 150 180)"
+    d="M 9,-22 c 0,20 -10,33 -22,40 v -36 c 0,-2.4 1.6,-4 4,-4 z"
+  />
+  <path
+    fill="none"
+    stroke="black"
+    stroke-width="2"
+    stroke-linecap="round"
+    d="M -3,-19 h 6"
+  />
+</svg>

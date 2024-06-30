@@ -9,7 +9,7 @@ export class Wrapper extends ViewModel {
   readonly #root = ref<HTMLElement>(undefined!);
 
   constructor(content: ViewModel, classes: string[] = [], state: ViewState = 'full') {
-    super('wrapper-view');
+    super('wrapper-view', content.button);
     this.content = content;
     this.classes = shallowReactive(classes);
     this.state = state;

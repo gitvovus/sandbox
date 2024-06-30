@@ -57,6 +57,7 @@ export class Controller implements std.IDisposable {
 
   #gesture = Gesture.NONE;
   #pickedPoint = new bi.Vec();
+  #pickedAngle = 0;
   #pickedPosition = new bi.Vec();
   #pickedRotation = 0;
   #pickedTransform = new bi.Mat(1, 0, 0, 1, 0, 0);
@@ -232,6 +233,9 @@ export class Controller implements std.IDisposable {
     this.#pickedRotation = this.#camera.rotation;
     this.#pickedTransform = this.#camera.transform;
     this.#pickedPoint = this.#pickedTransform.transform(this.toCamera(e));
+    this.#pickedAngle = Math.atan2(
+      this.#pickedPoint.y - this.#pickedPosition.y,
+      this.#pickedPoint.x - this.#pickedPosition.x);
   };
 
   readonly #drag = (e: PointerEvent) => {
@@ -244,14 +248,10 @@ export class Controller implements std.IDisposable {
       );
     }
     else if (this.#gesture === Gesture.ROTATE) {
-      const a = Math.atan2(this.#pickedPoint.y, this.#pickedPoint.x);
       const point = this.#pickedTransform.transform(this.toCamera(e));
-
-      if (Math.hypot(point.x, point.y) < 0.001) return;
-
-      const b = Math.atan2(point.y, point.x);
-      // const delta = std.mod(Math.atan2(point.y, point.x) - this.#pickedRotation, 2 * Math.PI);
-      this.#camera.rotation = std.mod(this.#pickedRotation + a - b, 2 * Math.PI);
+      const delta = new bi.Vec(point.x - this.#pickedPosition.x, point.y - this.#pickedPosition.y);
+      const a = Math.atan2(delta.y, delta.x);
+      this.#camera.rotation = std.mod(this.#pickedRotation + this.#pickedAngle - a, 2 * Math.PI);
     }
   };
 

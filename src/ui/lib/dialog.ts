@@ -42,10 +42,10 @@ export class Dialog {
   readonly #mounted = new Disposable();
   readonly #l = ref(0);
   readonly #t = ref(0);
-  readonly #w = ref(480);
-  readonly #h = ref(720);
-  readonly #mw = ref(0);
-  readonly #mh = ref(0);
+  readonly #w = ref(500);
+  readonly #h = ref(800);
+  readonly #mw = ref(480);
+  readonly #mh = ref(480);
   readonly #captured = { x: 0, y: 0 };
 
   #root?: HTMLDialogElement;

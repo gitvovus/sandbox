@@ -48,7 +48,7 @@ onBeforeUnmount(() => model.unmount());
 
 <style lang="scss">
 .dialog {
-  --resizer: 12px;
+  --resizer: 24px;
   position: fixed;
   inset: unset;
   overflow: unset;

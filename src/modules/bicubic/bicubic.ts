@@ -18,7 +18,7 @@ export class Bicubic extends ViewModel {
   #height = 0;
 
   constructor() {
-    super('bicubic-view');
+    super('bicubic-view', 'bicubic-button');
 
     this.#camera = new tri.PerspectiveCamera(30, 1, 0.1, 50);
     this.#camera.up.set(0, 0, 1);

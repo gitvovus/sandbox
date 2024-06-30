@@ -102,7 +102,7 @@ export class Logo extends ViewModel {
     };
 
   constructor() {
-    super('logo-view');
+    super('logo-view', 'logo-button');
   }
 
   mount() {

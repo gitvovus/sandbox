@@ -45,13 +45,14 @@ const orientation = computed(() => (horizontal.value ? 'horizontal' : 'vertical'
 </template>
 
 <style lang="scss">
-$padding: 0.75em;
+$padding: 0.5em;
 $thumb-size: 1em;
 $track-radius: 2px;
 
 .range {
   --track-radius: #{$track-radius};
   display: flex;
+  user-select: none;
   &.horizontal {
     padding: 0 $padding;
   }

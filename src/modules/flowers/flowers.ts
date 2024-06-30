@@ -51,6 +51,10 @@ export class Flowers extends ViewModel {
   readonly countStep = 5;
   readonly #count = ref(10);
 
+  readonly bottom = shallowReactive({ r: 0, g: 0, b: 0 });
+  readonly middle = shallowReactive({ r: 255, g: 0, b: 0 });
+  readonly top = shallowReactive({ r: 255, g: 255, b: 255 });
+
   readonly #todo = ref(0);
   #wait?: ExplicitPromise;
 
@@ -66,7 +70,7 @@ export class Flowers extends ViewModel {
   readonly #mounted = new Disposable();
 
   constructor() {
-    super('flowers-view');
+    super('flowers-view', 'flowers-button');
 
     this.#worker.onmessage = this.#onMessage;
 
@@ -211,6 +215,9 @@ export class Flowers extends ViewModel {
         radius: this.radius,
         petals: this.petals,
         t: i / (this.count - 1),
+        bottom: { ...this.bottom },
+        middle: { ...this.middle },
+        top: { ...this.top },
       });
     }
   }

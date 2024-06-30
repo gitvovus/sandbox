@@ -27,7 +27,7 @@ onBeforeUnmount(() => model.unmount());
         <div class="properties">
           <div class="section">
             <div class="section-header">
-              Settings
+              settings
             </div>
             <div class="flex jc-between">
               <span class="muted tiny">subdiv</span>
@@ -39,7 +39,7 @@ onBeforeUnmount(() => model.unmount());
               :max="16"
             />
             <div class="flex jc-between">
-              <span class="muted tiny">show grid</span>
+              <span class="muted tiny">surface</span>
             </div>
             <ui-button v-model="model.demo.showGrid" class="flex ml-2" toggle>
               <div class="cbx-frame">
@@ -47,7 +47,7 @@ onBeforeUnmount(() => model.unmount());
               </div>
             </ui-button>
             <div class="flex jc-between">
-              <span class="muted tiny">show low res</span>
+              <span class="muted tiny">lo res grid</span>
             </div>
             <ui-button v-model="model.demo.showLoRes" class="flex ml-2" toggle>
               <div class="cbx-frame">

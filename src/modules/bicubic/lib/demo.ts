@@ -31,9 +31,9 @@ export class Demo extends std.Disposable {
   #dragScale = 1;
 
   readonly #offset = -0.5 * (this.#numSpheres - 1);
-  #subdiv = ref(10);
-  #showGrid = ref(false);
-  #showLoRes = ref(false);
+  readonly #subdiv = ref(8);
+  readonly #showGrid = ref(false);
+  readonly #showLoRes = ref(false);
 
   readonly #minSubdiv = 2;
   readonly #maxSubdiv = 16;
@@ -41,7 +41,7 @@ export class Demo extends std.Disposable {
   readonly #maxZ = 2;
 
   readonly #sphereColor = 0xffff00;
-  readonly #loResColor = 0xf06000;
+  readonly #loResColor = 0xe08000;
   readonly #hiResColor = 0x008000;
   readonly #fitSize = 2;
 
@@ -233,8 +233,6 @@ export class Demo extends std.Disposable {
     const hiSize = (size - 1) * subdiv;
     const hi = this.#hiRes.geometry.getAttribute('position');
     if (hi.count !== (hiSize + 1) * (hiSize + 1)) {
-      // console.log('subdiv', subdiv, 'hisize', hiSize, 'count', hi.count);
-      // subdiv has changed, need to recreate hi-res grid
       this.#hiRes.geometry.dispose();
       this.#hiRes.geometry = geo.grid(hiSize, hiSize, (x, y) => {
         return new tri.Vector3(x / subdiv + this.#offset, y / subdiv + this.#offset, bicubic(x, y));

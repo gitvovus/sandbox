@@ -8,7 +8,7 @@ export class Movable extends ViewModel {
   readonly #idx = new Map<Wrapper, number>();
 
   constructor(models: ViewModel[]) {
-    super('movable-view');
+    super('movable-view', 'movable-button');
     const classes = [
       ['bounce-one', 'i0'],
       ['bounce-one', 'i1'],

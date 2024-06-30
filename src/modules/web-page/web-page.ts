@@ -7,8 +7,10 @@ export class WebPage extends ViewModel {
   readonly #mounted = new Disposable();
   readonly #menu = ref(false);
 
+  readonly #child?: ViewModel;
+
   constructor() {
-    super('web-page-view');
+    super('web-page-view', 'web-page-button');
   }
 
   use() {
@@ -28,5 +30,12 @@ export class WebPage extends ViewModel {
 
   set menu(value) {
     this.#menu.value = value;
+  }
+
+  get child() {
+    return this.#child;
+  }
+  set child(value) {
+    this.child = value;
   }
 }

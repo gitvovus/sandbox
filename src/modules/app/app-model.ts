@@ -5,7 +5,7 @@ import { ViewModel } from '@/modules/view-model';
 import { Bicubic } from '@/modules/bicubic/bicubic';
 import { BinaryTree } from '@/modules/binary-tree/binary-tree';
 import { Controls } from '@/modules/controls/controls';
-import { Dialog } from '@/ui/lib/dialog';
+import { Dialog, State } from '@/ui/lib/dialog';
 import { Gears } from '@/modules/gears/gears';
 import { Flowers } from '@/modules/flowers/flowers';
 import { Logo } from '@/modules/logo/logo';
@@ -30,7 +30,6 @@ export class AppModel extends ViewModel {
 
   readonly pages: Wrapper[];
   readonly dialog = new Dialog({ resizable: true });
-
   readonly dialogContent = new WebPage();
 
   readonly logo = new Logo();
@@ -45,7 +44,7 @@ export class AppModel extends ViewModel {
   readonly sandbox = new Sandbox();
   readonly svgFilters = new SvgFilters();
   readonly svgSandbox = new SvgSandbox();
-  readonly movable = new Movable([this.bicubic, this.gears, this.flowers, this.svgFilters]);
+  readonly movable = new Movable([this.svgFilters, this.bicubic, this.flowers, this.gears]);
 
   constructor() {
     super('app-view');
@@ -57,12 +56,14 @@ export class AppModel extends ViewModel {
       new Wrapper(this.flowers, ['view card clip shadow']),
       new Wrapper(this.svgFilters, ['view card clip shadow']),
       new Wrapper(this.movable, ['view margin']),
-      new Wrapper(this.controls, ['view card clip shadow border']),
+
       // new Wrapper(this.binaryTree, ['view card clip shadow']),
-      // new Wrapper(this.theme, ['view card']),
-      // new Wrapper(this.svgSandbox, ['view card clip shadow']),
+      // new Wrapper(this.controls, ['view card clip shadow border']),
       // new Wrapper(this.sandbox, ['view card clip shadow border']),
+      // new Wrapper(this.svgSandbox, ['view card clip shadow']),
+      // new Wrapper(this.theme, ['view card']),
       // new Wrapper(this.transforms, ['view card']),
+      // new Wrapper(this.webPage, ['view card clip shadow']),
     ];
   }
 
@@ -84,5 +85,18 @@ export class AppModel extends ViewModel {
 
   get page() {
     return this.pages[this.index];
+  }
+
+  get showDialog() {
+    return this.dialog.state === State.NON_MODAL;
+  }
+
+  set showDialog(value) {
+    if (value) {
+      this.dialog.show();
+    }
+    else {
+      this.dialog.closeAsync('transform');
+    }
   }
 }

@@ -19,7 +19,7 @@ import UiTestItem from '@/ui/test-item.vue';
 import UiZoom from '@/ui/zoom.vue';
 
 // directives
-import { vClickStop } from '@/ui/directives';
+import { vClickStop, vArrows } from '@/ui/directives';
 
 // property editors
 import ColorEditor from '@/modules/theme/editors/color.vue';
@@ -45,6 +45,16 @@ import ThemeView from '@/modules/theme/theme.vue';
 import TransformsView from '@/modules/transforms/transforms.vue';
 import WebPageView from '@/modules/web-page/web-page.vue';
 import WrapperView from '@/modules/wrapper/wrapper.vue';
+
+// view buttons
+import ViewButton from '@/modules/view-button.vue';
+import BicubicButton from '@/modules/bicubic/bicubic-button.vue';
+import FlowersButton from '@/modules/flowers/flowers-button.vue';
+import GearsButton from '@/modules/gears/gears-button.vue';
+import LogoButton from '@/modules/logo/logo-button.vue';
+import MovableButton from '@/modules/movable/movable-button.vue';
+import SvgFiltersButton from '@/modules/svg-filters/svg-filters-button.vue';
+import WebPageButton from '@/modules/web-page/web-page-button.vue';
 
 // utils
 import { CloneItem } from '@/ui/utils';
@@ -78,6 +88,7 @@ export class Application {
       .component('clone-item', CloneItem)
       // directives
       .directive('click-stop', vClickStop)
+      .directive('arrows', vArrows)
       // views
       .component('bicubic-view', BicubicView)
       .component('binary-tree-view', BinaryTreeView)
@@ -94,6 +105,15 @@ export class Application {
       .component('transforms-view', TransformsView)
       .component('web-page-view', WebPageView)
       .component('wrapper-view', WrapperView)
+      // view buttons
+      .component('view-button', ViewButton)
+      .component('bicubic-button', BicubicButton)
+      .component('flowers-button', FlowersButton)
+      .component('gears-button', GearsButton)
+      .component('logo-button', LogoButton)
+      .component('movable-button', MovableButton)
+      .component('svg-filters-button', SvgFiltersButton)
+      .component('web-page-button', WebPageButton)
       // properties
       .component('color-editor', ColorEditor)
       .component('length-editor', LengthEditor)

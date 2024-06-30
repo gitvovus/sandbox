@@ -11,18 +11,7 @@ import { getFocusableChildren } from '@/lib/dom';
 import { Disposable, onElementEvent } from '@/lib/std';
 
 const show = defineModel<boolean>({ required: true });
-// TODO: clarify 'use'
-const props = withDefaults(
-  defineProps<{
-    anchor?: HTMLElement;
-    use?: Record<string, string>;
-  }>(), {
-    anchor: undefined,
-    use: () => ({
-      left: 'left',
-      top: 'top',
-    }),
-  });
+const props = defineProps<{ anchor?: HTMLElement }>();
 
 const root = ref<HTMLElement>(undefined!);
 const style = ref<CSSProperties>({});
@@ -32,22 +21,11 @@ function checkVisibility() {
   const anchor = props.anchor;
   if (show.value) {
     if (anchor) {
-      const { top: t, left: l, width, height } = anchor.getBoundingClientRect();
-      const r = l + width;
-      const b = t + height;
-      const m: Record<string, number> = {
-        left: l,
-        top: t,
-        right: r,
-        bottom: b,
-        width,
-        height,
+      const { left: l, top: t } = anchor.getBoundingClientRect();
+      style.value = {
+        left: `${l}px`,
+        top: `${t}px`,
       };
-      const s: Record<string, string> = {};
-      for (const key in props.use) {
-        s[key] = `${m[props.use[key]]}px`;
-      }
-      style.value = s;
     }
     root.value.showPopover();
     nextTick(() => focusFirst());

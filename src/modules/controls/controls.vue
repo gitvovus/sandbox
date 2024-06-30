@@ -165,12 +165,8 @@ const icons = ['check', 'close', 'lt', 'gt', 'up', 'down', 'menu', 'quad', 'dot'
               class="cbx round"
               toggle
             >
-              <!-- TODO: change hidden to class -->
               <div class="cbx-frame">
-                <ui-icon
-                  class="check"
-                  :style="{ visibility: checked ? 'visible' : 'hidden' }"
-                />
+                <ui-icon :class="['check', { hidden: !checked }]" />
               </div>
               item {{ `#${i}` }}
             </ui-button>

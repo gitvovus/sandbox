@@ -10,33 +10,37 @@ code, .code {
 }
 
 h1 {
-  font-family: Ojuju;
+  font-family: var(--ff-header);
+  font-weight: var(--fw-header);
   font-size: 72px;
-  font-weight: 700;
 }
 
 h2 {
-  font-size: 60px;
-  font-weight: 300;
+  font-family: var(--ff-header);
+  font-weight: var(--fw-header);
+  font-size: 48px;
 }
 
 h3 {
-  font-family: Ojuju;
+  font-family: var(--ff-header);
+  font-weight: var(--fw-header);
   font-size: 36px;
-  font-weight: 700;
 }
 
 h4 {
-  font-size: 30px;
-  font-weight: 400;
+  font-family: var(--ff-normal);
+  font-weight: 600;
+  font-size: 24px;
 }
 
 h5 {
-  font-size: 24px;
-  font-weight: 500;
+  font-family: var(--ff-normal);
+  font-weight: 600;
+  font-size: 20px;
 }
 
 h6 {
+  font-family: var(--ff-normal);
+  font-weight: 600;
   font-size: 16px;
-  font-weight: 500;
 }

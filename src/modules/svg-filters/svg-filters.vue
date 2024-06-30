@@ -15,11 +15,11 @@ onBeforeUnmount(() => model.unmount());
 </script>
 
 <template>
-  <div class="svg-editor view" :class="{ out: state === 'mini' }">
+  <div class="svg-filter view" :class="{ out: state === 'mini' }">
     <div ref="root" class="relative paper">
       <ui-item class="clip view" :model="model.root" />
     </div>
-    <div class="svg-editor-tools surface">
+    <div class="svg-filter-tools surface">
       <div class="properties">
         <div class="section">
           <div class="section-header">
@@ -120,20 +120,20 @@ onBeforeUnmount(() => model.unmount());
         </div>
       </div>
 
-      <div class="svg-previews">
-        <div class="svg-preview">
+      <div class="svg-filter-previews">
+        <div class="svg-filter-preview">
           <svg class="view" :viewBox="model.viewBox" :style="{ marginBlock: 'auto' }">
             <ui-item :model="model.content" />
           </svg>
         </div>
 
-        <div class="svg-preview svg-zoom-50">
+        <div class="svg-filter-preview svg-zoom-50">
           <svg class="view" :viewBox="model.viewBox" :style="{ marginBlock: 'auto' }">
             <ui-item :model="model.content" />
           </svg>
         </div>
 
-        <div class="svg-preview svg-zoom-25">
+        <div class="svg-filter-preview svg-zoom-25">
           <svg class="view" :viewBox="model.viewBox" :style="{ marginBlock: 'auto' }">
             <ui-item :model="model.content" />
           </svg>
@@ -156,8 +156,8 @@ onBeforeUnmount(() => model.unmount());
 </template>
 
 <style lang="scss">
-$tool-width: 18em;
-.svg-editor {
+$tool-width: 16em;
+.svg-filter {
   display: grid;
   grid-template-columns: 1fr $tool-width;
   grid-template-rows: 1fr;
@@ -169,20 +169,20 @@ $tool-width: 18em;
   }
 }
 
-.svg-editor-tools {
+.svg-filter-tools {
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: minmax(10em, min-content) minmax(10em, 1fr);
   overflow: auto;
 }
 
-.svg-previews {
+.svg-filter-previews {
   display: grid;
   grid-template-columns: 1fr;
   grid-template-rows: 4fr 2fr 1fr;
   overflow: hidden;
 }
-.svg-preview {
+.svg-filter-preview {
   position: relative;
   margin-block: 0.25em;
 }
@@ -191,5 +191,8 @@ $tool-width: 18em;
 }
 .svg-zoom-25 {
   margin-inline: 37.5%;
+}
+.filter-content {
+  filter: url(#filter-light) drop-shadow(0 0 1px rgba(0 0 0));
 }
 </style>

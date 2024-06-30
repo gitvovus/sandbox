@@ -37,7 +37,6 @@ export class Theme extends ViewModel {
     new Var('--surface', '24 28 36'),
     // new Var('background-color', 'rgb(var(--surface))'),
     // new Color('--paper', 48, 60, 74),
-    // new Color('--glass', 0, 0, 0, 0.5),
     // new Color('--text', 164, 172, 190),
     // new Color('--border', 82, 88, 108, 0.35),
     // new Color('--line', 82, 88, 108, 0.35),

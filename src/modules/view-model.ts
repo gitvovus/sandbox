@@ -1,10 +1,14 @@
 export type ViewState = 'mini' | 'full';
 
 export class ViewModel {
-  readonly component: string;
   readonly key = Symbol();
+  readonly component: string;
+  readonly button: string = 'svg-filters-button';
 
-  constructor(component: string) {
+  constructor(component: string, button?: string) {
     this.component = component;
+    if (button) {
+      this.button = button;
+    }
   }
 }

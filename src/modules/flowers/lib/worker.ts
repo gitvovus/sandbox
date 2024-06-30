@@ -7,7 +7,12 @@ function saw(x: number) {
   return Math.abs(t - Math.floor(t) - 0.5) * 2;
 }
 
-async function flower(radius: number, petals: number, t: number) {
+async function flower(
+  radius: number, petals: number, t: number,
+  bottom: { r: number; g: number; b: number },
+  middle: { r: number; g: number; b: number },
+  top: { r: number; g: number; b: number },
+) {
   return createImageBitmap(
     img.generate(2 * radius, 2 * radius, (ix, iy) => {
       const x = ix + 0.5 - radius;
@@ -25,9 +30,9 @@ async function flower(radius: number, petals: number, t: number) {
       ];
 
       const rgba: img.RGBA[] = [
-        [0, 0, 0, 0],
-        [1, 0, 0, 0],
-        [1, 1, 1, 0],
+        [bottom.r / 255, bottom.g / 255, bottom.b / 255, 0],
+        [middle.r / 255, middle.g / 255, middle.b / 255, 0],
+        [top.r / 255, top.g / 255, top.b / 255, 0],
       ];
 
       for (let i = 0; i < f.length; ++i) {
@@ -91,7 +96,7 @@ async function processMessages() {
 
     case 'flower':
       {
-        const image = await flower(r.radius, r.petals, r.t);
+        const image = await flower(r.radius, r.petals, r.t, r.bottom, r.middle, r.top);
         context.postMessage({ ...r, image }, [image]);
       }
       break;

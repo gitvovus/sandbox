@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { ref, shallowReactive, shallowRef } from 'vue';
+import { shallowReactive, shallowRef } from 'vue';
 import { Theme } from './theme';
-import { useArrowNavigation } from '@/lib/use';
 
 const { model } = defineProps<{ model: Theme }>();
 
@@ -13,9 +12,6 @@ const items = shallowReactive([
   'kiwi',
 ]);
 const selectedItem = shallowRef(items[0]);
-
-const list = ref<HTMLElement>(undefined!);
-useArrowNavigation(list, { cycle: true });
 </script>
 
 <template>
@@ -65,11 +61,10 @@ useArrowNavigation(list, { cycle: true });
       <code class="p-1">
         {{ model.selectedProperty?.toCss() }}
       </code>
-      <div ref="list" class="property-list">
+      <div v-arrows="{ cycle: true }" class="property-list">
         <ui-button
           v-for="item in model.properties" :key="item.name"
           :class="['property-item', { 'selected': model.selectedProperty === item }]"
-          tabindex="0"
           @click="model.selectedProperty = item"
         >
           {{ item.name }}

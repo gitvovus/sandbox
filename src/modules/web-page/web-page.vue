@@ -9,7 +9,9 @@ model.use();
   <div class="surface view web-page-container">
     <div :ref="model.root" class="web-page" :class="{ menu : model.menu }">
       <div class="web-aside">
-        <div v-for="i in 10" :key="i" class="box-200 border m-1" />
+        <div class="web-aside-content" tabindex="0">
+          <div v-for="i in 6" :key="i" class="box-200 border" />
+        </div>
       </div>
       <div class="web-main">
         <div class="web-header">
@@ -32,7 +34,7 @@ model.use();
             </clone-item>
           </div>
           <div class="flex col gap-2">
-            <div v-for="i in 10" :key="i" class="box-200 border" />
+            <div v-for="i in 6" :key="i" class="box-200 border" />
           </div>
         </div>
       </div>
@@ -44,18 +46,11 @@ model.use();
 </template>
 
 <style lang="scss">
+$aside-width: 16em;
+
 .web-page-container {
   container-type: size;
   container-name: web-page;
-}
-
-@container web-page (width < 720px) {
-  .web-page {
-    margin-left: -16em;
-    &.menu > .web-aside {
-      transform: translateX(100%);
-    }
-  }
 }
 
 .web-page {
@@ -63,15 +58,51 @@ model.use();
   inset: 0;
   display: grid;
   grid-template-rows: minmax(0, 1fr);
-  grid-template-columns: min-content 1fr;
+  grid-template-columns: $aside-width 1fr;
   transition:
-    margin-left var(--fast) ease-in-out;
+    grid-template-columns var(--fast) ease-in-out;
 }
+
+.web-aside {
+  position: relative;
+  width: $aside-width;
+  display: flex;
+  flex-direction: column;
+  overflow: visible;
+  z-index: 10;
+  transition: width var(--fast) ease-in-out;
+}
+
+.web-aside-content {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  transition: right var(--fast) ease-in-out;
+  width: $aside-width;
+  overflow: auto;
+  background-color: rgb(0 0 0 / 0.5);
+  backdrop-filter: blur(2px);
+  scrollbar-width: none;
+}
+
+@container web-page (width < 760px) {
+  .web-aside {
+    width: 0;
+  }
+  .web-page {
+    grid-template-columns: 0 1fr;
+    &.menu > .web-aside > .web-aside-content {
+      right: -#{$aside-width};
+    }
+  }
+}
+
 .web-header {
   position: sticky;
   top: 0;
   background-color: rgb(0 0 0 / 0.75);
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(2px);
   display: flex;
   align-items: center;
   height: 2.5em;
@@ -80,38 +111,25 @@ model.use();
   font-size: 20px;
   z-index: 5;
 }
+
 .web-main {
-  grid-column: 2 / 3;
   position: relative;
   overflow: auto;
 }
-.web-aside {
-  width: 16em;
-  display: flex;
-  flex-direction: column;
-  overflow: auto;
-  background-color: rgb(0 0 0 / 0.5);
-  backdrop-filter: blur(3px);
-  z-index: 10;
-  transform: translateX(0%);
-  transition: transform var(--fast) ease-in-out;
-}
+
 .web-content {
   padding-inline: 0.5em;
   overflow: auto;
 }
+
 .mirror {
-  display: flex;
-  flex-direction: column;
   padding-top: 0.125em;
   line-height: 1;
-  // & > :first-child {
-  //   z-index: 1;
-  // }
   & > :last-child {
     position: relative;
     transform-origin: 50% 40%;
     transform: translateY(-10%) scaleY(-0.5);
+    margin-bottom: -0.5em;
     &::after {
       content: '';
       position: absolute;

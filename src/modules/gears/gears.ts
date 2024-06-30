@@ -69,7 +69,7 @@ export class Gears extends ViewModel {
   #selected?: Gear;
 
   constructor() {
-    super('gears-view');
+    super('gears-view', 'gears-button');
     this.#controller.resize(this.#scene.width, this.#scene.height);
     this.#createShapes();
     this.#createStatic();
