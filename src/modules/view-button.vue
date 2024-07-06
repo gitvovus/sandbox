@@ -1,7 +1,15 @@
 <template>
   <ui-button class="view-button">
     <div class="view-button-content">
-      <slot />
+      <slot>
+        <svg viewBox="-12 -12 24 24">
+          <path
+            class="view-button-default"
+            filter="url(#view-button-lighting)"
+            d="M 5,-10 c 3,0 5,2 5,5 v 10 c 0,3 -2,5 -5,5 h -10 c -3,0 -5,-2 -5,-5 v -10 c 0,-3 2,-5, 5,-5 z"
+          />
+        </svg>
+      </slot>
     </div>
   </ui-button>
 </template>
@@ -72,5 +80,11 @@ $t: var(--fast);
       height: 1.75em;
     }
   }
+}
+
+.view-button-default {
+  fill: rgb(80 120 144);
+  stroke: black;
+  stroke-width: 1px;
 }
 </style>

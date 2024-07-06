@@ -1,5 +1,5 @@
 <template>
-  <svg>
+  <svg class="app-resources">
     <defs>
       <filter id="view-button-lighting">
         <feGaussianBlur
@@ -49,4 +49,9 @@
 </template>
 
 <style lang="scss">
+.app-resources {
+  display: hidden;
+  width: 0;
+  height: 0;
+}
 </style>

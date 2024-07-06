@@ -10,7 +10,7 @@ model.use();
     <div :ref="model.root" class="web-page" :class="{ menu : model.menu }">
       <div class="web-aside">
         <div class="web-aside-content" tabindex="0">
-          <div v-for="i in 6" :key="i" class="box-200 border" />
+          <div v-for="i in 6" :key="i" class="box-200 border m-2" />
         </div>
       </div>
       <div class="web-main">
@@ -33,15 +33,10 @@ model.use();
               <h1>Welcome!</h1>
             </clone-item>
           </div>
-          <div class="flex col gap-2">
-            <div v-for="i in 6" :key="i" class="box-200 border" />
-          </div>
+          <div v-for="i in 6" :key="i" class="box-200 border m-2" />
         </div>
       </div>
     </div>
-    <!-- <div class="tool-box top right m-2 p-2">
-      {{ model.text || ':' }}
-    </div> -->
   </div>
 </template>
 

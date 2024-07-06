@@ -1,20 +1,8 @@
 <script setup lang="ts">
-import { ref } from 'vue';
 import { Sandbox } from './sandbox';
-import { useResizer } from '@/lib/use';
 
 const { model } = defineProps<{ model: Sandbox }>();
 
-const echo = ref<HTMLElement>();
-const text = ref<HTMLElement>();
-
-const w = ref(0);
-const h = ref(0);
-
-useResizer(text, (width, height) => {
-  w.value = width;
-  h.value = height;
-});
 </script>
 
 <template>
@@ -55,53 +43,31 @@ useResizer(text, (width, height) => {
         </test-container>
       </div>
     </div>
-
-    <!-- ExplicitPromise test -->
-    <div class="flex gap-2">
-      <ui-button class="btn" @click="model.test()">
-        test
-      </ui-button>
-      <ui-button class="btn" @click="model.start()">
-        start
-      </ui-button>
-      <ui-button class="btn" @click="model.resolve()">
-        resolve
-      </ui-button>
-      <ui-button class="btn" @click="model.reject()">
-        reject
+    <div class="flex">
+      <ui-button class="btn" @click="model.single.selectedItem = undefined">
+        &times;
       </ui-button>
     </div>
-
-    <!-- textarea test -->
-    <div class="test-host">
-      <div ref="echo" class="test-echo" :style="{ width: `${w}px`, height: `${h}px` }">
-        <template v-for="(line, i) in model.parsed" :key="i">
-          <span v-if="line !== '\n'">{{ line }}</span>
-          <br v-else>
-        </template>
-      </div>
-      <textarea ref="text" v-model="model.text" type="text" class="test-text" />
-    </div>
-
-    <!-- parser test -->
-    <div class="flex gap-4 ai-center">
-      <input v-model="model.parser.text" :style="{ width: '20em' }">
-      <ui-button class="btn" @click="model.parser.parseShadow()">
-        parse shadow
-      </ui-button>
-      <ui-button class="btn" @click="model.parser.parseLength()">
-        parse length
-      </ui-button>
-      <span>{{ model.parser.parsed }}</span>
-    </div>
-
-    <!-- clone test -->
-    <div class="flex gap-2">
-      <clone-item>
-        <ui-button class="btn" @click="model.text = 'yes i am!'">
-          am i cloned?!
-        </ui-button>
-      </clone-item>
+    <div class="m-4">
+      <list-box v-slot="{ isOpen, open, value }" v-model="model.single.selectedItem">
+        <div class="list-box">
+          <ui-button :class="['btn', { 'no-mouse': isOpen.value }]" @click="open()">
+            {{ value?.name || '-' }}
+          </ui-button>
+          <list-box-options v-model="isOpen.value" as="ui-dropdown" class="list-box-options">
+            <list-box-option
+              v-for="item in model.single.items"
+              :key="item.key"
+              v-slot="{ selected }"
+              :value="item"
+            >
+              <div :class="['list-box-option', { selected }]">
+                {{ item.name }}
+              </div>
+            </list-box-option>
+          </list-box-options>
+        </div>
+      </list-box>
     </div>
   </div>
 </template>
@@ -125,31 +91,39 @@ useResizer(text, (width, height) => {
 .test-selected {
   background-color: rgba(0 0 0 / 0.25);
 }
-.test-host {
+
+.list-box {
   position: relative;
-  max-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  width: 12em;
 }
-.test-echo {
-  position: absolute;
+
+.list-box-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5em;
+  background-color: rgb(255 255 255 / 0.1);
+  border-radius: 4px;
+  &:focus {
+    outline: 2px solid rgb(var(--border));
+    outline-offset: 2px;
+  }
+}
+
+.list-box-options {
   left: 0;
-  top: 0;
-  padding: 0.5em;
-  overflow: hidden;
-  overflow-wrap: break-word;
-  word-break: normal;
-  word-spacing: 0;
+  right: 0;
+  top: 100%;
+  margin-top: 2px;
+  background-color: rgb(var(--paper));
+  box-shadow: var(--shadow-small);
 }
-.test-highlight {
-  background-color: darkred;
-}
-.test-text {
-  position: relative;
-  resize: both;
-  background: transparent;
-  color: transparent;
-  caret-color: rgb(var(--text));
-  padding: 0.5em;
-  margin: 0;
-  font: unset;
+
+.list-box-option {
+  &.selected {
+    background-color: rgb(0 0 0 / 0.25);
+  }
 }
 </style>

@@ -112,7 +112,7 @@ $white-1: (
 .red-flower {
   d: path("#{$red-0}");
   transition: d $t;
-  fill: #800000a0;
+  fill: #ff0000b0;
 }
 
 .white-flower {

@@ -1,14 +1,17 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted } from 'vue';
+import { onBeforeUnmount, onMounted, ref } from 'vue';
 import { Logo } from './logo';
 
 const { model } = defineProps<{ model: Logo }>();
-onMounted(() => model.mount());
+
+const root = ref<HTMLElement>(undefined!);
+
+onMounted(() => model.mount(root.value));
 onBeforeUnmount(() => model.unmount());
 </script>
 
 <template>
-  <div class="logo ff-header fw-header" @dblclick="model.animate()">
+  <div ref="root" class="logo ff-header fw-header" @dblclick="model.animate()">
     <ui-item :model="model.root" />
   </div>
 </template>
@@ -18,7 +21,6 @@ onBeforeUnmount(() => model.unmount());
   position: absolute;
   inset: 0;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
   user-select: none;

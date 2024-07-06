@@ -15,7 +15,6 @@ import UiItem from '@/ui/item.vue';
 import UiPopup from '@/ui/popup.vue';
 import UiRange from '@/ui/range.vue';
 import UiSelect from '@/ui/select.vue';
-import UiTestItem from '@/ui/test-item.vue';
 import UiZoom from '@/ui/zoom.vue';
 
 // directives
@@ -61,6 +60,7 @@ import { CloneItem } from '@/ui/utils';
 
 // test
 import { TestContainer, TestHeader, TestItem } from '@/modules/sandbox/sandbox';
+import { ListBox, ListBoxButton, ListBoxOption, ListBoxOptions } from '@/modules/sandbox/tests/list-box';
 
 export class Application {
   readonly #appModel = new AppModel();
@@ -82,7 +82,6 @@ export class Application {
       .component('ui-popup', UiPopup)
       .component('ui-range', UiRange)
       .component('ui-select', UiSelect)
-      .component('ui-test-item', UiTestItem)
       .component('ui-zoom', UiZoom)
       // utils
       .component('clone-item', CloneItem)
@@ -123,7 +122,11 @@ export class Application {
       // test
       .component('test-container', TestContainer)
       .component('test-header', TestHeader)
-      .component('test-item', TestItem);
+      .component('test-item', TestItem)
+      .component('list-box', ListBox)
+      .component('list-box-button', ListBoxButton)
+      .component('list-box-option', ListBoxOption)
+      .component('list-box-options', ListBoxOptions);
   }
 
   run() {

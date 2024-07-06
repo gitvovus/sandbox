@@ -17,29 +17,7 @@ import {
 
 import { Disposable } from '@/lib/std';
 import { ViewModel } from '@/modules/view-model';
-import { ExplicitPromise } from '@/lib/async';
 import { SingleSelection } from '@/lib/ui-models';
-import { Parser } from './tests/parser';
-
-function wait(ms: number) {
-  let t: number;
-  return new ExplicitPromise<number>(
-    (resolve) => {
-      t = setTimeout(() => {
-        resolve(42);
-        console.log('timeout');
-      }, ms);
-    },
-    (resolve, value) => {
-      clearTimeout(t);
-      resolve(value);
-    },
-    (reject, reason) => {
-      clearTimeout(t);
-      reject(reason);
-    },
-  );
-}
 
 export class TestData {
   readonly key = Symbol();
@@ -71,7 +49,6 @@ export class TestData {
 export class Sandbox extends ViewModel {
   readonly #data = [new TestData('one', 1), new TestData('two', 2), new TestData('three', 3)];
   readonly single = new SingleSelection(this.#data);
-  readonly parser = new Parser();
 
   readonly #hidden = ref(false);
 
@@ -105,28 +82,6 @@ export class Sandbox extends ViewModel {
   test() {
     this.single.selectedItem = undefined;
   }
-
-  #promise?: ExplicitPromise<number>;
-
-  async start() {
-    try {
-      this.#promise = wait(3000);
-      console.log('started');
-      const result = await this.#promise;
-      console.log('done:', result);
-    }
-    catch (error) {
-      console.log('rejected:', error);
-    }
-  }
-
-  resolve() {
-    this.#promise?.resolve(69);
-  }
-
-  reject() {
-    this.#promise?.reject('by user');
-  }
 }
 
 type ContainerContext = {
@@ -157,9 +112,9 @@ export const TestContainer = defineComponent(
   {
     inheritAttrs: false,
     props: {
-      as: { type: [Object, String], default: 'div' },
+      as: { type: [Object, String] as PropType<object | string>, default: 'div' },
       modelValue: {
-        type: [Object, String, Number] as PropType<object | string | number | undefined>,
+        type: [Object, String, Number, Boolean] as PropType<object | string | number | boolean | undefined>,
         default: undefined,
       },
     },

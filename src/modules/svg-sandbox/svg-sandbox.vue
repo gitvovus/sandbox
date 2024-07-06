@@ -13,21 +13,9 @@ onBeforeUnmount(() => model.unmount());
   <div class="view">
     <div ref="root" class="paper clip view">
       <ui-item class="clip view" :model="model.root" />
-      <svg viewBox="-26 -26 52 52">
+      <svg viewBox="-12 -12 24 24">
         <path
-          d="M 20,-22 c 4,0 4,0 4,4 v 16 c 0,4 0,4 -4,4 h -40 c -4,0 -4,0 -4,-4 v -16 c 0,-4 0,-4, 4,-4 z"
-          fill="#00000040"
-        />
-        <path
-          d="M -14,5 c 4,0 4,0 4,4 v 7 c 0,4 0,4 -4,4 h -6 c -4,0 -4,0 -4,-4 v -7 c 0,-4 0,-4, 4,-4 z"
-          fill="#00000040"
-        />
-        <path
-          d="M 3,5 c 4,0 4,0 4,4 v 7 c 0,4 0,4 -4,4 h -6 c -4,0 -4,0 -4,-4 v -7 c 0,-4 0,-4, 4,-4 z"
-          fill="#00000040"
-        />
-        <path
-          d="M 20,5 c 4,0 4,0 4,4 v 7 c 0,4 0,4 -4,4 h -6 c -4,0 -4,0 -4,-4 v -7 c 0,-4 0,-4, 4,-4 z"
+          d="M 5,-10 c 3,0 5,2 5,5 v 10 c 0,3 -2,5 -5,5 h -10 c -3,0 -5,-2 -5,-5 v -10 c 0,-3 2,-5, 5,-5 z"
           fill="#00000040"
         />
       </svg>

@@ -133,9 +133,18 @@ const rightAligned = computed(() => model.align === Align.RIGHT);
   justify-content: center;
   overflow: hidden;
   width: 1em;
-  transition: width var(--fast);
+  padding: 0.125em;
+  transition: width var(--fast), padding var(--fast);
+  &:focus,
+  &:hover {
+    padding: 0em;
+  }
+  &:active {
+    padding: 0.125em;
+  }
   &.collapsed {
     width: 0;
+    padding: 0;
   }
 }
 

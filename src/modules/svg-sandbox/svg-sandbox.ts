@@ -9,7 +9,7 @@ import { ViewModel } from '@/modules/view-model';
 export class SvgSandbox extends ViewModel {
   readonly #mounted = new Disposable();
 
-  readonly #size = 52;
+  readonly #size = 24;
   readonly #camera = new Camera({ scale: new Vec(1, 1) });
 
   readonly #content = it('g', [

@@ -1,9 +1,16 @@
 <template>
   <view-button>
-    <svg viewBox="-10 -10 20 20">
-      <g filter="url(#view-button-lighting)">
-        <image href="@/assets/pics/logo.svg" x="-10" y="-10" width="20" height="20" />
-      </g>
+    <svg viewBox="-18 -18 36 36">
+      <path
+        filter="url(#view-button-lighting)"
+        fill="#f06000"
+        d="M -6,-15 0,15 18,3"
+      />
+      <path
+        filter="url(#view-button-lighting)"
+        fill="#0060a0"
+        d="M -18,-18 -12,12 6,0"
+      />
     </svg>
   </view-button>
 </template>

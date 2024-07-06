@@ -1,7 +1,7 @@
 import { Animation } from '@/lib/animation';
 import { Mat, Vec } from '@/lib/bi';
 import { Item, fromSource } from '@/lib/reactive';
-import { cubicBezier, time } from '@/lib/std';
+import { Disposable, cubicBezier, onElementEvent, time } from '@/lib/std';
 import { Transformable } from '@/lib/svg/transformable';
 import { ViewModel } from '@/modules/view-model';
 
@@ -20,6 +20,9 @@ function compose(item: Transformable, position: Vec, scale: Vec) {
 }
 
 export class Logo extends ViewModel {
+  readonly #mounted = new Disposable();
+  // #el: HTMLElement = undefined!;
+
   readonly root = fromSource(logo, (tag, data) => {
     const lookup: (string | undefined)[] = [
       'logo-title',
@@ -40,6 +43,8 @@ export class Logo extends ViewModel {
 
   readonly #anim = new Animation();
 
+  // readonly #blue = find(this.root, 'logo-blue');
+
   readonly #map: {
     [key: string]: {
       item: Transformable;
@@ -47,23 +52,20 @@ export class Logo extends ViewModel {
     };
   } = {
 
-      title: {
-        item: find(this.root, 'logo-title'),
-        animation: (item, t) => {
-          // const position = new Vec();
-          const position = new Vec(...cubicBezier([
-            [0, -30], [0, -1], [0, 0],
-            [0, 0],
-          ], t));
-          // const scale = new Vec(1, 1);
-          const scale = new Vec(...cubicBezier([
-            [1, 1], [1, 5], [1, 2],
-            // [1, 2.5], [1, 1], [1, 0.8],
-            [1, 1],
-          ], t));
-          return compose(item, position, scale);
-        },
-      },
+      // title: {
+      //   item: find(this.root, 'logo-title'),
+      //   animation: (item, t) => {
+      //     const position = new Vec(...cubicBezier([
+      //       [0, -30], [0, -1], [0, 0],
+      //       [0, 0],
+      //     ], t));
+      //     const scale = new Vec(...cubicBezier([
+      //       [1, 1], [1, 5], [1, 2],
+      //       [1, 1],
+      //     ], t));
+      //     return compose(item, position, scale);
+      //   },
+      // },
 
       // ext: {
       //   item: find(this.root, 'logo-ext'),
@@ -105,13 +107,17 @@ export class Logo extends ViewModel {
     super('logo-view', 'logo-button');
   }
 
-  mount() {
-    for (const i in this.#map) this.#map[i].item.position = new Vec(0, 0);
+  mount(el: HTMLElement) {
+    // this.#el = el;
+    this.#mounted.add(
+      onElementEvent(el, 'pointermove', this.#move),
+      () => this.#reset(),
+    );
     this.animate();
   }
 
   unmount() {
-    this.#anim.stop();
+    this.#mounted.dispose();
   }
 
   animate() {
@@ -132,5 +138,26 @@ export class Logo extends ViewModel {
         item.item.transform = item.animation(item.item, dt / duration);
       }
     });
+  }
+
+  #reset() {
+    for (const i in this.#map) this.#map[i].item.position = new Vec(0, 0);
+    this.#anim.stop();
+  }
+
+  readonly #move = (e: PointerEvent) => {
+    // const { width, height } = this.#el.getBoundingClientRect();
+    // const { x, y } = elementOffset(this.#el, e);
+    // const rx = 2 * x / width - 1;
+    // const ry = 2 * y / height - 1;
+    // const r = Math.hypot(rx, ry);
+    // const phi = Math.atan2(ry, rx) + Math.PI;
+    // this.#blue.position = new Vec(Math.cos(phi) * r, Math.sin(phi) * r);
+  };
+
+  test() {
+    cubicBezier;
+    find;
+    compose;
   }
 }
