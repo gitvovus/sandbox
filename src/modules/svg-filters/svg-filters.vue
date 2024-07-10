@@ -1,21 +1,22 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref } from 'vue';
+import { onMounted, onBeforeUnmount, ref, computed } from 'vue';
 import { type ViewState } from '@/modules/view-model';
 import { SvgFilters } from './svg-filters';
 
-const { model } = defineProps<{
+const props = defineProps<{
   model: SvgFilters;
   state: ViewState;
 }>();
 
 const root = ref<HTMLElement>(undefined!);
+const mini = computed(() => props.state === 'mini');
 
-onMounted(() => model.mount(root.value));
-onBeforeUnmount(() => model.unmount());
+onMounted(() => props.model.mount(root.value));
+onBeforeUnmount(() => props.model.unmount());
 </script>
 
 <template>
-  <div class="svg-filter view" :class="{ out: state === 'mini' }">
+  <div class="svg-filter view" :class="{ out: mini }">
     <div ref="root" class="relative paper">
       <ui-item class="clip view" :model="model.root" />
     </div>
@@ -31,7 +32,7 @@ onBeforeUnmount(() => model.unmount());
           </div>
           <ui-range
             v-model="model.blur.attributes.stdDeviation"
-            :min="0" :max="5" :step="0.1"
+            :min="0" :max="5" :step="0.1" :disabled="mini"
           />
         </div>
 
@@ -46,7 +47,7 @@ onBeforeUnmount(() => model.unmount());
             </div>
             <ui-range
               v-model="model.specPointLight.attributes[i]"
-              :min="-100" :max="100"
+              :min="-100" :max="100" :disabled="mini"
             />
           </template>
         </div>
@@ -61,7 +62,7 @@ onBeforeUnmount(() => model.unmount());
           </div>
           <ui-range
             v-model="model.specular.attributes.surfaceScale"
-            :min="0.1" :max="5" :step="0.1"
+            :min="0.1" :max="5" :step="0.1" :disabled="mini"
           />
           <div class="flex jc-between">
             <span class="muted tiny">const</span>
@@ -69,7 +70,7 @@ onBeforeUnmount(() => model.unmount());
           </div>
           <ui-range
             v-model="model.specular.attributes.specularConstant"
-            :min="0" :max="5" :step="0.1"
+            :min="0" :max="5" :step="0.1" :disabled="mini"
           />
           <div class="flex jc-between">
             <span class="muted tiny">exponent</span>
@@ -77,7 +78,7 @@ onBeforeUnmount(() => model.unmount());
           </div>
           <ui-range
             v-model="model.specular.attributes.specularExponent"
-            :min="2" :max="25"
+            :min="2" :max="25" :disabled="mini"
           />
         </div>
 
@@ -92,7 +93,7 @@ onBeforeUnmount(() => model.unmount());
             </div>
             <ui-range
               v-model="model.diffPointLight.attributes[i]"
-              :min="-100" :max="100"
+              :min="-100" :max="100" :disabled="mini"
             />
           </template>
         </div>
@@ -107,7 +108,7 @@ onBeforeUnmount(() => model.unmount());
           </div>
           <ui-range
             v-model="model.diffuse.attributes.surfaceScale"
-            :min="0.1" :max="5" :step="0.1"
+            :min="0.1" :max="5" :step="0.1" :disabled="mini"
           />
           <div class="flex jc-between">
             <span class="muted tiny">const</span>
@@ -115,7 +116,7 @@ onBeforeUnmount(() => model.unmount());
           </div>
           <ui-range
             v-model="model.diffuse.attributes.diffuseConstant"
-            :min="0" :max="1" :step="0.01"
+            :min="0" :max="1" :step="0.01" :disabled="mini"
           />
         </div>
       </div>

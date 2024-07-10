@@ -9,6 +9,7 @@ const props = withDefaults(defineProps<{
   min?: number;
   max?: number;
   step?: number;
+  disabled?: boolean;
 }>(), {
   min: 0,
   max: 100,
@@ -20,10 +21,11 @@ const inner = ref<HTMLElement>(undefined!);
 
 const { horizontal, percents } = useRange(outer, inner, model, props);
 const orientation = computed(() => (horizontal.value ? 'horizontal' : 'vertical'));
+const tab = computed(() => props.disabled ? -1 : 0);
 </script>
 
 <template>
-  <div ref="outer" :class="['range', orientation]" tabindex="0">
+  <div ref="outer" :class="['range', orientation]" :tabindex="tab">
     <div ref="inner" class="range-inner">
       <div :class="['range-axis', orientation]">
         <div :class="['range-track', orientation]" />

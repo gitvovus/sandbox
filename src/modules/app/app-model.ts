@@ -50,20 +50,20 @@ export class AppModel extends ViewModel {
     super('app-view');
 
     this.pages = [
-      new Wrapper(this.sandbox, ['view card clip shadow']),
+      // new Wrapper(this.sandbox, ['view card clip shadow']),
 
-      // new Wrapper(this.logo, ['view']),
-      // new Wrapper(this.bicubic, ['view card clip shadow']),
-      // new Wrapper(this.gears, ['view card clip shadow']),
-      // new Wrapper(this.flowers, ['view card clip shadow']),
-      // new Wrapper(this.svgFilters, ['view card clip shadow']),
-      // new Wrapper(this.movable, ['view margin']),
+      new Wrapper(this.logo, ['view']),
+      new Wrapper(this.bicubic, ['view card clip shadow']),
+      new Wrapper(this.gears, ['view card clip shadow']),
+      new Wrapper(this.flowers, ['view card clip shadow']),
+      new Wrapper(this.svgFilters, ['view card clip shadow']),
+      new Wrapper(this.movable, ['view margin']),
 
       // new Wrapper(this.binaryTree, ['view card clip shadow']),
       // new Wrapper(this.controls, ['view card clip shadow border']),
       // new Wrapper(this.sandbox, ['view card clip shadow border']),
       // new Wrapper(this.svgSandbox, ['view card clip shadow']),
-      new Wrapper(this.theme, ['view card']),
+      // new Wrapper(this.theme, ['view card']),
       // new Wrapper(this.transforms, ['view card']),
       // new Wrapper(this.webPage, ['view card clip shadow']),
     ];

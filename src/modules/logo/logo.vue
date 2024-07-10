@@ -21,6 +21,7 @@ onBeforeUnmount(() => model.unmount());
   position: absolute;
   inset: 0;
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
   user-select: none;

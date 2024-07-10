@@ -1,21 +1,18 @@
 <script setup lang="ts">
-import { onMounted, onBeforeUnmount, ref } from 'vue';
+import { onMounted, onBeforeUnmount, ref, computed } from 'vue';
 import { type Flowers } from './flowers';
 import { type ViewState } from '@/modules/view-model';
 
-const { model, state } = defineProps<{
+const props = defineProps<{
   model: Flowers;
   state: ViewState;
 }>();
-const root = ref();
 
-onMounted(() => {
-  model.mount(root.value);
-});
+const root = ref<HTMLElement>(undefined!);
+const mini = computed(() => props.state === 'mini');
 
-onBeforeUnmount(() => {
-  model.unmount();
-});
+onMounted(() => props.model.mount(root.value));
+onBeforeUnmount(() => props.model.unmount());
 </script>
 
 <template>
@@ -38,6 +35,7 @@ onBeforeUnmount(() => {
             :min="model.countMin"
             :max="model.countMax"
             :step="model.countStep"
+            :disabled="mini"
           />
           <div class="flex jc-between">
             <span class="muted tiny">radius</span>
@@ -48,6 +46,7 @@ onBeforeUnmount(() => {
             :min="model.radiusMin"
             :max="model.radiusMax"
             :step="model.radiusStep"
+            :disabled="mini"
           />
           <div class="flex jc-between">
             <span class="muted tiny">petals</span>
@@ -57,6 +56,7 @@ onBeforeUnmount(() => {
             v-model="model.petals"
             :min="model.petalsMin"
             :max="model.petalsMax"
+            :disabled="mini"
           />
 
           <div class="section-header flex ai-center gap-2">
@@ -70,17 +70,17 @@ onBeforeUnmount(() => {
             <span class="muted tiny">r</span>
             {{ model.bottom.r }}
           </div>
-          <ui-range v-model="model.bottom.r" :min="0" :max="255" :step="5" />
+          <ui-range v-model="model.bottom.r" :min="0" :max="255" :step="5" :disabled="mini" />
           <div class="flex jc-between">
             <span class="muted tiny">g</span>
             {{ model.bottom.g }}
           </div>
-          <ui-range v-model="model.bottom.g" :min="0" :max="255" :step="5" />
+          <ui-range v-model="model.bottom.g" :min="0" :max="255" :step="5" :disabled="mini" />
           <div class="flex jc-between">
             <span class="muted tiny">b</span>
             {{ model.bottom.b }}
           </div>
-          <ui-range v-model="model.bottom.b" :min="0" :max="255" :step="5" />
+          <ui-range v-model="model.bottom.b" :min="0" :max="255" :step="5" :disabled="mini" />
 
           <div class="section-header flex ai-center gap-2">
             <div
@@ -93,17 +93,17 @@ onBeforeUnmount(() => {
             <span class="muted tiny">r</span>
             {{ model.middle.r }}
           </div>
-          <ui-range v-model="model.middle.r" :min="0" :max="255" :step="5" />
+          <ui-range v-model="model.middle.r" :min="0" :max="255" :step="5" :disabled="mini" />
           <div class="flex jc-between">
             <span class="muted tiny">g</span>
             {{ model.middle.g }}
           </div>
-          <ui-range v-model="model.middle.g" :min="0" :max="255" :step="5" />
+          <ui-range v-model="model.middle.g" :min="0" :max="255" :step="5" :disabled="mini" />
           <div class="flex jc-between">
             <span class="muted tiny">b</span>
             {{ model.middle.b }}
           </div>
-          <ui-range v-model="model.middle.b" :min="0" :max="255" :step="5" />
+          <ui-range v-model="model.middle.b" :min="0" :max="255" :step="5" :disabled="mini" />
 
           <div class="section-header flex ai-center gap-2">
             <div
@@ -116,22 +116,22 @@ onBeforeUnmount(() => {
             <span class="muted tiny">r</span>
             {{ model.top.r }}
           </div>
-          <ui-range v-model="model.top.r" :min="0" :max="255" :step="5" />
+          <ui-range v-model="model.top.r" :min="0" :max="255" :step="5" :disabled="mini" />
           <div class="flex jc-between">
             <span class="muted tiny">g</span>
             {{ model.top.g }}
           </div>
-          <ui-range v-model="model.top.g" :min="0" :max="255" :step="5" />
+          <ui-range v-model="model.top.g" :min="0" :max="255" :step="5" :disabled="mini" />
           <div class="flex jc-between">
             <span class="muted tiny">b</span>
             {{ model.top.b }}
           </div>
-          <ui-range v-model="model.top.b" :min="0" :max="255" :step="5" />
+          <ui-range v-model="model.top.b" :min="0" :max="255" :step="5" :disabled="mini" />
 
-          <ui-button v-if="model.todo === 0" class="btn mt-2" @click="model.generate()">
+          <ui-button v-if="model.todo === 0" class="btn mt-2" :disabled="mini" @click="model.generate()">
             Generate
           </ui-button>
-          <ui-button v-else class="btn mt-2" @click="model.stop()">
+          <ui-button v-else class="btn mt-2" :disabled="mini" @click="model.stop()">
             Stop
           </ui-button>
           <div class="flex ai-center mt-2">
@@ -154,6 +154,7 @@ onBeforeUnmount(() => {
             :min="0"
             :max="Math.max(0, model.images.length - 1)"
             :step="1"
+            :disabled="mini"
           />
           <div class="flex jc-between">
             <span class="muted tiny">brightness</span>
@@ -164,6 +165,7 @@ onBeforeUnmount(() => {
             :min="0"
             :max="200"
             :step="1"
+            :disabled="mini"
           />
           <div class="flex jc-between">
             <span class="muted tiny">contrast</span>
@@ -174,6 +176,7 @@ onBeforeUnmount(() => {
             :min="0"
             :max="200"
             :step="1"
+            :disabled="mini"
           />
           <div class="flex jc-between">
             <span class="muted tiny">grayscale</span>
@@ -184,6 +187,7 @@ onBeforeUnmount(() => {
             :min="0"
             :max="100"
             :step="1"
+            :disabled="mini"
           />
         </div>
       </div>
