@@ -3,7 +3,6 @@ import { ref } from 'vue';
 
 const model = defineModel<any>();
 
-const anchor = ref<HTMLElement>(undefined!);
 const expanded = ref(false);
 
 function toggle() {
@@ -21,7 +20,7 @@ function select(value: any) {
 </script>
 
 <template>
-  <div ref="anchor" class="select">
+  <div class="select">
     <slot name="button" v-bind="{ expanded, toggle }" class="relative" />
     <div class="relative">
       <ui-dropdown v-model="expanded" class="select-dropdown mt-1">

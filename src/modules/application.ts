@@ -59,7 +59,6 @@ import WebPageButton from '@/modules/web-page/web-page-button.vue';
 import { CloneItem } from '@/ui/utils';
 
 // test
-import { TestContainer, TestHeader, TestItem } from '@/modules/sandbox/sandbox';
 import { ListBox, ListBoxButton, ListBoxOption, ListBoxOptions } from '@/modules/sandbox/tests/list-box';
 
 export class Application {
@@ -120,9 +119,6 @@ export class Application {
       .component('shadow-editor', ShadowEditor)
       .component('var-editor', VarEditor)
       // test
-      .component('test-container', TestContainer)
-      .component('test-header', TestHeader)
-      .component('test-item', TestItem)
       .component('list-box', ListBox)
       .component('list-box-button', ListBoxButton)
       .component('list-box-option', ListBoxOption)

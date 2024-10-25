@@ -36,7 +36,6 @@ const selectedItem = shallowRef(items[0]);
                 v-for="(item, i) in items"
                 :key="i"
                 :class="['property-item', { selected: selected(item) }]"
-                tabindex="0"
                 @click="select(item)"
               >
                 <ui-icon :class="['check', { hidden: !selected(item) }]" />

@@ -2,7 +2,6 @@
 import { Sandbox } from './sandbox';
 
 const { model } = defineProps<{ model: Sandbox }>();
-
 </script>
 
 <template>
@@ -25,23 +24,6 @@ const { model } = defineProps<{ model: Sandbox }>();
           </div>
         </template>
       </div>
-      <div class="test-grid-cell">
-        <test-container v-model="model.single.selectedItem">
-          <test-header v-slot="{ selected }">
-            {{ selected?.name || '-' }}
-          </test-header>
-          <test-item
-            v-for="item in model.single.items"
-            :key="item.key"
-            v-slot="{ selected }"
-            :value="item"
-          >
-            <div :class="{ 'test-selected': selected }">
-              {{ item.name }} {{ selected ? '+' : '-' }}
-            </div>
-          </test-item>
-        </test-container>
-      </div>
     </div>
     <div class="flex">
       <ui-button class="btn" @click="model.single.selectedItem = undefined">
@@ -49,23 +31,23 @@ const { model } = defineProps<{ model: Sandbox }>();
       </ui-button>
     </div>
     <div class="m-4">
-      <list-box v-slot="{ isOpen, open, value }" v-model="model.single.selectedItem">
+      <list-box v-slot="{ expanded, toggle, selected }" v-model="model.single.selectedItem">
         <div class="list-box">
-          <ui-button :class="['btn', { 'no-mouse': isOpen.value }]" @click="open()">
-            {{ value?.name || '-' }}
+          <ui-button :class="['slct', { 'no-mouse': expanded.value }]" @click="toggle()">
+            {{ selected.value?.name || '-' }}
           </ui-button>
-          <list-box-options v-model="isOpen.value" as="ui-dropdown" class="list-box-options">
-            <list-box-option
-              v-for="item in model.single.items"
-              :key="item.key"
-              v-slot="{ selected }"
-              :value="item"
-            >
-              <div :class="['list-box-option', { selected }]">
+          <ui-dropdown v-model="expanded.value" class="list-box-dropdown">
+            <div class="list-box-options">
+              <ui-button
+                v-for="(item, i) in model.single.items"
+                :key="i"
+                :class="['property-item', { selected: item === selected.value }]"
+                @click="selected.value = item"
+              >
                 {{ item.name }}
-              </div>
-            </list-box-option>
-          </list-box-options>
+              </ui-button>
+            </div>
+          </ui-dropdown>
         </div>
       </list-box>
     </div>
@@ -88,9 +70,6 @@ const { model } = defineProps<{ model: Sandbox }>();
   border-radius: 0.25em;
   padding: 0.25em 0.5em;
 }
-.test-selected {
-  background-color: rgba(0 0 0 / 0.25);
-}
 
 .list-box {
   position: relative;
@@ -99,31 +78,17 @@ const { model } = defineProps<{ model: Sandbox }>();
   width: 12em;
 }
 
-.list-box-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.5em;
-  background-color: rgb(255 255 255 / 0.1);
-  border-radius: 4px;
-  &:focus {
-    outline: 2px solid rgb(var(--border));
-    outline-offset: 2px;
-  }
-}
-
-.list-box-options {
+.list-box-dropdown {
   left: 0;
   right: 0;
   top: 100%;
   margin-top: 2px;
-  background-color: rgb(var(--paper));
+  background-color: rgb(var(--surface));
   box-shadow: var(--shadow-small);
 }
 
-.list-box-option {
-  &.selected {
-    background-color: rgb(0 0 0 / 0.25);
-  }
+.list-box-options {
+  display: flex;
+  flex-direction: column;
 }
 </style>

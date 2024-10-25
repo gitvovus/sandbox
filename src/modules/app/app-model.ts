@@ -50,7 +50,7 @@ export class AppModel extends ViewModel {
     super('app-view');
 
     this.pages = [
-      // new Wrapper(this.sandbox, ['view card clip shadow']),
+      // new Wrapper(this.sandbox, ['view card clip shadow border']),
 
       new Wrapper(this.logo, ['view']),
       new Wrapper(this.bicubic, ['view card clip shadow']),
